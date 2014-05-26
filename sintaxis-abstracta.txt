@@ -1,0 +1,69 @@
+Programa  program 
+ SeccionTipos 
+ SeccionVariables 
+ SeccionSubprogramas 
+ IBloque 
+SeccionTipos  types DecTipos |  
+SeccionVariables  variables DecVariables |  
+SeccionSubprogramas  subprograms DecSubprogramas |  
+
+DecTipos  DecTipos ; DecTipo | DecTipo 
+DecTipo  id : Tipo 
+Tipo  
+ int | 
+ double | 
+ boolean | 
+ id | 
+ array Tipo[numeroNatural] | 
+ struct {Campos} | 
+ pointer Tipo 
+Campos  Campos ; Campo | Campo 
+Campo  id : Tipo
+
+DecVariables  DecVariables ; DecVariable | DecVariable 
+DecVariable  id : Tipo 
+
+DecSubprogramas  DecSubprogramas ; DecSubprograma | 
+ DecSubprograma 
+DecSubprograma  subprogram id Parametros 
+ SeccionTipos 
+ SeccionVariables SeccionSubprogramas 
+ IBloque 
+Parametros  ( ListaParametros ) | ( ) 
+ListaParametros  ListaParametros , Parametro | Parametro 
+Parametro  id : Tipo | & id: Tipo
+
+Instruccion  IAsig | IBloque | ICond | IBucle | ILlamada | 
+ IRead | IWrite | INew | IDelete
+ 
+IAsig  Designador = Exp0 
+IBloque  {Instrucciones} | {} 
+Instrucciones  Instrucciones ; Instruccion | Instruccion
+
+ICond  if Casos endif 
+Casos  Casos [] Caso | Caso 
+Caso  Exp0 : IBloque
+
+IBucle  do Casos enddo 
+ILlamada  id Argumentos
+Argumentos  ( ListaArgumentos ) | ( ) 
+ListaArgumentos  ListaArgumentos , Exp0 | Exp0 
+
+IRead  read Designador 
+IWrite  write Exp0
+INew  new Designador 
+IDelete  delete Designador 
+
+Designador  id | Designador[Exp0] | Designador.id | 
+ Designador 
+
+Exp0  Exp1 OpComp Exp1 | Exp1 
+Exp1  Exp1 OpAditivo Exp2 | Exp2 
+Exp2  Exp2 OpMultiplicativo Exp3 | Exp3 
+Exp3  OpUnario Exp3 | Exp4 
+Exp4  true | false | numeroNatural | numeroReal | Designador | (Exp0)
+
+ 
+
+OpBinario -> == | != | < | > | <= | >= | * | / | % | and | + | - | or 
+OpUnario -> - | not | toint | todouble 
