@@ -1,0 +1,43 @@
+package eval;
+
+import java_cup.runtime.*;
+import alex.AnalizadorLexicoEval;
+import alex.UnidadLexica;
+import errors.GestionErroresEval;
+
+scan with {: return getScanner().next_token(); :};
+parser code {: 
+   private GestionErroresEval errores;
+   public void syntax_error(Symbol unidadLexica) {
+     errores.errorSintactico((UnidadLexica)unidadLexica);
+   }
+:};
+init with {: 
+   errores = new GestionErroresEval();
+   AnalizadorLexicoEval alex = (AnalizadorLexicoEval)getScanner();
+   alex.fijaGestionErrores(errores);
+:};
+
+
+terminal  MAS, POR, PAP, PCIERRE;
+terminal String NUM;
+
+non terminal  Integer Exp, Term, Fact;  //Importante: debe ser Integer
+                                        //ya que el valor semántico ha de ser
+                                        //un objeto
+
+Exp ::= Exp: valDeExp1 MAS Term: valDeTerm 
+   {: RESULT = valDeExp1 + valDeTerm; :};
+Exp ::= Term: valDeTerm
+   {: RESULT=valDeTerm; :};
+Term ::= Term: valDeTerm1 POR Fact: valDeFact 
+   {: RESULT= valDeTerm1 * valDeFact; :};
+Term ::= Fact: valDeFact
+   {: RESULT=valDeFact; :};   
+Fact ::= NUM: lexDeNum      // lexDeNum representa el lexema (el analizador léxico
+                            // debe fijarlo en la unidad léxica devuelta       
+   {: RESULT = Integer.valueOf(lexDeNum).intValue(); :};
+Fact ::= PAP Exp: valDeExp PCIERRE
+   {: RESULT = valDeExp; :};
+
+

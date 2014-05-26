@@ -1,0 +1,82 @@
+package tiny;
+
+import java_cup.runtime.*;
+
+scan with {: return getScanner().next_token(); :};
+parser code {: 
+   private GestionErroresTiny errores;
+   public void syntax_error(Symbol unidadLexica) {
+     errores.errorSintactico((UnidadLexica)unidadLexica);
+   }
+:};
+init with {: 
+   errores = new GestionErroresTiny();
+   AnalizadorLexicoTiny alex = (AnalizadorLexicoTiny)getScanner();
+   alex.fijaGestionErrores(errores);
+:};
+
+terminal PROGRAM, TYPES, STRUCT, POINTER, VARIABLES, SUBPROGRAMS, SUBPROGRAM, IF, ENDIF, DO, ENDDO, 
+         MAS, MENOS, POR, DIV, MOD, AND, OR, NOT, TOINT, TODOUBLE, ASIG, IGUAL, MENOR, MAYOR, MENOROIGUAL, MAYOROIGUAL,
+         DISTINTO, PYCOMA, COMA, PAP, PCIERRE, LLAVEAP, LLAVECIERRE, DOSPUNTOS, INT, BOOLEAN, DOUBLE, CAP, CCIERRE,
+         PUNTO, FLECHA, AMP, TRUE, FALSE, ARRAY, READ, WRITE, NEW, DELETE;
+terminal String NUMERO_NATURAL, NUMERO_REAL, ID;
+
+non terminal Programa, SeccionTipos, SeccionVariables, SeccionSubprogramas, DecTipos, DecVariables, DecSubprogramas, DecTipo,
+             Tipo, Campos, Campo, DecVariable, DecSubprograma, Parametros, ListaParametros, Parametro, Instruccion,
+             IAsig, ICond, IBucle, IBloque, ILlamada, IRead, IWrite, INew, IDelete, Designador, Exp0, Exp1, Exp2, Exp3, 
+             Exp4, Instrucciones, Casos, Caso, Argumentos, ListaArgumentos, OpComp, OpAditivo, OpMultiplicativo, 
+             OpUnario;
+
+Programa ::= PROGRAM SeccionTipos SeccionVariables SeccionSubprogramas IBloque;
+SeccionTipos ::= TYPES DecTipos | ;
+SeccionVariables ::= VARIABLES DecVariables | ;
+SeccionSubprogramas ::= SUBPROGRAMS DecSubprogramas | ;
+DecTipos ::= DecTipos PYCOMA DecTipo | DecTipo;
+DecTipo ::= ID DOSPUNTOS Tipo;
+Tipo    ::= INT | DOUBLE | BOOLEAN | ID | ARRAY Tipo CAP NUMERO_NATURAL CCIERRE | STRUCT LLAVEAP Campos LLAVECIERRE | POINTER Tipo;
+Campos  ::= Campos PYCOMA Campo | Campo ;
+Campo   ::= ID DOSPUNTOS Tipo;
+DecVariables ::= DecVariables PYCOMA DecVariable | DecVariable;
+DecVariable ::= ID DOSPUNTOS Tipo;
+DecSubprogramas ::= DecSubprogramas PYCOMA DecSubprograma | DecSubprograma;
+DecSubprograma ::= SUBPROGRAM ID Parametros SeccionTipos SeccionVariables SeccionSubprogramas IBloque;
+Parametros ::= PAP ListaParametros PCIERRE | PAP PCIERRE;
+ListaParametros ::= ListaParametros COMA Parametro | Parametro;
+Parametro ::= ID DOSPUNTOS Tipo | AMP ID DOSPUNTOS Tipo ;
+Instruccion ::= IAsig | IBloque | ICond | IBucle | ILlamada | IRead | IWrite | 
+                INew | IDelete;
+IAsig ::= Designador ASIG Exp0;
+IBloque ::= LLAVEAP Instrucciones LLAVECIERRE | LLAVEAP LLAVECIERRE;
+Instrucciones ::= Instrucciones PYCOMA Instruccion | Instruccion;
+ICond ::= IF Casos ENDIF ;
+Casos ::= Casos CAP CCIERRE Caso | Caso; 
+Caso  ::= Exp0 DOSPUNTOS IBloque;
+IBucle ::= DO Casos ENDDO;
+ILlamada  ::= ID Argumentos;
+IRead ::= READ Designador;
+IWrite ::= WRITE Exp0;
+INew ::= NEW Designador;
+IDelete ::= DELETE Designador;
+Argumentos ::= PAP ListaArgumentos PCIERRE | PAP PCIERRE;
+ListaArgumentos ::= ListaArgumentos COMA Exp0 | Exp0;
+Designador  ::= ID | Designador CAP Exp0 CCIERRE | Designador PUNTO ID | Designador FLECHA;
+Exp0 ::= Exp1 OpComp Exp1 | Exp1;
+Exp1 ::= Exp1 OpAditivo Exp2 | Exp2;
+Exp2 ::= Exp2 OpMultiplicativo Exp3 | Exp3;
+Exp3 ::= OpUnario Exp3 | Exp4;
+Exp4 ::= TRUE | FALSE | NUMERO_NATURAL | NUMERO_REAL | Designador | PAP Exp0 PCIERRE;
+OpComp ::= IGUAL | DISTINTO  | MAYOR | MAYOROIGUAL | MENOR  | MENOROIGUAL;
+OpAditivo ::= MAS | MENOS | OR;
+OpMultiplicativo ::= POR | DIV | MOD | AND;
+OpUnario ::= MENOS | NOT | TOINT | TODOUBLE;
+
+
+
+ 
+
+
+
+
+
+
+

@@ -1,0 +1,25 @@
+options  {
+  STATIC=false;
+}  
+PARSER_BEGIN(Evaluador)
+package eval;
+
+public class Evaluador {}
+PARSER_END(Evaluador)
+  SKIP:{<["\t"," ","\r","\b","\n"]>}  
+  SKIP:{<"#"(~["\n"])*>}  
+  TOKEN:{<numeroEntero: (["+","-"])? (["0"-"9"])+ >}
+  
+  int Sp()   : {int valOfExp;} {valOfExp=exp() <EOF> {return valOfExp;}}
+  int exp()  : {int valOfTerm, valOfRExp;} {valOfTerm=term() valOfRExp=rExp(valOfTerm) {return valOfRExp;}}
+  int rExp(int valhOfRExp0) : {int valOfTerm, valOfRExp1;} 
+               {"+" valOfTerm = term() valOfRExp1=rExp(valhOfRExp0 + valOfTerm) {return valOfRExp1;} |
+			     {return valhOfRExp0;} }   
+  int term()  : {int valOfFact, valOfRTerm;} {valOfFact=fact() valOfRTerm=rTerm(valOfFact) {return valOfRTerm;}}
+  int rTerm(int valhOfRTerm0) : {int valOfFact, valOfRTerm1;} 
+               {"*" valOfFact = fact() valOfRTerm1=rTerm(valhOfRTerm0 * valOfFact) {return valOfRTerm1;} |
+			     {return valhOfRTerm0;} }
+  int fact()  :  {Token num; int valOfExp;} {num=<numeroEntero> {return Integer.valueOf(num.image).intValue();} |
+                                            "(" valOfExp=exp() ")" {return valOfExp;}}	 			 
+              			   
+  
