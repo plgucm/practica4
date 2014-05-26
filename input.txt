@@ -1,0 +1,118 @@
+PROGRAM
+TYPES  
+  TArbol: pointer TCelda; 
+
+  TCelda: struct {
+            valor: int; 
+            izq: TArbol;
+            der: TArbol   
+          };    
+  TSecuencia: ARRAY int[10]
+VARIABLES
+  secuencia: TSecuencia;
+  arbol: TArbol
+SUBPROGRAMS
+  SUBPROGRAM LeeValores(& arbol: TArbol)  
+  VARIABLES
+    fin: boolean;                              
+    valor: int
+  SUBPROGRAMS
+      SUBPROGRAM LeeValor(& valor: int) {
+          read valor;                        
+          fin = (valor == -1)     
+      };
+      
+      SUBPROGRAM GuardaValor(& arbol: TArbol) 
+      SUBPROGRAMS
+          SUBPROGRAM AlmacenaValor() {
+              new arbol;                      
+              arbol->.valor = valor;
+              arbol->.izq = null; 
+              arbol->.der = null
+          }
+      { # Cuerpo de GuardaValor
+        IF 
+          arbol == null: {AlmacenaValor()}                  []
+          valor < arbol->.valor: {GuardaValor(arbol->.izq)} []
+          valor > arbol->.valor: {GuardaValor(arbol->.der)}
+        ENDIF
+      } 
+   { # Cuerpo de LeeValores
+      fin = false;   
+      DO
+        NOT fin: {LeeValor(valor);
+                  IF 
+                    NOT fin: {GuardaValor(arbol)}
+                  ENDIF}   
+      ENDDO
+   }; 
+
+  SUBPROGRAM ConstruyeSecOrdenada(arbol: TArbol) 
+  VARIABLES
+      numElem: int
+  SUBPROGRAMS                                  
+      SUBPROGRAM AlmacenaEnSecuencia(arbol: TArbol) {
+          IF 
+           (numElem < 10) and (arbol != null): {
+             AlmacenaEnSecuencia(arbol->.izq);
+             IF 
+              numElem < 10:  {
+               secuencia[numElem] = arbol->.valor;
+               numElem = numElem + 1
+               }
+             ENDIF;
+             AlmacenaEnSecuencia(arbol->.der)
+          }
+         ENDIF
+        }
+      
+   { # Cuerpo de ConstruyeSecOrdenada
+      numElem = 0;
+      AlmacenaEnSecuencia(arbol);
+      IF 
+        numElem < 10: {secuencia[numElem]= -1}
+      ENDIF
+   }; 
+  
+  SUBPROGRAM LiberaArbol(& arbol: TArbol)
+  SUBPROGRAMS
+      SUBPROGRAM Libera(arbol: TArbol ) {
+          IF 
+            arbol != null: {
+            Libera(arbol->.izq);
+            Libera(arbol->.der); 
+            delete arbol
+          }
+         ENDIF 
+      }
+      
+   { # Cuerpo de LiberaArbol
+     Libera(arbol);
+     arbol = null
+   };
+
+ SUBPROGRAM MuestraSecuencia(secuencia: TSecuencia ) 
+ VARIABLES
+   i: int; 
+   fin: boolean   
+ {
+   i = 0;
+   fin = (secuencia[0] == -1);
+   DO 
+     not fin: {
+        write secuencia[i];
+        i = i+1;
+        fin = (i == 10);
+        IF not fin: {fin = (secuencia[i]==-1)} ENDIF
+       }
+   ENDDO
+  }
+
+# Programa Principal 
+
+{
+  LeeValores(arbol);
+  ConstruyeSecOrdenada(arbol);
+  LiberaArbol(arbol);
+  MuestraSecuencia(secuencia)
+}
