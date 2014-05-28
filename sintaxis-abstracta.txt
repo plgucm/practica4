@@ -1,13 +1,12 @@
 Programa -> program types DecTipos variables DecVariables subprograms DecSubprogramas IBloque 
 
-DecTipos -> DecTipos ; id : Tipo  | id : Tipo  
-Tipo -> int | double | boolean | id | array Tipo[numeroNatural] | struct {Campos} | pointer Tipo 
-Campos -> Campos ; id : Tipo | id : Tipo 
+Tipo -> int | double | boolean | id | array Tipo[numeroNatural] | struct { DecTipos } | pointer Tipo 
 
+DecTipos -> DecTipos ; id : Tipo  | id : Tipo 
 DecVariables -> DecVariables ; id : Tipo | id : Tipo 
-
-DecSubprogramas -> DecSubprogramas ; subprogram id Parametros SeccionTipos SeccionVariables SeccionSubprogramas IBloque
- | subprogram id Parametros SeccionTipos SeccionVariables SeccionSubprogramas IBloque  
+DecSubprogramas -> 
+	DecSubprogramas ; subprogram id Parametros types DecTipos variables DecVariables subprograms DecSubprogramas IBloque | 
+	subprogram id Parametros types DecTipos variables DecVariables subprograms DecSubprogramas IBloque  
  
 Parametros -> ( ListaParametros ) | ( ) 
 ListaParametros -> ListaParametros , (ParamVal | ParamRef) | (ParamVal | ParamRef) 
