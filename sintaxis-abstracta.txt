@@ -9,9 +9,8 @@ DecSubprogramas ->
 	subprogram id Parametros types DecTipos variables DecVariables subprograms DecSubprogramas IBloque  
  
 Parametros -> ( ListaParametros ) | ( ) 
-ListaParametros -> ListaParametros , (ParamVal | ParamRef) | (ParamVal | ParamRef) 
-ParamVal -> id : Tipo 
-ParamRef -> & id: Tipo
+ListaParametros -> ListaParametros , Parametro | Parametro
+Parametro -> id : Tipo | & id: Tipo
 
 Instruccion -> IAsig | IBloque | ICond | IBucle | ILlamada | IRead | IWrite | INew | IDelete
 Instrucciones -> Instrucciones ; Instruccion | Instruccion
