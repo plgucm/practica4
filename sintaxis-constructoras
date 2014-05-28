@@ -4,8 +4,15 @@ creaDecTipos: DecTipos x String (identificador) x Tipo -> DecTipos
 creaDecVariables: DecVariables x String (identificador) x Tipo -> DecVariables
 creaDecSubprogramas: DecSubprogramas x String (identificador) x Parametros x DecTipos x DecVariables x DecSubprogramas x IBloque
 
-crearParametros -> ListaParametros -> Parametros
-creaListaParametros -> ListaParametros x Parametro -> ListaParametros
-creaParametro -> String (identificador) x Tipo x boolean (modo_ref_o_val) -> Parametro
+crearParametros: ListaParametros -> Parametros
+creaListaParametros: ListaParametros x Parametro -> ListaParametros
+creaParametro: String (identificador) x Tipo x boolean (modo_ref_o_val) -> Parametro
 
+creaAsignacion: Designador x Exp -> Instruccion
+creaBloque: Instrucciones -> Instruccion
+creaCondicional: Casos -> Instruccion
+creaCasos: Casos x Exp x IBloque -> Instruccion
+creaBucle: Casos -> Instruccion
+creaLlamada: String (identificador) x ListaArgumentos -> Instruccion
+creaRead: Designador -> Instruccion
 

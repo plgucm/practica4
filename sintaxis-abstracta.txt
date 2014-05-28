@@ -20,8 +20,7 @@ IBloque -> { Instrucciones } | {}
 ICond -> if Casos endif 
 Casos -> Casos [] Exp : IBloque | Exp : IBloque 
 IBucle -> do Casos enddo 
-ILlamada -> id Argumentos
-Argumentos -> ( ListaArgumentos ) | ( ) 
+ILlamada -> id ( ListaArgumentos ) | id ( ) 
 ListaArgumentos -> ListaArgumentos , Exp | Exp 
 IRead -> read Designador 
 IWrite -> write Exp0
