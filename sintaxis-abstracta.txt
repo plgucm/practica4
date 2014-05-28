@@ -23,13 +23,13 @@ IBucle -> do Casos enddo
 ILlamada -> id ( ListaArgumentos ) | id ( ) 
 ListaArgumentos -> ListaArgumentos , Exp | Exp 
 IRead -> read Designador 
-IWrite -> write Exp0
+IWrite -> write Exp
 INew -> new Designador 
 IDelete -> delete Designador 
 
 Designador -> id | Designador[Exp] | Designador.id
 
-Exp -> Exp OpBinario Exp | OpUnario Exp | true | false | numeroNatural | numeroReal | Designador | (Exp)
+Exp -> Exp OpBinario Exp | OpUnario Exp | true | false | Integer | Float | Designador | (Exp)
 
 OpBinario -> == | != | < | > | <= | >= | * | / | % | and | + | - | or 
 OpUnario -> - | not | toint | todouble 

@@ -4,15 +4,36 @@ creaDecTipos: DecTipos x String (identificador) x Tipo -> DecTipos
 creaDecVariables: DecVariables x String (identificador) x Tipo -> DecVariables
 creaDecSubprogramas: DecSubprogramas x String (identificador) x Parametros x DecTipos x DecVariables x DecSubprogramas x IBloque
 
-crearParametros: ListaParametros -> Parametros
+creaParametros: ListaParametros -> Parametros
 creaListaParametros: ListaParametros x Parametro -> ListaParametros
-creaParametro: String (identificador) x Tipo x boolean (modo_ref_o_val) -> Parametro
+creaParametroRef: String (identificador) x Tipo -> Parametro
+creaParametroVal: String (identificador) x Tipo -> Parametro
 
-creaAsignacion: Designador x Exp -> Instruccion
+creaAsignacion: Designador x Expresion -> Instruccion
 creaBloque: Instrucciones -> Instruccion
 creaCondicional: Casos -> Instruccion
-creaCasos: Casos x Exp x IBloque -> Instruccion
+creaCasos: Casos x Expresion x IBloque -> Instruccion
 creaBucle: Casos -> Instruccion
 creaLlamada: String (identificador) x ListaArgumentos -> Instruccion
 creaRead: Designador -> Instruccion
+creaWrite: Expresion -> Instruccion
+creaNew: Designador -> Instruccion
+creaDelete: Designador -> Instruccion
+
+creaDesignador: String (identificador) -> Designador
+creaDesignador: Designador x Expresion -> Designador
+creaDesignador: Designador x String (identificador) -> Designador
+
+creaExpresion: Expresion x OpBinario x Expresion -> Expresion
+creaExpresion: OpUnario Expresion -> Expresion
+creaExpresion: Boolean x Integer x Float x Designador x Expresion -> Expresion
+
+creaOpBinario: String (tipo) -> OpBinario
+creaUnario: String (tipo) -> OpUnario
+
+
+
+
+
+
 
