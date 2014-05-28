@@ -1,35 +1,30 @@
 Programa -> program types DecTipos variables DecVariables subprograms DecSubprogramas IBloque 
 
-DecTipos -> DecTipos ; DecTipo | DecTipo 
-DecTipo -> id : Tipo 
+DecTipos -> DecTipos ; id : Tipo  | id : Tipo  
 Tipo -> int | double | boolean | id | array Tipo[numeroNatural] | struct {Campos} | pointer Tipo 
-Campos -> Campos ; Campo | Campo 
-Campo -> id : Tipo
+Campos -> Campos ; id : Tipo | id : Tipo 
 
-DecVariables -> DecVariables ; DecVariable | DecVariable 
-DecVariable -> id : Tipo 
+DecVariables -> DecVariables ; id : Tipo | id : Tipo 
 
-DecSubprogramas -> DecSubprogramas ; DecSubprograma | DecSubprograma 
-DecSubprograma -> subprogram id Parametros SeccionTipos SeccionVariables SeccionSubprogramas IBloque 
+DecSubprogramas -> DecSubprogramas ; subprogram id Parametros SeccionTipos SeccionVariables SeccionSubprogramas IBloque
+ | subprogram id Parametros SeccionTipos SeccionVariables SeccionSubprogramas IBloque  
  
 Parametros -> ( ListaParametros ) | ( ) 
-ListaParametros -> ListaParametros , Parametro | Parametro 
-Parametro -> id : Tipo | & id: Tipo
+ListaParametros -> ListaParametros , (ParamVal | ParamRef) | (ParamVal | ParamRef) 
+ParamVal -> id : Tipo 
+ParamRef -> & id: Tipo
 
 Instruccion -> IAsig | IBloque | ICond | IBucle | ILlamada | IRead | IWrite | INew | IDelete
+Instrucciones -> Instrucciones ; Instruccion | Instruccion
  
 IAsig -> Designador = Exp
-IBloque -> {Instrucciones} | {} 
-Instrucciones -> Instrucciones ; Instruccion | Instruccion
-
+IBloque -> { Instrucciones } | {} 
 ICond -> if Casos endif 
 Casos -> Casos [] Exp : IBloque | Exp : IBloque 
-
 IBucle -> do Casos enddo 
 ILlamada -> id Argumentos
 Argumentos -> ( ListaArgumentos ) | ( ) 
 ListaArgumentos -> ListaArgumentos , Exp | Exp 
-
 IRead -> read Designador 
 IWrite -> write Exp0
 INew -> new Designador 
