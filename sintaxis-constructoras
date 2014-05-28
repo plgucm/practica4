@@ -30,7 +30,6 @@ creaExpresionBoolean: Boolean -> Expresion
 creaExpresionInteger: Integer -> Expresion
 creaExpresionFloat: Float -> Expresion
 creaExpresionDesignado: Designador -> Expresion
-creaExpresionEntreParentesis: Expresion -> Expresion
 
 creaOpBinario: String (tipo) -> OpBinario
 creaOpUnario: String (tipo) -> OpUnario
