@@ -26,10 +26,14 @@ creaDesignador: Designador x String (identificador) -> Designador
 
 creaExpresion: Expresion x OpBinario x Expresion -> Expresion
 creaExpresion: OpUnario Expresion -> Expresion
-creaExpresion: Boolean x Integer x Float x Designador x Expresion -> Expresion
+creaExpresionBoolean: Boolean -> Expresion
+creaExpresionInteger: Integer -> Expresion
+creaExpresionFloat: Float -> Expresion
+creaExpresionDesignado: Designador -> Expresion
+creaExpresionEntreParentesis: Expresion -> Expresion
 
 creaOpBinario: String (tipo) -> OpBinario
-creaUnario: String (tipo) -> OpUnario
+creaOpUnario: String (tipo) -> OpUnario
 
 
 
