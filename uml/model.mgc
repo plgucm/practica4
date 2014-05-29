@@ -17,6 +17,15 @@
         <Association destinationClassName="modelo.DecSubprogramas"
             endpointName="decSubprogramas" kind="Simple"/>
     </Class>
+    <Class name="Tipo" x="185" y="281">
+        <AttributesDisplayFilter public-accepted="true"
+            private-accepted="true" protected-accepted="true"
+            default-accepted="true" static-accepted="false"/>
+        <MethodDisplayFilter public-accepted="true"
+            private-accepted="false" protected-accepted="false"
+            default-accepted="false" static-accepted="false"
+            accessors-accepted="false" constructors-accepted="false"/>
+    </Class>
     <Class name="modelo.Bloque" x="531" y="129">
         <AttributesDisplayFilter public-accepted="true"
             private-accepted="true" protected-accepted="true"
@@ -26,7 +35,7 @@
             default-accepted="false" static-accepted="false"
             accessors-accepted="false" constructors-accepted="false"/>
     </Class>
-    <Class name="modelo.DecTipos" x="193" y="129">
+    <Class name="modelo.DecTipos" x="191" y="136">
         <AttributesDisplayFilter public-accepted="true"
             private-accepted="true" protected-accepted="true"
             default-accepted="true" static-accepted="false"/>
@@ -34,6 +43,11 @@
             private-accepted="false" protected-accepted="false"
             default-accepted="false" static-accepted="false"
             accessors-accepted="false" constructors-accepted="false"/>
+        <Association destinationClassName="modelo.DecTipos"
+            endpointName="decTipos" kind="Simple">
+            <Point x="249" y="196"/>
+            <Point x="207" y="197"/>
+        </Association>
     </Class>
     <Class name="modelo.DecSubprogramas" x="347" y="134">
         <AttributesDisplayFilter public-accepted="true"
@@ -44,7 +58,10 @@
             default-accepted="false" static-accepted="false"
             accessors-accepted="false" constructors-accepted="false"/>
         <Association destinationClassName="modelo.DecSubprogramas"
-            endpointName="decSubprogramas" kind="Simple"/>
+            endpointName="decSubprogramas" kind="Simple">
+            <Point x="436" y="191"/>
+            <Point x="399" y="189"/>
+        </Association>
     </Class>
     <Class name="modelo.DecVariables" x="43" y="139">
         <AttributesDisplayFilter public-accepted="true"

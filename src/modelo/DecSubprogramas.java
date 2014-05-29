@@ -1,14 +1,16 @@
 package modelo;
 
+import java.util.List;
+
 public class DecSubprogramas {
 
-	private DecSubprogramas decSubprogramas;
+	private List<DecSubprogramas> decSubprogramas;
 
-	public DecSubprogramas getDecSubprogramas() {
+	public  List<DecSubprogramas> getDecSubprogramas() {
 		return this.decSubprogramas;
 	}
 
-	public void setDecSubprogramas(DecSubprogramas decSubprogramas) {
+	public void setDecSubprogramas(List<DecSubprogramas> decSubprogramas) {
 		this.decSubprogramas = decSubprogramas;
 	}
 
