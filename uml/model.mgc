@@ -17,7 +17,7 @@
         <Association destinationClassName="modelo.DecSubprogramas"
             endpointName="decSubprogramas" kind="Simple"/>
     </Class>
-    <Class name="Tipo" x="185" y="281">
+    <Class name="Tipo" x="176" y="238">
         <AttributesDisplayFilter public-accepted="true"
             private-accepted="true" protected-accepted="true"
             default-accepted="true" static-accepted="false"/>
@@ -26,7 +26,7 @@
             default-accepted="false" static-accepted="false"
             accessors-accepted="false" constructors-accepted="false"/>
     </Class>
-    <Class name="modelo.Bloque" x="531" y="129">
+    <Class name="modelo.Bloque" x="503" y="105">
         <AttributesDisplayFilter public-accepted="true"
             private-accepted="true" protected-accepted="true"
             default-accepted="true" static-accepted="false"/>
@@ -35,21 +35,39 @@
             default-accepted="false" static-accepted="false"
             accessors-accepted="false" constructors-accepted="false"/>
     </Class>
-    <Class name="modelo.DecTipos" x="191" y="136">
+    <Class name="modelo.DecTipos" x="177" y="117">
         <AttributesDisplayFilter public-accepted="true"
             private-accepted="true" protected-accepted="true"
             default-accepted="true" static-accepted="false"/>
-        <MethodDisplayFilter public-accepted="true"
+        <MethodDisplayFilter public-accepted="false"
             private-accepted="false" protected-accepted="false"
             default-accepted="false" static-accepted="false"
             accessors-accepted="false" constructors-accepted="false"/>
         <Association destinationClassName="modelo.DecTipos"
             endpointName="decTipos" kind="Simple">
-            <Point x="249" y="196"/>
-            <Point x="207" y="197"/>
+            <Point x="227" y="172"/>
+            <Point x="207" y="174"/>
         </Association>
     </Class>
-    <Class name="modelo.DecSubprogramas" x="347" y="134">
+    <Class name="Parametro" x="394" y="231">
+        <AttributesDisplayFilter public-accepted="true"
+            private-accepted="true" protected-accepted="true"
+            default-accepted="true" static-accepted="false"/>
+        <MethodDisplayFilter public-accepted="true"
+            private-accepted="false" protected-accepted="false"
+            default-accepted="false" static-accepted="false"
+            accessors-accepted="false" constructors-accepted="false"/>
+    </Class>
+    <Class name="ListaParametros" x="186" y="316">
+        <AttributesDisplayFilter public-accepted="true"
+            private-accepted="true" protected-accepted="true"
+            default-accepted="true" static-accepted="false"/>
+        <MethodDisplayFilter public-accepted="true"
+            private-accepted="false" protected-accepted="false"
+            default-accepted="false" static-accepted="false"
+            accessors-accepted="false" constructors-accepted="false"/>
+    </Class>
+    <Class name="modelo.DecSubprogramas" x="338" y="111">
         <AttributesDisplayFilter public-accepted="true"
             private-accepted="true" protected-accepted="true"
             default-accepted="true" static-accepted="false"/>
@@ -59,11 +77,20 @@
             accessors-accepted="false" constructors-accepted="false"/>
         <Association destinationClassName="modelo.DecSubprogramas"
             endpointName="decSubprogramas" kind="Simple">
-            <Point x="436" y="191"/>
-            <Point x="399" y="189"/>
+            <Point x="426" y="168"/>
+            <Point x="395" y="170"/>
         </Association>
     </Class>
-    <Class name="modelo.DecVariables" x="43" y="139">
+    <Class name="ParametroRef" x="342" y="315">
+        <AttributesDisplayFilter public-accepted="true"
+            private-accepted="true" protected-accepted="true"
+            default-accepted="true" static-accepted="false"/>
+        <MethodDisplayFilter public-accepted="true"
+            private-accepted="false" protected-accepted="false"
+            default-accepted="true" static-accepted="false"
+            accessors-accepted="false" constructors-accepted="true"/>
+    </Class>
+    <Class name="ParametroVal" x="445" y="314">
         <AttributesDisplayFilter public-accepted="true"
             private-accepted="true" protected-accepted="true"
             default-accepted="true" static-accepted="false"/>
@@ -71,5 +98,19 @@
             private-accepted="false" protected-accepted="false"
             default-accepted="false" static-accepted="false"
             accessors-accepted="false" constructors-accepted="false"/>
+    </Class>
+    <Class name="modelo.DecVariables" x="27" y="115">
+        <AttributesDisplayFilter public-accepted="true"
+            private-accepted="true" protected-accepted="true"
+            default-accepted="true" static-accepted="false"/>
+        <MethodDisplayFilter public-accepted="true"
+            private-accepted="false" protected-accepted="false"
+            default-accepted="false" static-accepted="false"
+            accessors-accepted="false" constructors-accepted="false"/>
+        <Association destinationClassName="modelo.DecVariables"
+            endpointName="decVariables" kind="Simple">
+            <Point x="61" y="178"/>
+            <Point x="88" y="175"/>
+        </Association>
     </Class>
 </ClassDiagram>

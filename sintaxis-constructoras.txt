@@ -2,9 +2,8 @@ creaPrograma: DecTipos x DecVariables x DecSubprogramas x IBloque -> Programa
 creaTipo: String (nombre_del_tipo_bool_o_int_o_lo_que_sea) x numeroNatural x Tipo x DecTipos -> Tipo
 creaDecTipos: DecTipos x String (identificador) x Tipo -> DecTipos
 creaDecVariables: DecVariables x String (identificador) x Tipo -> DecVariables
-creaDecSubprogramas: DecSubprogramas x String (identificador) x Parametros x DecTipos x DecVariables x DecSubprogramas x IBloque
+creaDecSubprogramas: DecSubprogramas x String (identificador) x ListaParametros x DecTipos x DecVariables x DecSubprogramas x IBloque
 
-creaParametros: ListaParametros -> Parametros
 creaListaParametros: ListaParametros x Parametro -> ListaParametros
 creaParametroRef: String (identificador) x Tipo -> Parametro
 creaParametroVal: String (identificador) x Tipo -> Parametro
