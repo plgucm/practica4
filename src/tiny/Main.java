@@ -8,7 +8,7 @@ public class Main {
 	public static void main(String[] args) throws Exception {
 		Reader input = new InputStreamReader(new FileInputStream("input.txt"));
 		AnalizadorLexicoTiny alex = new AnalizadorLexicoTiny(input);
-		AnalizadorSintacticoTiny asint = new AnalizadorSintacticoTiny(alex);
+		AnalizadorSintacticoTiny asint = new AnalizadorSintacticoTiny(alex);		
 		asint.parse();
 	}
 }

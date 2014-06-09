@@ -1,5 +1,6 @@
 package modelo.constructoras;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import modelo.expresiones.Expresion;
@@ -130,7 +131,7 @@ public class Constructoras implements IConstructoras {
 	}
 
 	@Override
-	public Instruccion creaLlamada(String id, List<String> params) {
+	public Instruccion creaLlamada(String id, List<Expresion> params) {
 		
 		return new Llamada(id, params);
 	}
@@ -220,6 +221,12 @@ public class Constructoras implements IConstructoras {
 	@Override
 	public OpUnario creaOpUnario(String tipo) {
 		return new OpUnario(tipo);
+	}
+
+	public List<Expresion> creaArgumentos(Expresion e) {
+		ArrayList<Expresion> exps = new ArrayList<Expresion>();
+		exps.add(e);
+		return exps;
 	}
 
     

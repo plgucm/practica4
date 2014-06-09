@@ -70,7 +70,7 @@ public interface IConstructoras {
     Instruccion creaBucle(Casos casos);
 
 
-    Instruccion creaLlamada(String id, List<String> params);
+    Instruccion creaLlamada(String id, List<Expresion> params);
 
 
     Instruccion creaRead(Designador ds);
@@ -116,5 +116,7 @@ public interface IConstructoras {
 
 
     Operador creaOpUnario(String tipo);
+    
+    List<Expresion> creaArgumentos(Expresion e);
 
 }

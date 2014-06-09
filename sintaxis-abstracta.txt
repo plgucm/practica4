@@ -29,7 +29,5 @@ IDelete -> delete Designador
 
 Designador -> id | Designador[Exp] | Designador.id
 
-Exp
-
 OpBinario -> == | != | < | > | <= | >= | * | / | % | and | + | - | or 
 OpUnario -> - | not | toint | todouble 

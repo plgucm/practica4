@@ -2,14 +2,16 @@ package modelo.instrucciones;
 
 import java.util.List;
 
+import modelo.expresiones.Expresion;
+
 
 
 public class Llamada extends Instruccion {
 
     private String identificador;
-    private List<String> params;
+    private List<Expresion> params;
 
-    public Llamada(String id, List<String> params) {
+    public Llamada(String id, List<Expresion> params) {
 		this.identificador = id;
 		this.params = params;
 	}
@@ -22,11 +24,11 @@ public class Llamada extends Instruccion {
 		this.identificador = identificador;
 	}
 
-	public List<String> getParams() {
+	public List<Expresion> getParams() {
 		return params;
 	}
 
-	public void setParams(List<String> params) {
+	public void setParams(List<Expresion> params) {
 		this.params = params;
 	}
 
