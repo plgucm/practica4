@@ -1,0 +1,19 @@
+<?xml version="1.0" ?>
+<!--GENERATED FILE, PLEASE DO NOT EDIT!!!--><EXT object="Project PLG" version="3">
+  <DEPS>
+    <ID name="Project PLG" mc="AnalystProject" uid="180329ff-b059-44e4-b1bd-0f93d46b949c"/>
+    <COMPID name="Project PLG" mc="PropertyContainer" uid="339a090d-37f9-4888-a125-6aec708cbdd7"/>
+  </DEPS>
+  <OBJECT>
+    <ID name="Project PLG" mc="AnalystProject" uid="180329ff-b059-44e4-b1bd-0f93d46b949c"/>
+    <ATTRIBUTES>
+      <ATT name="Name"><![CDATA[Project PLG]]></ATT>
+      <ATT name="status">1970354901745664</ATT>
+    </ATTRIBUTES>
+    <DEPENDENCIES>
+      <COMP relation="PropertyRoot">
+        <COMPID name="Project PLG" mc="PropertyContainer" uid="339a090d-37f9-4888-a125-6aec708cbdd7"/>
+      </COMP>
+    </DEPENDENCIES>
+  </OBJECT>
+</EXT>

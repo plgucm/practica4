@@ -29,7 +29,7 @@ IDelete -> delete Designador
 
 Designador -> id | Designador[Exp] | Designador.id
 
-Exp -> Exp OpBinario Exp | OpUnario Exp | true | false | Integer | Float | Designador | (Exp)
+Exp
 
 OpBinario -> == | != | < | > | <= | >= | * | / | % | and | + | - | or 
 OpUnario -> - | not | toint | todouble 

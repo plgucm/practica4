@@ -1,0 +1,20 @@
+<?xml version="1.0" ?>
+<!--GENERATED FILE, PLEASE DO NOT EDIT!!!--><EXT object="Project PLG" version="3">
+  <DEPS>
+    <ID name="Project PLG" mc="DiagramSet" uid="cfbdd5fb-d54d-4f0a-bf37-bd8e6f8a461d"/>
+    <COMPID name="Auto Diagrams" mc="DiagramSet" uid="a57b76a0-60f1-4def-81c1-592f38565b19"/>
+  </DEPS>
+  <OBJECT>
+    <ID name="Project PLG" mc="DiagramSet" uid="cfbdd5fb-d54d-4f0a-bf37-bd8e6f8a461d"/>
+    <PID name="Project PLG" mc="Project" uid="092f9156-ddc2-4d15-bd56-1a9e7701d4a3"/>
+    <ATTRIBUTES>
+      <ATT name="Name"><![CDATA[Project PLG]]></ATT>
+      <ATT name="status">1970354901745664</ATT>
+    </ATTRIBUTES>
+    <DEPENDENCIES>
+      <COMP relation="Sub">
+        <COMPID name="Auto Diagrams" mc="DiagramSet" uid="a57b76a0-60f1-4def-81c1-592f38565b19"/>
+      </COMP>
+    </DEPENDENCIES>
+  </OBJECT>
+</EXT>
