@@ -15,6 +15,7 @@ parser code {:
    public void syntax_error(Symbol unidadLexica) {
      errores.errorSintactico((UnidadLexica)unidadLexica);
    }
+   static Programa programaRaiz;
    static Constructoras cons;
    static class Campo {
    		public Campo(String id, Tipo tipo){ this.id = id; this.tipo = tipo; }
@@ -42,8 +43,10 @@ non terminal Programa, SeccionTipos, SeccionVariables, SeccionSubprogramas, DecT
              OpUnario;
 
 Programa ::= PROGRAM SeccionTipos : st SeccionVariables : sv SeccionSubprogramas : ss IBloque : ib
-	{: RESULT = AnalizadorSintacticoTiny.cons
-					.creaPrograma((DecTipos)st, (DecVariables)sv, (DecSubprogramas)ss, (Bloque)ib); :};
+	{: 
+	RESULT = AnalizadorSintacticoTiny.programaRaiz = AnalizadorSintacticoTiny.cons
+					.creaPrograma((DecTipos)st, (DecVariables)sv, (DecSubprogramas)ss, (Bloque)ib); 
+	:};
 	
 SeccionTipos ::= TYPES DecTipos : dt
 	{: RESULT = dt; :};
@@ -151,7 +154,6 @@ DecSubprogramas ::= DecSubprograma : ds
 DecSubprograma ::= SUBPROGRAM ID : id Parametros : params
 				SeccionTipos : tipos SeccionVariables : vars SeccionSubprogramas : ss IBloque : bloque
 	{:		
-		System.out.println(params.toString());
 		 RESULT = AnalizadorSintacticoTiny.cons.creaDecSubprogramas(null, id,
 		 											((List<Parametro>) params), 
 				AnalizadorSintacticoTiny.cons.
