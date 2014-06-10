@@ -237,8 +237,7 @@ Instruccion ::= INew : ins
 Instruccion ::= IDelete : ins 
 	{: 
 		RESULT = ins; 	
-	:};
-	
+	:};	
                 
 IAsig ::= Designador : ds ASIG Exp0 : e
 	{:
