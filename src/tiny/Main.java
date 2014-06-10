@@ -4,10 +4,10 @@ import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 
-import traductor.ProcesadorSemantico;
-import modelo.expresiones.Expresion;
-import modelo.instrucciones.Llamada;
 import modelo.instrucciones.Programa;
+import traductor.Chequeo;
+import traductor.GeneraCodigo;
+import traductor.Vinculador;
 
 public class Main {
 	public static void main(String[] args) throws Exception {
@@ -23,8 +23,14 @@ public class Main {
 		System.out.println(e.getTipoExpresion());*/		
 		//System.out.println(p.getDecVariables().getDecVariables().getDecVariables().getIdentificador());
 		
-		ProcesadorSemantico tse = new ProcesadorSemantico();
+		Vinculador tse = new Vinculador();
 		tse.vincula(p);
+		
+		Chequeo ch = new Chequeo();
+		ch.chequea(p);
+		
+		GeneraCodigo gc = new GeneraCodigo();
+		gc.codigo(p);
 		
 	}
 }

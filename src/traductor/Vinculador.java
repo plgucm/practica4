@@ -9,7 +9,7 @@ import modelo.instrucciones.DecTipos;
 import modelo.instrucciones.DecVariables;
 import modelo.instrucciones.Programa;
 
-public class ProcesadorSemantico {
+public class Vinculador {
 	
 	private Map<String, Object> tablaDeSimbolos;
 
