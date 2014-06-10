@@ -7,6 +7,7 @@ public class New extends Instruccion {
 	private Designador designador;
 	
     public New(Designador ds) {
+    	super(TiposInstruccion.NEW);
 		this.designador = ds;
 	}
 

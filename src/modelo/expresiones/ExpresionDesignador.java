@@ -10,6 +10,7 @@ public class ExpresionDesignador extends Expresion {
 
 
     public ExpresionDesignador(Designador ds) {
+    	super(TipoExpresion.DESIGNADOR);
 		this.valor = ds;
 	}
 

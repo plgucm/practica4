@@ -7,7 +7,7 @@ public abstract class Tipo {
     protected Tipos tipo;
     
     public Tipo(Tipos tipo){
-    	this.tipo = tipo;
+    	this.tipo = tipo;    	
     }
 
 

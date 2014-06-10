@@ -8,6 +8,7 @@ public class ExpresionDouble extends Expresion {
 
 
     public ExpresionDouble(Double val) {
+    	super(TipoExpresion.DOUBLE);
 		this.valor = val;
 	}
 

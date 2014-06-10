@@ -10,4 +10,5 @@ public enum Tipos {
     ARRAY,
     POINTER, 
     IDENT;
+    
 }

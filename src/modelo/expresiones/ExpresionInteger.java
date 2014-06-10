@@ -8,6 +8,7 @@ public class ExpresionInteger extends Expresion {
 
 
     public ExpresionInteger(Integer val) {
+    	super(TipoExpresion.INTEGER);
 		this.valor = val;
 	}
 

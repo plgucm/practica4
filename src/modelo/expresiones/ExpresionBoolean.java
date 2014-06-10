@@ -8,6 +8,7 @@ public class ExpresionBoolean extends Expresion {
 
 
     public ExpresionBoolean(boolean val) {
+    	super(TipoExpresion.BOOLEAN);
     	this.valor = val;
 	}
 

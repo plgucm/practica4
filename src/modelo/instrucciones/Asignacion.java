@@ -10,6 +10,7 @@ public class Asignacion extends Instruccion {
     private Expresion expresion;
     
     public Asignacion(Designador ds, Expresion exp) {
+    	super(TiposInstruccion.ASIG);
 		this.designador = ds;
 		this.expresion = exp;
 	}

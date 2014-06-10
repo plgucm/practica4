@@ -12,6 +12,7 @@ public class Llamada extends Instruccion {
     private List<Expresion> params;
 
     public Llamada(String id, List<Expresion> params) {
+    	super(TiposInstruccion.LLAMADA);
 		this.identificador = id;
 		this.params = params;
 	}

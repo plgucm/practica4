@@ -11,6 +11,7 @@ public class Casos extends Instruccion {
     private Expresion expresion;
 
     public Casos(Casos casos, Expresion exp, Bloque bloque) {
+    	super(TiposInstruccion.CASOS);
 		this.casos = casos;
 		this.expresion = exp;
 		this.bloque = bloque;

@@ -7,13 +7,11 @@ import modelo.operadores.OpBinario;
 public class ExpresionBinaria extends Expresion {
 
     private Expresion exp0;
-
     private Expresion exp1;
-
     private OpBinario opBinario;
 
-
     public ExpresionBinaria(Expresion exp02, OpBinario op, Expresion exp12) {
+    	super(TipoExpresion.BINARIA);
 		this.exp0 = exp02;
 		this.opBinario = op;
 		this.exp1 = exp12;

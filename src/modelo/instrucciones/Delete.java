@@ -5,6 +5,7 @@ public class Delete extends Instruccion {
 	private Designador designador;
 	
     public Delete(Designador ds) {
+    	super(TiposInstruccion.DELETE);
 		this.designador = ds;
 	}
 

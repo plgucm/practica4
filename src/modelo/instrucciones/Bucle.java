@@ -8,6 +8,7 @@ public class Bucle extends Instruccion {
 
 
     public Bucle(Casos casos2) {
+    	super(TiposInstruccion.BUCLE);
     	this.casos = casos2;
 	}
 

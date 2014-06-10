@@ -7,6 +7,7 @@ public class Condicional extends Instruccion {
 	private Casos casos;
 
     public Condicional(Casos casos2) {
+    	super(TiposInstruccion.IF);
 		this.casos = casos2;
 	}
 

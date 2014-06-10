@@ -11,6 +11,7 @@ public class ExpresionUnaria extends Expresion {
 
 
     public ExpresionUnaria(OpUnario op, Expresion exp2) {
+    	super(TipoExpresion.UNARIA);
 		this.opUnario = op;
 		this.exp = exp2;
 	}

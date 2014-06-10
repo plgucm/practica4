@@ -7,6 +7,7 @@ public class Read extends Instruccion {
 	private Designador designador;
 	
     public Read(Designador ds) {
+    	super(TiposInstruccion.READ);
 		this.designador = ds;
 	}
 

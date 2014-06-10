@@ -8,6 +8,7 @@ public class Bloque extends Instruccion {
 	private List<Instruccion> instrucciones;
 
     public Bloque(List<Instruccion> insts) {
+    	super(TiposInstruccion.BLOQUE);
 		this.instrucciones = insts;
 	}
 

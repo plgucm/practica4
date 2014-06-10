@@ -8,6 +8,7 @@ public class Write extends Instruccion {
 	private Expresion expresion;
 	
     public Write(Expresion exp) {
+    	super(TiposInstruccion.WRITE);
 		this.expresion = exp;
 	}
 
