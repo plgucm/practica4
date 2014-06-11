@@ -59,7 +59,8 @@ SeccionVariables ::=
 	{: RESULT = null; :};
 
 SeccionSubprogramas ::= SUBPROGRAMS DecSubprogramas : ds
-	{: RESULT = ds; :};
+	{: RESULT = AnalizadorSintacticoTiny.cons.creaDecSubprogramas((DecSubprogramas)ds, null, null, null); :};
+	
 SeccionSubprogramas ::= 
 	{: RESULT = null; :};
 
