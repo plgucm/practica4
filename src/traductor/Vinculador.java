@@ -2,10 +2,17 @@ package traductor;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 import java.util.Stack;
 
 import modelo.expresiones.Expresion;
+import modelo.expresiones.ExpresionBinaria;
+import modelo.expresiones.ExpresionBoolean;
+import modelo.expresiones.ExpresionDesignador;
+import modelo.expresiones.ExpresionDouble;
+import modelo.expresiones.ExpresionInteger;
+import modelo.expresiones.ExpresionUnaria;
 import modelo.expresiones.TipoExpresion;
 import modelo.instrucciones.Asignacion;
 import modelo.instrucciones.Bloque;
@@ -67,7 +74,19 @@ public class Vinculador {
 	}
 	
 	private Object declaracionDe(String id){
-		Map<String, Object> ts = pilaDeAmbitos.peek();	
+		Map<String, Object> ts = pilaDeAmbitos.peek();
+		if (ts.get(id) == null){
+			// Si no está en el ámbito actual, miro en los ámbitos superiores.
+			ListIterator<Map<String, Object>> it = pilaDeAmbitos.listIterator();
+			while (it.hasNext()){
+				Object e = it.next().get(id);
+				if (e != null){
+					return e;
+				}
+			}
+			return null;
+		}
+		
 		return ts.get(id);
 	}
 
@@ -125,12 +144,12 @@ public class Vinculador {
 			if (prog != null){
 				vinculaProg(prog);
 			}
+			cierraBloque();	
 			
 			DecSubprogramas ds = decSubprogramas.getDecSubprogramas();
 			if (ds != null){
 				vincula(ds);
-			}
-			cierraBloque();		
+			}	
 			
 		}
 	}
@@ -163,25 +182,42 @@ public class Vinculador {
 		TipoExpresion te = expresion.getTipoExpresion();
 		switch(te){
 			case BINARIA: {
-				
+				vincula((ExpresionBinaria)expresion);
 			} break;
 			case BOOLEAN: {
-				
+				vincula((ExpresionBoolean)expresion);				
 			} break;
 			case DESIGNADOR: {
-				
+				vincula((ExpresionDesignador)expresion);					
 			} break;
 			case DOUBLE: {
-				
+				vincula((ExpresionDouble)expresion);
 			} break;
 			case INTEGER: {
-				
+				vincula((ExpresionInteger)expresion);
 			} break;
 			case UNARIA: {
-				
+				vincula((ExpresionUnaria)expresion);
 			} break;
 			default: break;		
 		}		
+	}
+
+	private void vincula(ExpresionInteger expresion) { }
+
+	private void vincula(ExpresionDouble expresion) { }
+
+	private void vincula(ExpresionDesignador expresion) { }
+
+	private void vincula(ExpresionBoolean expresion) { }
+
+	private void vincula(ExpresionUnaria expresion) {
+		vincula(expresion.getExp());
+	}
+
+	private void vincula(ExpresionBinaria expresion) {
+		vincula(expresion.getExp0());
+		vincula(expresion.getExp1());		
 	}
 	
 	/// DESIGNADOR
@@ -266,8 +302,10 @@ public class Vinculador {
 			throw new UnsupportedOperationException("Identificador no declarado. " + id);			
 		}	
 		List<Expresion> l = i.getParams();
-		for (Expresion e : l){
-			vincula(e);
+		if (l != null){
+			for (Expresion e : l){
+				vincula(e);
+			}
 		}
 	}
 
