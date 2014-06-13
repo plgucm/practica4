@@ -157,7 +157,7 @@ public class Vinculador {
 	private void vinculaProg(Programa p) {
 		vincula(p.getDecTipos());
 		vincula(p.getDecVariables());
-		vincula(p.getDecSubprogramas());
+		vincula(p.getDecSubprogramas());		
 		vincula(p.getBloque());		
 	}
 

@@ -23,6 +23,8 @@ public class Main {
 		System.out.println(e.getTipoExpresion());*/		
 		//System.out.println(p.getDecVariables().getDecVariables().getDecVariables().getIdentificador());
 		
+		// System.out.println(p.getDecTipos().getDecTipos().getTipo());
+		
 		/*System.out.println(
 				p.getDecSubprogramas().getDecSubprogramas()
 				.getDecSubprogramas().getPrograma().
