@@ -11,7 +11,7 @@ import traductor.Vinculador;
 
 public class Main {
 	public static void main(String[] args) throws Exception {
-		Reader input = new InputStreamReader(new FileInputStream("input.txt"));
+		Reader input = new InputStreamReader(new FileInputStream("input2.txt"));
 		AnalizadorLexicoTiny alex = new AnalizadorLexicoTiny(input);
 		AnalizadorSintacticoTiny asint = new AnalizadorSintacticoTiny(alex);		
 		asint.parse();

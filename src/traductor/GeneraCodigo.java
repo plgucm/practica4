@@ -29,16 +29,42 @@ public class GeneraCodigo {
 	private void asignaEspacio(Programa p) {
 		dir = anidamiento(p.getDecSubprogramas());
 		insertaInfoEnNodo(p, "finDatos", dir);
+		System.out.println(dir);
 		
 	}
 
 	private int anidamiento(DecSubprogramas decSubprogramas) {
+		int miAnidamiento = 0;
+		int maxAnidamientoHermanos = 0;
+		DecSubprogramas dh = decSubprogramas.getDecSubprogramas();	
+		Programa dp = decSubprogramas.getPrograma();					
 		
-		
-		return 0;
+		if (dh != null && dp != null){
+			System.out.println("Id: "+dh.getIdentificador());	
+			maxAnidamientoHermanos = anidamiento(dh);	
+			miAnidamiento++; 				
+			if (dp.getDecSubprogramas() != null){
+				miAnidamiento += anidamiento(dp.getDecSubprogramas());						
+			}
+		} else {
+			if (dh == null){
+				miAnidamiento++; 
+				if (dp.getDecSubprogramas() != null){
+					miAnidamiento += anidamiento(dp.getDecSubprogramas());						
+				}
+			} else {
+				System.out.println("Id: "+dh.getIdentificador());	
+				maxAnidamientoHermanos = anidamiento(dh);	
+			}						
+		}
+
+		return Math.max(miAnidamiento, maxAnidamientoHermanos);
 	}
 
 	public Map<String, Object> getDecoracion(Object nodo){
+		if (nodosDecorados.get(nodo) == null){
+			nodosDecorados.put(nodo, new HashMap<String, Object>());
+		}
 		return nodosDecorados.get(nodo);
 	}
 	
