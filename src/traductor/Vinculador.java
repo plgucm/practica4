@@ -1,5 +1,6 @@
 package traductor;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
@@ -36,6 +37,7 @@ import modelo.instrucciones.Write;
 public class Vinculador {
 	
 	private Stack<Map<String, Object>> pilaDeAmbitos;
+	private List<Map<String, Object>> ambitos;
 
 	public void vincula(Programa p) {
 		iniciaTS();
@@ -45,10 +47,12 @@ public class Vinculador {
 		vincula(p.getDecSubprogramas());
 		vincula(p.getBloque());
 		cierraBloque();
+		muestraAmbitos();
 	}
 
 	private void iniciaTS() {
-		pilaDeAmbitos = new Stack<Map<String, Object>>();		
+		pilaDeAmbitos = new Stack<Map<String, Object>>();	
+		ambitos = new ArrayList<Map<String,Object>>();
 	}
 	
 	private void abreBloque() {
@@ -56,7 +60,13 @@ public class Vinculador {
 	}
 
 	private void cierraBloque() {
-		pilaDeAmbitos.pop();
+		ambitos.add(pilaDeAmbitos.pop());
+	}
+	
+	private void muestraAmbitos(){
+		for (Map<String, Object> m : ambitos){
+			System.out.println(m.toString());			
+		}
 	}
 	
 	private void debugTS(String from){

@@ -37,7 +37,7 @@ public class Main {
 		ch.chequea(p);
 		
 		GeneraCodigo gc = new GeneraCodigo();
-		gc.codigo(p);
+		gc.generaCodigo(p);
 		
 	}
 }
