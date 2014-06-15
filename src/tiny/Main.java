@@ -5,13 +5,11 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 
 import modelo.instrucciones.Programa;
-import traductor.Chequeo;
 import traductor.GeneraCodigo;
-import traductor.Vinculador;
 
 public class Main {
 	public static void main(String[] args) throws Exception {
-		Reader input = new InputStreamReader(new FileInputStream("input2.txt"));
+		Reader input = new InputStreamReader(new FileInputStream("input.txt"));
 		AnalizadorLexicoTiny alex = new AnalizadorLexicoTiny(input);
 		AnalizadorSintacticoTiny asint = new AnalizadorSintacticoTiny(alex);		
 		asint.parse();
@@ -21,7 +19,9 @@ public class Main {
 		/*Llamada a = ((Llamada)p.getBloque().getInstrucciones().get(1));
 		Expresion e = a.getParams().get(0);		
 		System.out.println(e.getTipoExpresion());*/		
-		//System.out.println(p.getDecVariables().getDecVariables().getDecVariables().getIdentificador());
+		//System.out.println(p.getDecVariables().getDecVariables().getTipo().getTipoConcreto());
+		
+		
 		
 		// System.out.println(p.getDecTipos().getDecTipos().getTipo());
 		
@@ -30,12 +30,12 @@ public class Main {
 				.getDecSubprogramas().getPrograma().
 				getDecSubprogramas().getDecSubprogramas().getIdentificador());*/
 		
-		Vinculador tse = new Vinculador();
+		/*Vinculador tse = new Vinculador();
 		tse.vincula(p);
 		
 		Chequeo ch = new Chequeo();
 		ch.chequea(p);
-		
+		*/
 		GeneraCodigo gc = new GeneraCodigo();
 		gc.generaCodigo(p);
 		

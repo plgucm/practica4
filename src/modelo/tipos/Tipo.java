@@ -11,15 +11,15 @@ public abstract class Tipo {
     }
 
 
-    Tipos getTipo() {
-        // Automatically generated method. Please delete this comment before entering specific code.
+    public Tipos getTipoConcreto() {
         return this.tipo;
     }
 
 
-    void setTipo(Tipos value) {
-        // Automatically generated method. Please delete this comment before entering specific code.
+    public void setTipoConcreto(Tipos value) {
         this.tipo = value;
     }
+    
+    
 
 }

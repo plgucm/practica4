@@ -84,17 +84,32 @@ public class Constructoras implements IConstructoras {
 
 	@Override
 	public DecTipos creaDecTipos(DecTipos dt, String id, Tipo tipo) {
-		return new DecTipos(dt, id, tipo);
+		 if (dt == null){
+			 dt = new DecTipos(null, id, tipo);
+		 } else {
+			 dt.setDecTipos(new DecTipos(null, id, tipo));
+		 }		 
+		 return dt;
 	}
 
 	@Override
 	public DecVariables creaDecVariables(DecVariables dv, String id, Tipo tipo) {
-		return new DecVariables(dv, id, tipo);
+		if (dv == null){
+			dv = new DecVariables(null, id, tipo); 
+		} else {
+			dv.setDecVariables(new DecVariables(null, id, tipo));
+		}
+		return dv; 
 	}
 
 	@Override
 	public DecSubprogramas creaDecSubprogramas(DecSubprogramas ds, String id,
 			List<Parametro> params, Programa subprograma) {
+		/*if (ds == null){
+			ds = new DecSubprogramas(null, id, params, subprograma);
+		} else {
+			ds.setDecSubprogramas(new DecSubprogramas(ds, id, params, subprograma));
+		}*/
 		return new DecSubprogramas(ds, id, params, subprograma);
 	}
 
