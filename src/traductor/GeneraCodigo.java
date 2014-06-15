@@ -4,15 +4,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import modelo.instrucciones.Bloque;
 import modelo.instrucciones.DecSubprogramas;
 import modelo.instrucciones.DecTipos;
 import modelo.instrucciones.DecVariables;
+import modelo.instrucciones.Parametro;
 import modelo.instrucciones.Programa;
 import modelo.tipos.Tipo;
 import modelo.tipos.TipoArray;
 import modelo.tipos.TipoID;
 import modelo.tipos.TipoStruct;
-import modelo.tipos.Tipos;
 
 public class GeneraCodigo {
 	
@@ -28,7 +29,7 @@ public class GeneraCodigo {
 	}
 
 	public void generaCodigo(Programa p) {
-		asignaEspacio(p);
+		asignaEspacioPrincipal(p);
 		codigo(p);		
 	}
 
@@ -38,16 +39,44 @@ public class GeneraCodigo {
 		
 	}
 
-	private void asignaEspacio(Programa p) {
+	private void asignaEspacio(DecSubprogramas ds) {
+		if (ds.getDecSubprogramas() != null){
+			// esto es debido a que el árbol no esta correctamente construído.
+			asignaEspacio(ds.getDecSubprogramas());
+		}
+		int dirCopia = dir;
+		int nivelCopia = nivel;
+		if (ds.getPrograma() != null){
+			asignaEspacio(ds.getPrograma());	
+		}
+		dir = dirCopia;
+		nivel = nivelCopia;	
+		
+		List<Parametro> params = ds.getParametros();
+		for (Parametro p : params){
+			insertaInfoEnNodo(params, "tam", tamanioVar(p.getTipo()));			
+		}
+	}
+
+	private void asignaEspacioPrincipal(Programa p) {
 		DecSubprogramas ds = p.getDecSubprogramas();
 		dir = anidamiento(ds);
 		insertaInfoEnNodo(p, "finDatos", dir);
 		System.out.println("Anidamiento: " + dir);
 		nivel = 0;
+		asignaEspacio(p);
+	}
+
+	private void asignaEspacio(Programa p) {
 		asignaEspacio(p.getDecTipos());
 		asignaEspacio(p.getDecVariables());
-		asignaEspacio(ds);
-		/*asignaEspacio(p.getBloque());		*/
+		asignaEspacio(p.getDecSubprogramas());
+		asignaEspacio(p.getBloque());		
+	}
+
+	private void asignaEspacio(Bloque bloque) {
+		// TODO Auto-generated method stub
+		
 	}
 
 	private void asignaEspacio(DecTipos decTipos) {
@@ -63,6 +92,7 @@ public class GeneraCodigo {
 		int tam = tamanioVar(decVariables.getTipo());
 		System.out.println("TAM de " + decVariables.getIdentificador() + " :" + tam);
 		insertaInfoEnNodo(decVariables, "tam", tam);
+		dir += tam;
 		DecVariables dv = decVariables.getDecVariables();
 		if (dv != null){ asignaEspacio(dv); }				
 	}
@@ -96,14 +126,6 @@ public class GeneraCodigo {
 		}		
 		
 		return 0;
-	}
-
-	private void asignaEspacio(DecSubprogramas ds) {
-		/*while (ds != null){
-			
-			ds = ds.getDecSubprogramas();
-		}		
-		asignaEspacio(ds.getPrograma());*/
 	}
 
 	private int anidamiento(DecSubprogramas decSubprogramas) {
