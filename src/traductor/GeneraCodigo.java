@@ -8,10 +8,13 @@ import modelo.instrucciones.Bloque;
 import modelo.instrucciones.DecSubprogramas;
 import modelo.instrucciones.DecTipos;
 import modelo.instrucciones.DecVariables;
+import modelo.instrucciones.Instruccion;
 import modelo.instrucciones.Parametro;
 import modelo.instrucciones.Programa;
+import modelo.instrucciones.TiposInstruccion;
 import modelo.tipos.Tipo;
 import modelo.tipos.TipoArray;
+import modelo.tipos.TipoDouble;
 import modelo.tipos.TipoID;
 import modelo.tipos.TipoStruct;
 
@@ -53,8 +56,15 @@ public class GeneraCodigo {
 		nivel = nivelCopia;	
 		
 		List<Parametro> params = ds.getParametros();
-		for (Parametro p : params){
-			insertaInfoEnNodo(params, "tam", tamanioVar(p.getTipo()));			
+		if (params != null){
+			for (Parametro p : params){
+				int tam = 1;
+				if (p.isPorValor()){
+					tam = tamanioVar(p.getTipo());
+				}
+				insertaInfoEnNodo(params, "tam", tam);	
+				System.out.println("TAM de " + p.getIdentificador() + " :" + tam);		
+			}
 		}
 	}
 
@@ -68,15 +78,20 @@ public class GeneraCodigo {
 	}
 
 	private void asignaEspacio(Programa p) {
-		asignaEspacio(p.getDecTipos());
-		asignaEspacio(p.getDecVariables());
-		asignaEspacio(p.getDecSubprogramas());
-		asignaEspacio(p.getBloque());		
+		if (p.getDecTipos() != null) asignaEspacio(p.getDecTipos());
+		if (p.getDecVariables() != null) asignaEspacio(p.getDecVariables());
+		if (p.getDecSubprogramas() != null) asignaEspacio(p.getDecSubprogramas());
+		/*if (p.getBloque() != null) asignaEspacio(p.getBloque());		*/
 	}
 
 	private void asignaEspacio(Bloque bloque) {
-		// TODO Auto-generated method stub
-		
+		/*List<Instruccion> list = bloque.getInstrucciones();		
+		if (list != null){
+			for (Instruccion i : list){
+				TiposInstruccion tipo = i.getTipoInstruccion();
+				
+			}
+		}*/
 	}
 
 	private void asignaEspacio(DecTipos decTipos) {
