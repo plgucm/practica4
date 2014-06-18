@@ -1,24 +1,24 @@
 package modelo.instrucciones;
 
+import java.util.List;
+
 
 
 public class Bucle extends Instruccion {
 
-    private Casos casos;
+    private List<Caso> casos;
 
 
-    public Bucle(Casos casos2) {
+    public Bucle(List<Caso> casos) {
     	super(TiposInstruccion.BUCLE);
-    	this.casos = casos2;
+    	this.casos = casos;
 	}
-
-
-	public Casos getCasos() {
+    
+    public List<Caso> getCasos() {
 		return casos;
 	}
-
-
-	public void setCasos(Casos casos) {
+    
+    public void setCasos(List<Caso> casos) {
 		this.casos = casos;
 	}
 

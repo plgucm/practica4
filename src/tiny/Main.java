@@ -5,7 +5,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.Map;
 
-import modelo.instrucciones.DecSubprogramas;
+import modelo.instrucciones.DecSubprograma;
 import modelo.instrucciones.Programa;
 import traductor.Vinculador;
 

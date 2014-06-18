@@ -1,44 +1,60 @@
 package modelo.instrucciones;
 
+import java.util.List;
+
 
 
 public class Programa {
 	
-	private DecTipos decTipos;
-    private DecVariables decVariables;
-    private DecSubprogramas decSubprogramas;
+	private List<DecTipo> decTipos;
+    private List<DecVariable> decVariables;
+    private List<DecSubprograma> decSubprogramas;
     private Bloque bloque;
 
-    public Programa(DecTipos dt, DecVariables dv, DecSubprogramas ds, Bloque b) {
+    public Programa(List<DecTipo> dt, List<DecVariable> dv, List<DecSubprograma> ds, Bloque b) {
 		this.decTipos = dt;
 		this.decVariables = dv;
 		this.decSubprogramas = ds;
 		this.bloque = b;
 	}
 
-	public DecTipos getDecTipos() {
+    
+
+	public List<DecTipo> getDecTipos() {
 		return decTipos;
 	}
 
-	public void setDecTipos(DecTipos decTipos) {
+
+
+	public void setDecTipos(List<DecTipo> decTipos) {
 		this.decTipos = decTipos;
 	}
 
-	public DecVariables getDecVariables() {
+
+
+	public List<DecVariable> getDecVariables() {
 		return decVariables;
 	}
 
-	public void setDecVariables(DecVariables decVariables) {
+
+
+	public void setDecVariables(List<DecVariable> decVariables) {
 		this.decVariables = decVariables;
 	}
 
-	public DecSubprogramas getDecSubprogramas() {
+
+
+	public List<DecSubprograma> getDecSubprogramas() {
 		return decSubprogramas;
 	}
 
-	public void setDecSubprogramas(DecSubprogramas decSubprogramas) {
+
+
+	public void setDecSubprogramas(List<DecSubprograma> decSubprogramas) {
 		this.decSubprogramas = decSubprogramas;
 	}
+
+
 
 	public Bloque getBloque() {
 		return bloque;

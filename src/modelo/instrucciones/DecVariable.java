@@ -3,17 +3,15 @@ import modelo.tipos.Tipo;
 
 
 
-public class DecVariables {
+public class DecVariable {
 
     private String identificador;
-    private DecVariables decVariables;
     private Tipo tipo;
 
 
-    public DecVariables(DecVariables dv, String id, Tipo tipo2) {
-		this.decVariables = dv;
+    public DecVariable(String id, Tipo tipo) {
 		this.identificador = id;
-		this.tipo = tipo2;
+		this.tipo = tipo;
 	}
 
 
@@ -25,17 +23,6 @@ public class DecVariables {
 	public void setIdentificador(String identificador) {
 		this.identificador = identificador;
 	}
-
-
-	public DecVariables getDecVariables() {
-		return decVariables;
-	}
-
-
-	public void setDecVariables(DecVariables decVariables) {
-		this.decVariables = decVariables;
-	}
-
 
 	public Tipo getTipo() {
 		return tipo;

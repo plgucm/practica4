@@ -19,9 +19,9 @@ import modelo.instrucciones.Bloque;
 import modelo.instrucciones.Bucle;
 import modelo.instrucciones.Casos;
 import modelo.instrucciones.Condicional;
-import modelo.instrucciones.DecSubprogramas;
+import modelo.instrucciones.DecSubprograma;
 import modelo.instrucciones.DecTipos;
-import modelo.instrucciones.DecVariables;
+import modelo.instrucciones.DecVariable;
 import modelo.instrucciones.Delete;
 import modelo.instrucciones.Designador;
 import modelo.instrucciones.Instruccion;
@@ -164,26 +164,26 @@ public class Vinculador {
 		
 	}
 
-	private void vincula(DecVariables decVariables) {
+	private void vincula(DecVariable decVariables) {
 		if (decVariables == null) return;
 		String id = decVariables.getIdentificador();
 		if (!insertaID(id, decVariables)){			
 			throw new UnsupportedOperationException("Identificador duplicado. " + id);			
 		}	
-		DecVariables siguiente = decVariables.getDecVariables();
+		DecVariable siguiente = decVariables.getDecVariables();
 		if (siguiente != null) { 
 			vincula(siguiente);	
 		}
 	}
 
-	private void vincula(DecSubprogramas decSubprogramas) {
+	private void vincula(DecSubprograma decSubprogramas) {
 		if (decSubprogramas == null) return;
 		String id = decSubprogramas.getIdentificador();
 		if (id == null){ // SUBPROGRAMS			
 
 			//System.out.println("Subprograms:"+id);
 			
-			DecSubprogramas decsubprog = decSubprogramas.getDecSubprogramas();
+			DecSubprograma decsubprog = decSubprogramas.getDecSubprogramas();
 			if (decsubprog != null){	
 				vincula(decsubprog);	
 			}
@@ -209,7 +209,7 @@ public class Vinculador {
 			}
 			cierraBloque();	
 			
-			DecSubprogramas ds = decSubprogramas.getDecSubprogramas();
+			DecSubprograma ds = decSubprogramas.getDecSubprogramas();
 			if (ds != null){
 				vincula(ds);
 			}	

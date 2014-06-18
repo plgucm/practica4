@@ -458,7 +458,7 @@ class CUP$AnalizadorSintacticoTiny$actions {
 		Object ib = (Object)((java_cup.runtime.Symbol) CUP$AnalizadorSintacticoTiny$stack.peek()).value;
 		 
 	RESULT = AnalizadorSintacticoTiny.programaRaiz = AnalizadorSintacticoTiny.cons
-					.creaPrograma((DecTipos)st, (DecVariables)sv, (DecSubprogramas)ss, (Bloque)ib); 
+					.creaPrograma((DecTipos)st, (DecVariable)sv, (DecSubprograma)ss, (Bloque)ib); 
 	
               CUP$AnalizadorSintacticoTiny$result = parser.getSymbolFactory().newSymbol("Programa",0, RESULT);
             }
@@ -519,7 +519,7 @@ class CUP$AnalizadorSintacticoTiny$actions {
             {
               Object RESULT =null;
 		Object ds = (Object)((java_cup.runtime.Symbol) CUP$AnalizadorSintacticoTiny$stack.peek()).value;
-		 RESULT = AnalizadorSintacticoTiny.cons.creaDecSubprogramas((DecSubprogramas)ds, null, null, null); 
+		 RESULT = AnalizadorSintacticoTiny.cons.creaDecSubprogramas((DecSubprograma)ds, null, null, null); 
               CUP$AnalizadorSintacticoTiny$result = parser.getSymbolFactory().newSymbol("SeccionSubprogramas",3, RESULT);
             }
           return CUP$AnalizadorSintacticoTiny$result;
@@ -705,8 +705,8 @@ class CUP$AnalizadorSintacticoTiny$actions {
 		Object dvs = (Object)((java_cup.runtime.Symbol) CUP$AnalizadorSintacticoTiny$stack.elementAt(CUP$AnalizadorSintacticoTiny$top-2)).value;
 		Object dv = (Object)((java_cup.runtime.Symbol) CUP$AnalizadorSintacticoTiny$stack.peek()).value;
 		
-		 DecVariables dvsReal = (DecVariables) dvs;
-		 DecVariables dvReal = (DecVariables) dv;
+		 DecVariable dvsReal = (DecVariable) dvs;
+		 DecVariable dvReal = (DecVariable) dv;
 		 RESULT = AnalizadorSintacticoTiny.cons.creaDecVariables(dvsReal,
 		 								 dvReal.getIdentificador(), dvReal.getTipo()); 
 	
@@ -746,8 +746,8 @@ class CUP$AnalizadorSintacticoTiny$actions {
 		Object dss = (Object)((java_cup.runtime.Symbol) CUP$AnalizadorSintacticoTiny$stack.elementAt(CUP$AnalizadorSintacticoTiny$top-2)).value;
 		Object ds = (Object)((java_cup.runtime.Symbol) CUP$AnalizadorSintacticoTiny$stack.peek()).value;
 				
-		 DecSubprogramas dssReal = (DecSubprogramas) dss;
-		 DecSubprogramas dsReal = (DecSubprogramas) ds;
+		 DecSubprograma dssReal = (DecSubprograma) dss;
+		 DecSubprograma dsReal = (DecSubprograma) ds;
 		 RESULT = AnalizadorSintacticoTiny.cons.creaDecSubprogramas(dssReal, 
 		 									dsReal.getIdentificador(), 
 		 									dsReal.getParametros(), 
@@ -782,7 +782,7 @@ class CUP$AnalizadorSintacticoTiny$actions {
 				
 		 RESULT = AnalizadorSintacticoTiny.cons.creaDecSubprogramas(null, id, ((List<Parametro>) params), 
 				AnalizadorSintacticoTiny.cons.
-				creaPrograma((DecTipos)tipos, (DecVariables)vars, (DecSubprogramas)ss, (Bloque)bloque)); 
+				creaPrograma((DecTipos)tipos, (DecVariable)vars, (DecSubprograma)ss, (Bloque)bloque)); 
 	
               CUP$AnalizadorSintacticoTiny$result = parser.getSymbolFactory().newSymbol("DecSubprograma",12, RESULT);
             }

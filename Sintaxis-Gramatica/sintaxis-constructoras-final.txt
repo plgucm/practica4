@@ -1,0 +1,70 @@
+creaPrograma: List(DecTipo) x List(DecVariable) x List(DecSubprograma) x IBloque -> Programa
+creaInt: Tipo
+creaDouble: Tipo
+creaBoolean: Tipo
+creaID: String -> Tipo
+creaArray: Tipo x Integer -> Tipo
+creaStruct: List(DecTipo) -> Tipo
+creaPuntero: Tipo -> Tipo
+
+uneListaDecTipos: List(DecTipo) x String x Tipo -> List(DecTipo)
+creaDecTipo: String x Tipo -> List(DecTipo)
+
+uneListaDecVariables: List(DecVariable) x String x Tipo -> List(DecVariable) 
+creaListaDecVariables: String x Tipo -> List(DecVariable) 
+creaListaDecVariablesVacia: List(DecVariable)
+
+uneListaDecSubprogramas: List(DecSubprograma) x String x List(Parametro) x Programa -> List(DecSubprograma)
+creaListaDecSubprogramas: String x List(Parametro) x Programa -> List(DecSubprograma) 
+creaListaDecSubprogramasVacia: List(DecSubprograma)
+ 
+uneListaParametros: List(Parametro) x Parametro -> List(Parametro) 
+creaListaParametros: Parametro -> List(Parametro) 
+creaListaParametrosVacia: List(Parametro) 
+	
+creaParametroValor: String x Tipo -> Parametro
+creaParametroVariable: String x Tipo -> Parametro
+ 
+creaAsignacion: Designador x Exp -> Instruccion
+creaBloque: List(Instruccion) -> Instruccion
+creaBloqueVacio: Instruccion
+creaIf: Casos -> Instruccion
+uneListaCasos: List<Caso> x Caso -> Instruccion
+creaCaso: Exp x  IBloque -> Instruccion
+creaBucle: List<Caso> -> Instruccion
+creaLlamadaConArgumentos: String x List(Expresion) -> Instruccion
+creaLlamada: String -> Instruccion
+creaRead: Designador -> Instruccion
+creaWrite: Expresion -> Instruccion
+creaNew: Designador -> Instruccion
+creaDelete: Designador -> Instruccion
+
+creaDesignador: String -> Designador
+creaDesignador: Designador x Exp -> Designador
+creaDesignador: Designador x String -> Designador
+
+creaExpresionBinaria: Exp x OpBinario x Exp -> Exp
+creaExpresionUnaria: OpUnario x Exp -> Exp
+creaExpresionBoolean: Boolean -> Exp
+creaExpresionInteger: Integer -> Exp
+creaExpresionDouble: Double -> Exp
+creaExpresionDesignador: Designador -> Exp
+
+creaOperadorIgual: OpBinario
+creaOperadorDistinto: OpBinario
+creaOperadorMenor: OpBinario
+creaOperadorMayor: OpBinario
+creaOperadorMenorIgual: OpBinario
+creaOperadorMayorIgual: OpBinario
+creaOperadorMultiplicacion: OpBinario
+creaOperadorDivision: OpBinario
+creaOperadorModulo: OpBinario
+creaOperadorAnd: OpBinario
+creaOperadorMas: OpBinario
+creaOperadorMenos: OpBinario
+creaOperadorOr: OpBinario
+
+creaOperadorMenosUnario: OpUnario
+creaOperadorNot: OpUnario
+creaOperadorToInt: OpUnario
+creaOperadorToDouble: OpUnario

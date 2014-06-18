@@ -3,16 +3,14 @@ import java.util.List;
 
 
 
-public class DecSubprogramas {
+public class DecSubprograma {
 
     private String identificador;
-    private DecSubprogramas decSubprogramas;
     private List<Parametro> parametros;
     private Programa programa;
 
 
-    public DecSubprogramas(DecSubprogramas ds, String id, List<Parametro> params, Programa subprograma) {
-		this.decSubprogramas = ds;
+    public DecSubprograma(String id, List<Parametro> params, Programa subprograma) {
 		this.identificador = id;
 		this.parametros = params;
 		this.programa = subprograma;    	
@@ -27,17 +25,6 @@ public class DecSubprogramas {
 	public void setIdentificador(String identificador) {
 		this.identificador = identificador;
 	}
-
-
-	public DecSubprogramas getDecSubprogramas() {
-		return decSubprogramas;
-	}
-
-
-	public void setDecSubprogramas(DecSubprogramas decSubprogramas) {
-		this.decSubprogramas = decSubprogramas;
-	}
-
 
 	public List<Parametro> getParametros() {
 		return parametros;

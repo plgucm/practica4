@@ -19,9 +19,9 @@ import modelo.instrucciones.Bloque;
 import modelo.instrucciones.Bucle;
 import modelo.instrucciones.Casos;
 import modelo.instrucciones.Condicional;
-import modelo.instrucciones.DecSubprogramas;
+import modelo.instrucciones.DecSubprograma;
 import modelo.instrucciones.DecTipos;
-import modelo.instrucciones.DecVariables;
+import modelo.instrucciones.DecVariable;
 import modelo.instrucciones.Delete;
 import modelo.instrucciones.Designador;
 import modelo.instrucciones.Instruccion;
@@ -239,14 +239,14 @@ public class GeneraCodigo {
 		return null;
 	}
 
-	private void codigoSubprograma(DecSubprogramas decSubprogramas) {
+	private void codigoSubprograma(DecSubprograma decSubprogramas) {
 		
 		
 		
 		
 	}
 
-	private void asignaEspacio(DecSubprogramas ds) {
+	private void asignaEspacio(DecSubprograma ds) {
 		if (ds.getDecSubprogramas() != null){
 			// esto es debido a que el árbol no esta correctamente construído.
 			asignaEspacio(ds.getDecSubprogramas());
@@ -274,7 +274,7 @@ public class GeneraCodigo {
 	}
 
 	private void asignaEspacioDesdeRaiz(Programa p) {
-		DecSubprogramas ds = p.getDecSubprogramas();
+		DecSubprograma ds = p.getDecSubprogramas();
 		dir = anidamiento(ds);
 		d.insertaInfoEnNodo(p, "finDatos", dir);
 		System.out.println("Anidamiento: " + dir);
@@ -298,14 +298,14 @@ public class GeneraCodigo {
 		if (dv != null){ asignaEspacio(dv); }		
 	}
 
-	private void asignaEspacio(DecVariables decVariables) {
+	private void asignaEspacio(DecVariable decVariables) {
 		d.insertaInfoEnNodo(decVariables, "nivel", nivel);
 		d.insertaInfoEnNodo(decVariables, "dir", dir);
 		int tam = tamanioVar(decVariables.getTipo());
 		// System.out.println("TAM de " + decVariables.getIdentificador() + " :" + tam);
 		d.insertaInfoEnNodo(decVariables, "tam", tam);
 		dir += tam;
-		DecVariables dv = decVariables.getDecVariables();
+		DecVariable dv = decVariables.getDecVariables();
 		if (dv != null){ asignaEspacio(dv); }				
 	}
 
@@ -340,10 +340,10 @@ public class GeneraCodigo {
 		return 0;
 	}
 
-	private int anidamiento(DecSubprogramas decSubprogramas) {
+	private int anidamiento(DecSubprograma decSubprogramas) {
 		int miAnidamiento = 0;
 		int maxAnidamientoHermanos = 0;
-		DecSubprogramas dh = decSubprogramas.getDecSubprogramas();	
+		DecSubprograma dh = decSubprogramas.getDecSubprogramas();	
 		Programa dp = decSubprogramas.getPrograma();					
 		
 		if (dh != null && dp != null){
