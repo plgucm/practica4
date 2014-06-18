@@ -4,8 +4,8 @@ package modelo.tipos;
 
 public class TipoEntero extends Tipo {
 
-	public TipoEntero() {
-		super(Tipos.INT);
+	public TipoEntero(String id) {
+		super(id, Tipos.INT);
 	}
 	
 }

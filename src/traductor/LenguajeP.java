@@ -60,7 +60,6 @@ public class LenguajeP {
 			sb.append(DUP);
 			sb.append(instrConAlgo(APILA, i));
 			sb.append(SUMA);
-			// Parametros
 			sb.append(params.get(i));
 		}		
 		
@@ -70,6 +69,26 @@ public class LenguajeP {
 		sb.append(instrConAlgo(IR_A, dirSalto));
 		
 		return sb.toString();
+	}
+	
+	public static String tipoOperadorUnarioP(String tipoOp){
+		switch(tipoOp){
+			case "TODOUBLE" : return ""; 
+			case "TOINT" :  return "";
+			case "MENOS" :  return "";
+			case "NOT" :  return "";
+		}
+		return tipoOp;		
+	}
+	
+	public static String tipoOperadorBinarioP(String tipoOp){
+		switch(tipoOp){
+			case "" :  return "";
+			case "TOINT" :  return "";
+			case "MENOS" :  return "";
+			case "NOT" : return "";
+		}
+		return tipoOp;		
 	}
 	
 	public static String generaEpilogo(int nivel, int tamDatos){

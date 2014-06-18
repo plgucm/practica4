@@ -1,0 +1,156 @@
+Programa -> program types DecTipos variables DecVariables subprograms DecSubprogramas IBloque 
+	Programa.a = creaPrograma(DecTipos.a, DecVariables.a, DecSubprogramas.a, IBloque.a)
+
+Tipo -> int
+	Tipo.a = creaInt()
+Tipo -> double
+	Tipo.a = creaDouble()
+Tipo -> boolean
+	Tipo.a = creaBoolean()
+Tipo -> id
+	Tipo.a = creaID(id.lex)
+Tipo -> array Tipo[numeroNatural]
+	Tipo.a = creaArray(Tipo.a, numeroNatural.a)
+Tipo -> struct { DecTipos }
+	Tipo.a = creaStruct(DecTipos.a)
+Tipo -> pointer Tipo 
+	Tipo.a = creaPuntero(Tipo.a)
+
+DecTipos -> DecTipos ; id : Tipo  
+	DecTipos.a = uneListaDecTipos(DecTipos.a, id.a, Tipo.a)
+DecTipos -> id : Tipo 
+	DecTipos.a = creaListaDecTipos(id.a, Tipo.a)
+
+DecVariables -> DecVariables ; id : Tipo 
+	DecVariables.a = uneListaDecVariables(DecVariables.a, id.a, Tipo.a)
+DecVariables ->  id : Tipo 
+	DecVariables.a = creaListaDecVariables(id.a, Tipo.a)
+
+DecSubprogramas -> DecSubprogramas ; subprogram id Parametros types DecTipos variables DecVariables subprograms DecSubprogramas IBloque
+	DecSubprogramas.a = uneListaDecSubprogramas(DecSubprogramas.a, id.a, Parametros.a, DecTipos.a, DecVariables.a, DecSubprogramas.a, IBloque.a)
+DecSubprogramas ->  subprogram id Parametros types DecTipos variables DecVariables subprograms DecSubprogramas IBloque
+	DecSubprogramas.a = creaListaDecSubprogramas(id.a, Parametros.a, DecTipos.a, DecVariables.a, DecSubprogramas.a, IBloque.a)  
+ 
+Parametros -> ( ListaParametros ) |
+	Parametros.a = ListaParametros.a
+Parametros -> ( ) 
+	Parametros.a = creaListaParametrosVacia()
+ 
+ListaParametros -> ListaParametros , Parametro 
+	ListaParametros.a = uneListaParametros(ListaParametros.a, Parametro.a)
+ListaParametros -> Parametro
+	ListaParametros.a = creaListaParametros(Parametro.a)
+
+	
+Parametro -> id : Tipo 
+	Parametro.a = creaParametroValor(id.a, Tipo.a)
+Parametro -> & id: Tipo
+	Parametro.a = creaParametroVariable(id.a, Tipo.a)
+
+Instrucciones -> Instrucciones ; Instruccion
+	Instrucciones.a = creaInstrucciones(Instrucciones.a, Instruccion.a)
+Instrucciones -> Instruccion
+	Instrucciones.a = creaInstrucciones(Instruccion.a)
+	
+Instruccion -> IAsig 
+	Instruccion.a = IAsig.a
+Instruccion -> IBloque 
+	Instruccion.a = IBloque.a
+Instruccion -> ICond  
+	Instruccion.a = ICond.a
+Instruccion -> IBucle 
+	Instruccion.a = IBucle.a 
+Instruccion -> ILlamada  
+	Instruccion.a = ILlamada.a
+Instruccion -> IRead  
+	Instruccion.a = IRead.a
+Instruccion -> IWrite  
+	Instruccion.a = IWrite.a
+Instruccion -> INew  
+	Instruccion.a = INew.a
+Instruccion -> IDelete
+	Instruccion.a = IDelete.a
+ 
+IAsig -> Designador = Exp
+	IAsig.a = creaAsignaciones(Designador.a, Exp.a)
+IBloque -> { Instrucciones }
+	IBloque.a = creaBloque(Instrucciones.a)
+IBloque -> {} 
+	IBloque.a = creaBloqueVacio()
+
+ICond -> if Casos endif 
+	ICond.a = creaIf(Casos.a)
+Casos -> Casos [] Exp : IBloque
+	Casos.a = creaCasos(Casos.a, Exp.a, IBloque.a)
+Casos ->  Exp : IBloque 
+	Casos.a = creaCasos(Exp.a, IBloque.a)
+IBucle -> do Casos enddo 
+	IBucle.a = creaBucle(Casos.a)
+ILlamada -> id ( ListaArgumentos ) 
+	ILlamada.a = creaLlamadaConArgumentos(id.a, ListaArgumentos.a)
+ILlamada -> id ( ) 
+	ILLamada.a = creaLlamada(id.a)
+ListaArgumentos -> ListaArgumentos , Exp 
+	ListaArgumentos.a = creaListaArgumentosCompuesta(ListaArgumetos.a, Exp.a)
+ListaArgumentos -> Exp 
+	ListaArgumentos.a = creaLIstaArgumento(Exp.a)
+	
+IRead -> read Designador 
+	IRead.a = creaRead(Designador.a)
+IWrite -> write Exp
+	IWrite.a = creaWrite(Designador.a)
+INew -> new Designador 
+	INew.a = creaNew(Designador.a)
+IDelete -> delete Designador 
+	IDelete.a = creaDelete(Designador.a)
+
+Designador -> id 
+	Designador.a = creaDesignador(id.a)
+Designador -> Designador1[Exp] 
+	Designador.a = creaDesignador(Designador1.a, Exp.a)
+Designador -> Designador1.id
+	Designador.a = creaDesignador(Designador1.a, id.a)
+
+Exp -> Exp1 OpBinario Exp2
+	Exp.a = creaExpresionBinaria(Exp1.a, OpBinario.a, Exp2.a)
+Exp -> OpUnario Exp1
+	Exp.a = creaExpresionUnaria(Exp1.a)
+
+OpBinario -> == 
+	OpBinario.a = creaOperadorIgual()
+OpBinario -> != 
+	OpBinario.a = creaOperadorDistinto()
+OpBinario -> < 
+	OpBinario.a = creaOperadorMenor()
+OpBinario -> > 
+	OpBinario.a = creaOperadorMayor()
+OpBinario -> <= 
+	OpBinario.a = creaOperadorMenorIgual()
+OpBinario -> >= 
+	OpBinario.a = creaOperadorMayorIgual()
+OpBinario -> * 
+	OpBinario.a = creaOperadorMultiplicacion()
+OpBinario -> / 
+	OpBinario.a = creaOperadorDivision()
+OpBinario -> % 
+	OpBinario.a = creaOperadorModulo()
+OpBinario -> and 
+	OpBinario.a = creaOperadorAnd()
+OpBinario -> + 
+	OpBinario.a = creaOperadorMas()
+OpBinario -> - 
+	OpBinario.a = creaOperadorMenos()
+OpBinario -> or 
+	OpBinario.a = creaOperadorOr()
+
+OpUnario -> - 
+	OpUnario.a = creaOperadorMenos()
+OpUnario -> not 
+	OpUnario.a = creaOperadorNot()
+OpUnario -> toint 
+	OpUnario.a = creaOperadorToInt()
+OpUnario -> todouble 
+	OpUnario.a = creaOperadorToDouble()
+	
+	
+	

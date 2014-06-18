@@ -1,6 +1,5 @@
 package traductor;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
@@ -33,11 +32,14 @@ import modelo.instrucciones.Programa;
 import modelo.instrucciones.Read;
 import modelo.instrucciones.TiposInstruccion;
 import modelo.instrucciones.Write;
+import modelo.tipos.Tipo;
+import modelo.tipos.TipoArray;
+import modelo.tipos.TipoID;
+import modelo.tipos.TipoStruct;
 
 public class Vinculador {
 	
 	private Stack<Map<String, Object>> pilaDeAmbitos;
-	private List<Map<String, Object>> ambitos;
 
 	public void vincula(Programa p) {
 		iniciaTS();
@@ -47,12 +49,10 @@ public class Vinculador {
 		vincula(p.getDecSubprogramas());
 		vincula(p.getBloque());
 		cierraBloque();
-		muestraAmbitos();
 	}
-
+	
 	private void iniciaTS() {
 		pilaDeAmbitos = new Stack<Map<String, Object>>();	
-		ambitos = new ArrayList<Map<String,Object>>();
 	}
 	
 	private void abreBloque() {
@@ -60,19 +60,19 @@ public class Vinculador {
 	}
 
 	private void cierraBloque() {
-		ambitos.add(pilaDeAmbitos.pop());
+		if (pilaDeAmbitos.size() > 1)
+			pilaDeAmbitos.pop();
 	}
 	
-	private void muestraAmbitos(){
-		for (Map<String, Object> m : ambitos){
-			System.out.println(m.toString());			
-		}
+	public Stack<Map<String, Object>> getTS(){
+		return pilaDeAmbitos;
 	}
 	
 	private void debugTS(String from){
-		System.out.println("--- Debug llamado desde " + from);
+		/*System.out.println("--- Debug llamado desde " + from);
 		System.out.println("Nivel: " + (pilaDeAmbitos.size()-1));
 		System.out.println("Ámbito: " + pilaDeAmbitos.peek());
+		*/
 	}
 
 	private boolean insertaID(String id, Object declaracion){
@@ -87,9 +87,9 @@ public class Vinculador {
 		Map<String, Object> ts = pilaDeAmbitos.peek();
 		if (ts.get(id) == null){
 			// Si no está en el ámbito actual, miro en los ámbitos superiores.
-			ListIterator<Map<String, Object>> it = pilaDeAmbitos.listIterator();
-			while (it.hasNext()){
-				Object e = it.next().get(id);
+			ListIterator<Map<String, Object>> it = pilaDeAmbitos.listIterator(pilaDeAmbitos.size()-1);
+			while (it.hasPrevious()){
+				Object e = it.previous().get(id);
 				if (e != null){
 					return e;
 				}
@@ -103,13 +103,65 @@ public class Vinculador {
 	private void vincula(DecTipos decTipos) {
 		if (decTipos == null) return;
 		String id = decTipos.getIdentificador();
+		
+		vincula(decTipos.getTipo());
+		
 		if (!insertaID(id, decTipos)){			
 			throw new UnsupportedOperationException("Identificador duplicado. " + id);			
-		}	
+		}
+		
 		DecTipos siguiente = decTipos.getDecTipos();
 		if (siguiente != null) { 
 			vincula(siguiente);	
 		}
+	}
+
+	private void vincula(Tipo tipoInterno) {
+		// System.out.println(tipoInterno.getTipoConcreto());
+		switch(tipoInterno.getTipoConcreto()){
+		case ARRAY:	
+			TipoArray tipoArray = (TipoArray) tipoInterno;
+			vincula(tipoArray.getTipoInterno());
+			break;
+		case BOOL:
+			break;
+		case DOUBLE:
+			break;
+		case IDENT:
+			TipoID tipoId = (TipoID) tipoInterno;
+			
+			Object dec = declaracionDe(tipoId.getIdentificador());
+			if (dec == null){
+				throw new UnsupportedOperationException("Identificador no declarado. ");				
+			} else {
+				insertaID(tipoId.getIdentificador(), tipoId);
+			}
+			
+			break;
+		case INT:
+			break;
+		case POINTER:
+			break;
+		case STRUCT:
+			
+			TipoStruct tipoStruct = (TipoStruct) tipoInterno;
+			List<String> ids = tipoStruct.getIdentificadores();
+			List<Tipo> tipos = tipoStruct.getTipos();
+			Map<String, Object> campos = new HashMap<String, Object>();
+			for (int i = 0, l = ids.size(); i < l; i++){
+				String id = ids.get(i);
+				if (campos.get(id) != null){
+					throw new UnsupportedOperationException("Campo duplicado. "+id);						
+				}
+				// System.out.println(tipos.get(i));
+				campos.put(id, tipos.get(i));
+			}	
+			
+			break;
+		default:
+			break;
+		}
+		
 	}
 
 	private void vincula(DecVariables decVariables) {
@@ -143,6 +195,7 @@ public class Vinculador {
 			if (!insertaID(id, decSubprogramas)){			
 				throw new UnsupportedOperationException("Identificador duplicado. " + id);			
 			}	
+			declaracionDe(id);
 			abreBloque();
 			insertaID(id, decSubprogramas);
 			List<Parametro> params = decSubprogramas.getParametros();
@@ -227,7 +280,7 @@ public class Vinculador {
 
 	private void vincula(ExpresionBinaria expresion) {
 		vincula(expresion.getExp0());
-		vincula(expresion.getExp1());		
+		vincula(expresion.getExp1());	
 	}
 	
 	/// DESIGNADOR

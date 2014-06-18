@@ -5,7 +5,7 @@ TYPES
   TCelda: struct {
             valor: int; 
             izq: TArbol;
-            der: TArbol   
+            der: TArbol
           };    
   TSecuencia: ARRAY int[10]
 VARIABLES

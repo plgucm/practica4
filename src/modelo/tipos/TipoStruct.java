@@ -10,10 +10,10 @@ public class TipoStruct extends Tipo {
     private List<Tipo> tipo;
 
 
-    public TipoStruct(List<String> id, List<Tipo> tipo) {
-		super(Tipos.STRUCT);
+    public TipoStruct(String id, List<String> ids, List<Tipo> tipo) {
+		super(id,  Tipos.STRUCT);
 		this.tipo = tipo;
-		this.identificadores = id;
+		this.identificadores = ids;
 	}
 
 

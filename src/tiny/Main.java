@@ -3,11 +3,11 @@ package tiny;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.util.Map;
 
+import modelo.instrucciones.DecSubprogramas;
 import modelo.instrucciones.Programa;
-import traductor.Decoracion;
-import traductor.EscribeCodigoEnArchivo;
-import traductor.GeneraCodigo;
+import traductor.Vinculador;
 
 public class Main {
 	public static void main(String[] args) throws Exception {
@@ -16,33 +16,30 @@ public class Main {
 		AnalizadorSintacticoTiny asint = new AnalizadorSintacticoTiny(alex);		
 		asint.parse();
 		System.out.println("Análisis completado. Se supone que el árbol está construído.");
-		Programa p = AnalizadorSintacticoTiny.programaRaiz;		
+		Programa p = AnalizadorSintacticoTiny.programaRaiz;	
 		
-		/*Llamada a = ((Llamada)p.getBloque().getInstrucciones().get(1));
-		Expresion e = a.getParams().get(0);		
-		System.out.println(e.getTipoExpresion());*/		
-		//System.out.println(p.getDecVariables().getDecVariables().getTipo().getTipoConcreto());
+
+		System.out.println(p.getDecTipos().getIdentificador());
 		
 		
+		//TablaDeSimbolos ts = new TablaDeSimbolos();
+		Vinculador vinculador = new Vinculador();
+		vinculador.vincula(p);
+		//Map<String, Object> ts = vinculador.getTS().peek();
+		//System.out.println(ts.get("LeeValores"));
 		
-		// System.out.println(p.getDecTipos().getDecTipos().getTipo());
 		
-		/*System.out.println(
-				p.getDecSubprogramas().getDecSubprogramas()
-				.getDecSubprogramas().getPrograma().
-				getDecSubprogramas().getDecSubprogramas().getIdentificador());*/
 		
-		/*Vinculador tse = new Vinculador();
-		tse.vincula(p);
 		
-		Chequeo ch = new Chequeo();
+		
+		/*
+		Chequeo ch = new Chequeo(ts);
 		ch.chequea(p);
-		*/
 		Decoracion d = new Decoracion();
-		GeneraCodigo gc = new GeneraCodigo(d);
+		GeneraCodigo gc = new GeneraCodigo(ts, d);
 		gc.generaCodigo(p);
 		EscribeCodigoEnArchivo ea = new EscribeCodigoEnArchivo(p, d);
 		ea.escribeCodigo("cod.txt");
-		
+		*/
 	}
 }

@@ -6,8 +6,8 @@ public class TipoPuntero extends Tipo {
 
     private Tipo tipo;
 
-    public TipoPuntero(Tipo tipo) {
-    	super(Tipos.POINTER);
+    public TipoPuntero(String id, Tipo tipo) {
+    	super(id, Tipos.POINTER);
 		this.tipo = tipo;
 	}
     

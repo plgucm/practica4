@@ -22,28 +22,28 @@ public interface IConstructoras {
     Programa creaPrograma(DecTipos dt, DecVariables dv, DecSubprogramas ds, Bloque b);
 
 
-    Tipo creaBool();
+    Tipo creaBool(String id);
 
 
-    Tipo creaInt();
+    Tipo creaInt(String id);
 
 
-    Tipo creaDouble();
+    Tipo creaDouble(String id);
 
 
     Tipo creaID(String id);
 
 
-    Tipo creaArray(Integer size, Tipo tipo);
+    Tipo creaArray(String id, Integer size, Tipo tipo);
 
 
-    Tipo creaStruct(List<String> id, List<Tipo> tipo);
+    Tipo creaStruct(String id, List<String> ids, List<Tipo> tipo);
 
 
-    Tipo creaPuntero(Tipo tipo);
+    Tipo creaPuntero(String id, Tipo tipo);
 
 
-    DecTipos creaDecTipos(DecTipos dt, String id, Tipo tipo);
+    DecTipos creaDecTipos(List<Tipo> tipos);
 
 
     DecVariables creaDecVariables(DecVariables dv, String id, Tipo tipo);

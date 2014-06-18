@@ -48,18 +48,18 @@ public class Constructoras implements IConstructoras {
 	}
 
 	@Override
-	public Tipo creaBool() {
-		return new TipoBool();
+	public Tipo creaBool(String id) {
+		return new TipoBool(id);
 	}
 
 	@Override
-	public Tipo creaInt() {
-		return new TipoEntero();
+	public Tipo creaInt(String id) {
+		return new TipoEntero(id);
 	}
 
 	@Override
-	public Tipo creaDouble() {
-		return new TipoDouble();
+	public Tipo creaDouble(String id) {
+		return new TipoDouble(id);
 	}
 
 	@Override
@@ -68,48 +68,33 @@ public class Constructoras implements IConstructoras {
 	}
 
 	@Override
-	public Tipo creaArray(Integer size, Tipo tipo) {
-		return new TipoArray(size, tipo);
+	public Tipo creaArray(String id, Integer size, Tipo tipo) {
+		return new TipoArray(id, size, tipo);
 	}
 
 	@Override
-	public Tipo creaStruct(List<String> id, List<Tipo> tipo) {
-		return new TipoStruct(id, tipo);
+	public Tipo creaStruct(String id, DecTipos dectipos) {
+		return new TipoStruct(id, ids, dectipos);
 	}
 
 	@Override
-	public Tipo creaPuntero(Tipo tipo) {
-		return new TipoPuntero(tipo);
+	public Tipo creaPuntero(String id, Tipo tipo) {
+		return new TipoPuntero(id, tipo);
 	}
 
 	@Override
-	public DecTipos creaDecTipos(DecTipos dt, String id, Tipo tipo) {
-		 if (dt == null){
-			 dt = new DecTipos(null, id, tipo);
-		 } else {
-			 dt.setDecTipos(new DecTipos(null, id, tipo));
-		 }		 
-		 return dt;
+	public DecTipos creaDecTipos(List<Tipo> tipos) {
+		 return new DecTipos(tipos);
 	}
 
 	@Override
 	public DecVariables creaDecVariables(DecVariables dv, String id, Tipo tipo) {
-		if (dv == null){
-			dv = new DecVariables(null, id, tipo); 
-		} else {
-			dv.setDecVariables(new DecVariables(null, id, tipo));
-		}
-		return dv; 
+		return new DecVariables(dv, id, tipo); 
 	}
 
 	@Override
 	public DecSubprogramas creaDecSubprogramas(DecSubprogramas ds, String id,
 			List<Parametro> params, Programa subprograma) {
-		/*if (ds == null){
-			ds = new DecSubprogramas(null, id, params, subprograma);
-		} else {
-			ds.setDecSubprogramas(new DecSubprogramas(ds, id, params, subprograma));
-		}*/
 		return new DecSubprogramas(ds, id, params, subprograma);
 	}
 

@@ -1,13 +1,38 @@
 package traductor;
 
 
+import static traductor.LenguajeP.DESAPILA_IND;
+import static traductor.LenguajeP.generaInicio;
+
 import java.util.List;
 
+import modelo.expresiones.Expresion;
+import modelo.expresiones.ExpresionBinaria;
+import modelo.expresiones.ExpresionBoolean;
+import modelo.expresiones.ExpresionDesignador;
+import modelo.expresiones.ExpresionDouble;
+import modelo.expresiones.ExpresionInteger;
+import modelo.expresiones.ExpresionUnaria;
+import modelo.expresiones.TipoExpresion;
+import modelo.instrucciones.Asignacion;
+import modelo.instrucciones.Bloque;
+import modelo.instrucciones.Bucle;
+import modelo.instrucciones.Casos;
+import modelo.instrucciones.Condicional;
 import modelo.instrucciones.DecSubprogramas;
 import modelo.instrucciones.DecTipos;
 import modelo.instrucciones.DecVariables;
+import modelo.instrucciones.Delete;
+import modelo.instrucciones.Designador;
+import modelo.instrucciones.Instruccion;
+import modelo.instrucciones.Llamada;
+import modelo.instrucciones.New;
 import modelo.instrucciones.Parametro;
 import modelo.instrucciones.Programa;
+import modelo.instrucciones.Read;
+import modelo.instrucciones.TiposInstruccion;
+import modelo.instrucciones.Write;
+import modelo.operadores.OpBinario;
 import modelo.tipos.Tipo;
 import modelo.tipos.TipoArray;
 import modelo.tipos.TipoID;
@@ -15,34 +40,210 @@ import modelo.tipos.TipoStruct;
 
 public class GeneraCodigo {	
 	
-	private int dir, nivel;
+	private int dir, nivel, cinst;
 	private Decoracion d;
+	private TablaDeSimbolos ts;	
 	
-	public GeneraCodigo(Decoracion d) {	
+	public GeneraCodigo(TablaDeSimbolos ts, Decoracion d) {	
 		dir = nivel = 0;
 		this.d = d;
+		this.ts = ts;
 	}
 
 	public void generaCodigo(Programa p) {
-		asignaEspacioPrincipal(p);
-		codigoProgramaPrincipal(p);	
+		asignaEspacioDesdeRaiz(p);
+		codigoProgramaDesdeRaiz(p);	
+		System.out.println("Código generado.");
 	}
 
-	private void codigoProgramaPrincipal(Programa p) {
-		int cinst = numeroInstruccionesActivacionPrograma(p);
-		d.insertaInfoEnNodo(p, "cinst", cinst);
+	private void codigoProgramaDesdeRaiz(Programa p) {		
+		codigoSubprograma(p.getDecSubprogramas());		
+		codigo(p.getBloque());				
+		String inicio = generaInicio(
+						(Integer)d.getDecoracion(p.getDecVariables()).get("tam")+
+						(Integer)d.getDecoracion(p).get("finDatos")+1, cinst);
+		d.insertaInfoEnNodo(p, "cod", inicio);		
+	}
+
+	private String codigoInstruccion(Instruccion i) {
+		if (i == null) return "";
+		TiposInstruccion tipo = i.getTipoInstruccion();
+		if (tipo == TiposInstruccion.ASIG) {
+			return codigo((Asignacion) i);
+		} else if (tipo == TiposInstruccion.BLOQUE) {
+			return codigo((Bloque) i);
+		} else if (tipo == TiposInstruccion.BUCLE) {
+			return codigo((Bucle) i);
+		} else if (tipo == TiposInstruccion.CASOS) {
+			return codigo((Casos) i);
+		} else if (tipo == TiposInstruccion.DELETE) {
+			return codigo((Delete) i);
+		} else if (tipo == TiposInstruccion.IF) {
+			return codigo((Condicional) i);
+		} else if (tipo == TiposInstruccion.LLAMADA) {
+			return codigo((Llamada) i);
+		} else if (tipo == TiposInstruccion.NEW) {
+			return codigo((New) i);
+		} else if (tipo == TiposInstruccion.READ) {
+			return codigo((Read) i);
+		} else if (tipo == TiposInstruccion.WRITE) {
+			return codigo((Write) i);
+		}  
+		return "";
+	}
+
+	private String codigo(Write i) {
 		
 		
+		return null;
+	}
+
+	private String codigo(Read i) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	private String codigo(New i) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	private String codigo(Llamada i) {
+
+		String id = i.getIdentificador();
+		List<Expresion> exps = i.getParams();
+		
+		System.out.println(id);
+		
+		
+		
+		return null;
+	}
+
+	private String codigo(Condicional i) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	private String codigo(Delete i) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	private String codigo(Casos i) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	private String codigo(Bucle i) {
+
+		
+		
+		return null;
+	}
+
+	private String codigo(Bloque i) {
+		StringBuilder sb = new StringBuilder();
+		List<Instruccion> insts = i.getInstrucciones();
+		for (Instruccion in : insts){
+			sb.append(codigoInstruccion(in));
+		}
+		d.insertaInfoEnNodo(i, "cod", sb.toString());
+		System.out.println(sb.toString());
+		return sb.toString();
+	}
+
+	private String codigo(Asignacion i) {
+		
+		// donde
+		String cod = codigo(i.getDesignador());
+		
+		// que
+		String cod2 = codigo(i.getExpresion());
+		
+		// hazlo
+		String cod3 = DESAPILA_IND;
+		
+		return cod + cod2 + cod3;
+	}
+
+	private String codigo(Expresion expresion) {
+		if (expresion == null) return "";
+		TipoExpresion te = expresion.getTipoExpresion();
+		switch(te){
+			case BINARIA: {
+				codigo((ExpresionBinaria)expresion);
+			} break;
+			case BOOLEAN: {
+				codigo((ExpresionBoolean)expresion);				
+			} break;
+			case DESIGNADOR: {
+				codigo((ExpresionDesignador)expresion);					
+			} break;
+			case DOUBLE: {
+				codigo((ExpresionDouble)expresion);
+			} break;
+			case INTEGER: {
+				codigo((ExpresionInteger)expresion);
+			} break;
+			case UNARIA: {
+				codigo((ExpresionUnaria)expresion);
+			} break;
+			default: break;		
+		}
+		return "";		
+	}
+
+	private void codigo(ExpresionBinaria expresion) {
+		String cod1 = codigo(expresion.getExp0());
+		String cod2 = codigo(expresion.getExp1());
+		OpBinario tipo = expresion.getOpBinario();
+		String tipoOp = tipo.getTipo();
+		if (tipoOp.equalsIgnoreCase("+")){
+			
+		}
 		
 		
 	}
 	
 	
+	
+	private void codigo(ExpresionUnaria expresion) {
+		// TODO Auto-generated method stub
+		
+	}
 
-	private int numeroInstruccionesActivacionPrograma(Programa p) {
+	private void codigo(ExpresionInteger expresion) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private void codigo(ExpresionDouble expresion) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private void codigo(ExpresionDesignador expresion) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private void codigo(ExpresionBoolean expresion) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private String codigo(Designador designador) {
+
+		
+		return null;
+	}
+
+	private void codigoSubprograma(DecSubprogramas decSubprogramas) {
 		
 		
-		return 0;
+		
+		
 	}
 
 	private void asignaEspacio(DecSubprogramas ds) {
@@ -72,7 +273,7 @@ public class GeneraCodigo {
 		}
 	}
 
-	private void asignaEspacioPrincipal(Programa p) {
+	private void asignaEspacioDesdeRaiz(Programa p) {
 		DecSubprogramas ds = p.getDecSubprogramas();
 		dir = anidamiento(ds);
 		d.insertaInfoEnNodo(p, "finDatos", dir);

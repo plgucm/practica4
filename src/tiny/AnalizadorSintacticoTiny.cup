@@ -68,8 +68,7 @@ DecTipos ::= DecTipos : dts PYCOMA DecTipo : dt
 	{: 
 		DecTipos dtsReal = (DecTipos) dts;
 		DecTipos dtReal = (DecTipos) dt;
-		RESULT = AnalizadorSintacticoTiny.cons.creaDecTipos(dtsReal, 
-									dtReal.getIdentificador(), dtReal.getTipo()); 
+		RESULT = AnalizadorSintacticoTiny.cons.creaDecTipos(dtsReal, dtReal.getIdentificador(), dtReal.getTipo()); 
 	:};
 DecTipos ::= DecTipo : dt 
 	{: 
