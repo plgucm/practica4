@@ -5,6 +5,8 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 
 import modelo.instrucciones.Programa;
+import traductor.Decoracion;
+import traductor.EscribeCodigoEnArchivo;
 import traductor.GeneraCodigo;
 
 public class Main {
@@ -36,8 +38,11 @@ public class Main {
 		Chequeo ch = new Chequeo();
 		ch.chequea(p);
 		*/
-		GeneraCodigo gc = new GeneraCodigo();
+		Decoracion d = new Decoracion();
+		GeneraCodigo gc = new GeneraCodigo(d);
 		gc.generaCodigo(p);
+		EscribeCodigoEnArchivo ea = new EscribeCodigoEnArchivo(p, d);
+		ea.escribeCodigo("cod.txt");
 		
 	}
 }

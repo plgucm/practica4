@@ -1,8 +1,7 @@
 package traductor;
 
-import java.util.HashMap;
+
 import java.util.List;
-import java.util.Map;
 
 import modelo.instrucciones.DecSubprogramas;
 import modelo.instrucciones.DecTipos;
@@ -16,27 +15,29 @@ import modelo.tipos.TipoStruct;
 
 public class GeneraCodigo {	
 	
-	private Map<Object, Map<String, Object>> nodosDecorados;	
-	private Map<String, Integer> tamaniosTipos; 
 	private int dir, nivel;
+	private Decoracion d;
 	
-	public GeneraCodigo() {
-		nodosDecorados = new HashMap<Object, Map<String,Object>>();
-		tamaniosTipos = new HashMap<String, Integer>();
+	public GeneraCodigo(Decoracion d) {	
 		dir = nivel = 0;
+		this.d = d;
 	}
 
 	public void generaCodigo(Programa p) {
 		asignaEspacioPrincipal(p);
-		codigoProgramaPrincipal(p);		
+		codigoProgramaPrincipal(p);	
 	}
 
 	private void codigoProgramaPrincipal(Programa p) {
 		int cinst = numeroInstruccionesActivacionPrograma(p);
+		d.insertaInfoEnNodo(p, "cinst", cinst);
 		
-	
+		
+		
 		
 	}
+	
+	
 
 	private int numeroInstruccionesActivacionPrograma(Programa p) {
 		
@@ -65,7 +66,7 @@ public class GeneraCodigo {
 				if (p.isPorValor()){
 					tam = tamanioVar(p.getTipo());
 				}
-				insertaInfoEnNodo(params, "tam", tam);	
+				d.insertaInfoEnNodo(params, "tam", tam);
 		//		System.out.println("TAM de " + p.getIdentificador() + " :" + tam);		
 			}
 		}
@@ -74,7 +75,7 @@ public class GeneraCodigo {
 	private void asignaEspacioPrincipal(Programa p) {
 		DecSubprogramas ds = p.getDecSubprogramas();
 		dir = anidamiento(ds);
-		insertaInfoEnNodo(p, "finDatos", dir);
+		d.insertaInfoEnNodo(p, "finDatos", dir);
 		System.out.println("Anidamiento: " + dir);
 		nivel = 0;
 		asignaEspacio(p);
@@ -91,17 +92,17 @@ public class GeneraCodigo {
 
 	private void asignaEspacio(DecTipos decTipos) {
 		int tam = tamanioVar(decTipos.getTipo());
-		tamaniosTipos.put(decTipos.getIdentificador(), tam);
+		d.insertaInfoEnNodo(decTipos.getIdentificador(), "tam", tam);
 		DecTipos dv = decTipos.getDecTipos();
 		if (dv != null){ asignaEspacio(dv); }		
 	}
 
 	private void asignaEspacio(DecVariables decVariables) {
-		insertaInfoEnNodo(decVariables, "nivel", nivel);
-		insertaInfoEnNodo(decVariables, "dir", dir);
+		d.insertaInfoEnNodo(decVariables, "nivel", nivel);
+		d.insertaInfoEnNodo(decVariables, "dir", dir);
 		int tam = tamanioVar(decVariables.getTipo());
 		// System.out.println("TAM de " + decVariables.getIdentificador() + " :" + tam);
-		insertaInfoEnNodo(decVariables, "tam", tam);
+		d.insertaInfoEnNodo(decVariables, "tam", tam);
 		dir += tam;
 		DecVariables dv = decVariables.getDecVariables();
 		if (dv != null){ asignaEspacio(dv); }				
@@ -117,7 +118,7 @@ public class GeneraCodigo {
 			return 1;
 		case IDENT:
 			TipoID tipoReal = (TipoID)tipo;
-			int tamanio = tamaniosTipos.get(tipoReal.getIdentificador());
+			int tamanio = (Integer) d.getDecoracion(tipoReal.getIdentificador()).get("tam");
 			return tamanio;
 		case ARRAY:
 			TipoArray arr = (TipoArray) tipo;
@@ -162,19 +163,6 @@ public class GeneraCodigo {
 		return Math.max(miAnidamiento, maxAnidamientoHermanos);
 	}
 
-	public Map<String, Object> getDecoracion(Object nodo){
-		if (nodosDecorados.get(nodo) == null){
-			nodosDecorados.put(nodo, new HashMap<String, Object>());
-		}
-		return nodosDecorados.get(nodo);
-	}
 	
-	public boolean insertaInfoEnNodo(Object nodo, String clave, Object valor){
-		return getDecoracion(nodo).put(clave, valor) == null;
-	}
-	
-	public Object leeInfoDeNodo(Object nodo, String clave){
-		return getDecoracion(nodo).get(clave);
-	}
 
 }

@@ -14,8 +14,8 @@ public class LenguajeP {
 	public static String DESAPILA = "desapila\n";
 	public static String APILA_DIR = "apila_dir ALGO\n";
 	public static String DESAPILA_DIR = "desapila_dir ALGO\n";
-	public static String APILA_IND = "apila_ind ALGO\n";
-	public static String DESAPILA_IND = "desapila_ind ALGO\n";
+	public static String APILA_IND = "apila_ind\n";
+	public static String DESAPILA_IND = "desapila_ind\n";
 	
 	public static String READ = "read ALGO\n";
 	public static String WRITE = "write ALGO\n";
@@ -46,8 +46,8 @@ public class LenguajeP {
 	public static String DISTINTO = "distinto\n";
 
 	
-	public static String generaInicio(int longEstatico, int dirMain){
-		return instrConAlgo(APILA, longEstatico) +
+	public static String generaInicio(int tamDatos, int dirMain){
+		return instrConAlgo(APILA, tamDatos) +
 			   instrConAlgo(APILA_DIR, 0) +
 			   instrConAlgo(IR_A, dirMain);
 	}
@@ -72,23 +72,6 @@ public class LenguajeP {
 		return sb.toString();
 	}
 	
-	public static String generaPrologo(int nivel, int tamDatos){
-
-		StringBuilder sb = new StringBuilder();
-		sb.append(instrConAlgo(APILA_DIR, 0));
-		sb.append(instrConAlgo(APILA, 2));
-		sb.append(SUMA);
-		sb.append(instrConAlgo(APILA_DIR, nivel));
-		sb.append(DESAPILA_IND);
-		sb.append(instrConAlgo(DESAPILA_DIR, nivel));
-		sb.append(instrConAlgo(APILA_DIR, 0));
-		sb.append(instrConAlgo(APILA, tamDatos+2));
-		sb.append(SUMA);
-		sb.append(instrConAlgo(DESAPILA_DIR, 0));		
-		
-		return sb.toString();		
-	}
-	
 	public static String generaEpilogo(int nivel, int tamDatos){
 		StringBuilder sb = new StringBuilder();
 		
@@ -110,6 +93,23 @@ public class LenguajeP {
 		return sb.toString();		
 	}
 	
+	public static String generaPrologo(int nivel, int tamDatos){
+
+		StringBuilder sb = new StringBuilder();
+		sb.append(instrConAlgo(APILA_DIR, 0));
+		sb.append(instrConAlgo(APILA, 2));
+		sb.append(SUMA);
+		sb.append(instrConAlgo(APILA_DIR, nivel));
+		sb.append(DESAPILA_IND);
+		sb.append(instrConAlgo(DESAPILA_DIR, nivel));
+		sb.append(instrConAlgo(APILA_DIR, 0));
+		sb.append(instrConAlgo(APILA, tamDatos+2));
+		sb.append(SUMA);
+		sb.append(instrConAlgo(DESAPILA_DIR, 0));		
+		
+		return sb.toString();		
+	}
+	
 	public static String PRELLAMADA_INICIO = 
 				instrConAlgo(APILA_DIR, 0) +
 				instrConAlgo(APILA, 3) +
@@ -119,10 +119,6 @@ public class LenguajeP {
 				instrConAlgo(APILA_DIR, 0) +
 				instrConAlgo(APILA, 1) +
 				SUMA;
-	
-
-	public static String WHILE = "";
-	public static String IF = "";
 	
 	public static String instrConAlgo(String inst, int algo){
 		return inst.replace("ALGO", String.valueOf(algo));
