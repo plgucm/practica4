@@ -4,22 +4,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import modelo.instrucciones.Bloque;
 import modelo.instrucciones.DecSubprogramas;
 import modelo.instrucciones.DecTipos;
 import modelo.instrucciones.DecVariables;
-import modelo.instrucciones.Instruccion;
 import modelo.instrucciones.Parametro;
 import modelo.instrucciones.Programa;
-import modelo.instrucciones.TiposInstruccion;
 import modelo.tipos.Tipo;
 import modelo.tipos.TipoArray;
-import modelo.tipos.TipoDouble;
 import modelo.tipos.TipoID;
 import modelo.tipos.TipoStruct;
 
-public class GeneraCodigo {
-	
+public class GeneraCodigo {	
 	
 	private Map<Object, Map<String, Object>> nodosDecorados;	
 	private Map<String, Integer> tamaniosTipos; 
@@ -33,13 +28,20 @@ public class GeneraCodigo {
 
 	public void generaCodigo(Programa p) {
 		asignaEspacioPrincipal(p);
-		codigo(p);		
+		codigoProgramaPrincipal(p);		
 	}
 
-	private void codigo(Programa p) {
+	private void codigoProgramaPrincipal(Programa p) {
+		int cinst = numeroInstruccionesActivacionPrograma(p);
+		
+	
+		
+	}
+
+	private int numeroInstruccionesActivacionPrograma(Programa p) {
 		
 		
-		
+		return 0;
 	}
 
 	private void asignaEspacio(DecSubprogramas ds) {
@@ -50,6 +52,7 @@ public class GeneraCodigo {
 		int dirCopia = dir;
 		int nivelCopia = nivel;
 		if (ds.getPrograma() != null){
+			nivel++;
 			asignaEspacio(ds.getPrograma());	
 		}
 		dir = dirCopia;
@@ -63,7 +66,7 @@ public class GeneraCodigo {
 					tam = tamanioVar(p.getTipo());
 				}
 				insertaInfoEnNodo(params, "tam", tam);	
-				System.out.println("TAM de " + p.getIdentificador() + " :" + tam);		
+		//		System.out.println("TAM de " + p.getIdentificador() + " :" + tam);		
 			}
 		}
 	}
@@ -84,15 +87,7 @@ public class GeneraCodigo {
 		/*if (p.getBloque() != null) asignaEspacio(p.getBloque());		*/
 	}
 
-	private void asignaEspacio(Bloque bloque) {
-		/*List<Instruccion> list = bloque.getInstrucciones();		
-		if (list != null){
-			for (Instruccion i : list){
-				TiposInstruccion tipo = i.getTipoInstruccion();
-				
-			}
-		}*/
-	}
+	//private void asignaEspacio(Bloque bloque) { }
 
 	private void asignaEspacio(DecTipos decTipos) {
 		int tam = tamanioVar(decTipos.getTipo());
@@ -105,7 +100,7 @@ public class GeneraCodigo {
 		insertaInfoEnNodo(decVariables, "nivel", nivel);
 		insertaInfoEnNodo(decVariables, "dir", dir);
 		int tam = tamanioVar(decVariables.getTipo());
-		System.out.println("TAM de " + decVariables.getIdentificador() + " :" + tam);
+		// System.out.println("TAM de " + decVariables.getIdentificador() + " :" + tam);
 		insertaInfoEnNodo(decVariables, "tam", tam);
 		dir += tam;
 		DecVariables dv = decVariables.getDecVariables();
