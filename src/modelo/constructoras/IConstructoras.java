@@ -61,9 +61,10 @@ public interface IConstructoras {
     Instruccion creaNew(Designador ds);
     Instruccion creaDelete(Designador ds);
 
-    Designador creaDesignador(String id);
-    Designador creaDesignador(Designador designador, Expresion exp);  
-    Designador creaDesignador(Designador designador, String id);
+    Designador creaDesignadorId(String id);
+    Designador creaDesignadorArray(Designador designador, Expresion exp);  
+    Designador creaDesignadorStruct(Designador designador, String id);
+    Designador creaDesignadorPuntero(Designador designador);
     
     Expresion creaExpresionBinaria(Expresion exp0, OpBinario op, Expresion exp1);
     Expresion creaExpresionUnaria(OpUnario op, Expresion exp);

@@ -39,32 +39,31 @@ import modelo.tipos.TipoStruct;
 
 public class Vinculador {
 	
-	private Stack<Map<String, Object>> pilaDeAmbitos;
+	private Stack<Map<Object, Object>> pilaDeAmbitos;
 
-	public void vincula(Programa p) {
+	public Stack<Map<Object, Object>> vincula(Programa p) {
 		iniciaTS();
 		abreBloque();
 		vinculaTipos(p.getDecTipos());
 		vinculaVariables(p.getDecVariables());
 		vinculaSubprogramas(p.getDecSubprogramas());
 		vincula(p.getBloque());
-		cierraBloque();
+		return pilaDeAmbitos;
 	}
 
 	private void iniciaTS() {
-		pilaDeAmbitos = new Stack<Map<String, Object>>();	
+		pilaDeAmbitos = new Stack<Map<Object, Object>>();	
 	}
 	
 	private void abreBloque() {
-		pilaDeAmbitos.push(new HashMap<String, Object>());		
+		pilaDeAmbitos.push(new HashMap<Object, Object>());		
 	}
 
 	private void cierraBloque() {
-		if (pilaDeAmbitos.size() > 1)
-			pilaDeAmbitos.pop();
+		pilaDeAmbitos.pop();
 	}
 	
-	public Stack<Map<String, Object>> getTS(){
+	public Stack<Map<Object, Object>> getTS(){
 		return pilaDeAmbitos;
 	}
 	
@@ -74,20 +73,26 @@ public class Vinculador {
 		System.out.println("Ámbito: " + pilaDeAmbitos.peek());
 		
 	}
+	
+	private void insertaVinculo(Object key, Object value){
+		debugTS("insertaVinculo");
+		Map<Object, Object> ts = pilaDeAmbitos.peek();		
+		ts.put(key, value);
+	}
 
 	private boolean insertaID(String id, Object declaracion){
 		debugTS("insertaID");
-		Map<String, Object> ts = pilaDeAmbitos.peek();		
+		Map<Object, Object> ts = pilaDeAmbitos.peek();		
 		if (ts.get(id) != null){ return false; }
 		ts.put(id, declaracion);
 		return true;
 	}
 	
 	private Object declaracionDe(String id){
-		Map<String, Object> ts = pilaDeAmbitos.peek();
+		Map<Object, Object> ts = pilaDeAmbitos.peek();
 		if (ts.get(id) == null){
 			// Si no está en el ámbito actual, miro en los ámbitos superiores.
-			ListIterator<Map<String, Object>> it = pilaDeAmbitos.listIterator(pilaDeAmbitos.size()-1);
+			ListIterator<Map<Object, Object>> it = pilaDeAmbitos.listIterator(pilaDeAmbitos.size()-1);
 			while (it.hasPrevious()){
 				Object e = it.previous().get(id);
 				if (e != null){
@@ -106,6 +111,15 @@ public class Vinculador {
 			vincula(dt);
 		}
 	}
+
+	private void vincula(DecTipo dt) {
+		if (dt == null) return;
+		vincula(dt.getTipo());
+		String id = dt.getId();
+		if (!insertaID(id, dt)){			
+			throw new UnsupportedOperationException("Identificador duplicado. " + id);			
+		}
+	}
 	
 	private void vinculaVariables(List<DecVariable> decVariables) {
 		if (decVariables == null) return;
@@ -116,6 +130,7 @@ public class Vinculador {
 
 	private void vincula(DecVariable dv) {
 		if (dv == null) return;
+		vincula(dv.getTipo());
 		String id = dv.getIdentificador();
 		if (!insertaID(id, dv)){			
 			throw new UnsupportedOperationException("Identificador duplicado. " + id);			
@@ -136,25 +151,20 @@ public class Vinculador {
 			List<Parametro> params = ds.getParametros();
 			if (params != null){
 				for (Parametro p : params){
-					vincula(p);			
+					insertaID(p.getIdentificador(), p);	
 				}				
 			}
 			
-			Programa prog = ds.getPrograma();
-			if (prog != null){
-				vinculaProg(prog);
+			Programa p = ds.getPrograma();
+			if (p != null){ 
+				vinculaTipos(p.getDecTipos());
+				vinculaVariables(p.getDecVariables());
+				vinculaSubprogramas(p.getDecSubprogramas());		
+				vincula(p.getBloque());		
 			}
 			cierraBloque();		
 		}	
 		
-	}
-
-	private void vincula(DecTipo dt) {
-		String id = dt.getId();
-		vincula(dt.getTipo());
-		if (!insertaID(id, dt)){			
-			throw new UnsupportedOperationException("Identificador duplicado. " + id);			
-		}
 	}
 
 	private void vincula(Tipo tipoInterno) {
@@ -193,28 +203,14 @@ public class Vinculador {
 					throw new UnsupportedOperationException("Campo duplicado. "+id);						
 				}
 				campos.put(id, dt.getTipo());				
-			}			
+			}	
+			insertaVinculo(tipoStruct, campos);
 			
 			break;
 		default:
 			break;
 		}
 		
-	}
-
-	private void vinculaProg(Programa p) {
-		vinculaTipos(p.getDecTipos());
-		vinculaVariables(p.getDecVariables());
-		vinculaSubprogramas(p.getDecSubprogramas());		
-		vincula(p.getBloque());		
-	}
-
-	private void vincula(Parametro p) {
-		if (p == null) return;
-		String id = p.getIdentificador();
-		if (!insertaID(id, p)){			
-			throw new UnsupportedOperationException("Identificador duplicado. " + id);			
-		}	
 	}
 
 	private void vincula(Bloque bloque) {
@@ -255,9 +251,11 @@ public class Vinculador {
 
 	private void vincula(ExpresionDouble expresion) { }
 
-	private void vincula(ExpresionDesignador expresion) { }
-
 	private void vincula(ExpresionBoolean expresion) { }
+	
+	private void vincula(ExpresionDesignador expresion) {
+		vincula(expresion.getValor());
+	}
 
 	private void vincula(ExpresionUnaria expresion) {
 		vincula(expresion.getExp());
@@ -277,17 +275,32 @@ public class Vinculador {
 		Designador d = designador.getDesignador();
 		String id = designador.getIdentificador();
 		
-		if (e != null && d != null){
-			vincula(d);
-			vincula(e);
-		} else if (d != null){
-			vincula(d);
-		} else {
-			if (declaracionDe(id) == null){
-				throw new UnsupportedOperationException("Identificador no declarado. " + id);			
-			}			
-		}
-		
+		switch(designador.getTipo()){
+			case ARRAY: {
+				vincula(d);
+				vincula(e);
+				break;
+			}
+			case ID: {
+				if (id.equalsIgnoreCase("null")){ break; }
+				
+				Object vinculo = declaracionDe(id);
+				if (vinculo == null){
+					throw new UnsupportedOperationException("Identificador no declarado. " + id);			
+				}		
+				insertaVinculo(designador, vinculo);	
+				break;
+			}
+			case STRUCT: {
+				vincula(d);
+				break;				
+			}
+			case PUNTERO: {
+				vincula(d);
+				break;
+			}
+		default: break;
+		}		
 	}
 	
 	private void vincula(Instruccion i) {
@@ -354,9 +367,12 @@ public class Vinculador {
 	private void vincula(Llamada i) {
 		if (i == null) return;
 		String id = i.getIdentificador();
-		if (declaracionDe(id) == null){
+		Object vinculo = declaracionDe(id);
+		if (vinculo == null){
 			throw new UnsupportedOperationException("Identificador no declarado. " + id);			
 		}	
+		insertaVinculo(i, vinculo);
+		
 		List<Expresion> l = i.getParams();
 		if (l != null){
 			for (Expresion e : l){

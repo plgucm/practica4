@@ -5,7 +5,7 @@ import modelo.instrucciones.Programa;
 public class Chequeo {
 
 
-	public Chequeo(TablaDeSimbolos ts) {
+	public Chequeo() {
 		// TODO Auto-generated constructor stub
 	}
 

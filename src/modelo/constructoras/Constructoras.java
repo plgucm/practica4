@@ -238,21 +238,6 @@ public class Constructoras implements IConstructoras {
 	}
 
 	@Override
-	public Designador creaDesignador(String id) {
-		return new Designador(id);
-	}
-
-	@Override
-	public Designador creaDesignador(Designador designador, Expresion exp) {
-		return new Designador(designador, exp);
-	}
-
-	@Override
-	public Designador creaDesignador(Designador designador, String id) {
-		return new Designador(designador, id);
-	}
-
-	@Override
 	public Expresion creaExpresionBinaria(Expresion exp0, OpBinario op, Expresion exp1) {
 		return new ExpresionBinaria(exp0, op, exp1);
 	}
@@ -365,6 +350,26 @@ public class Constructoras implements IConstructoras {
 	@Override
 	public OpUnario creaOperadorToDouble() {
 		return new OpUnario("todouble");
+	}
+
+	@Override
+	public Designador creaDesignadorId(String id) {
+		return new Designador(id);
+	}
+
+	@Override
+	public Designador creaDesignadorArray(Designador designador, Expresion exp) {
+		return new Designador(designador, exp);
+	}
+
+	@Override
+	public Designador creaDesignadorStruct(Designador designador, String id) {
+		return new Designador(designador, id);
+	}
+
+	@Override
+	public Designador creaDesignadorPuntero(Designador designador) {
+		return new Designador(designador);
 	}
 
 	
