@@ -3,7 +3,7 @@ TYPES
   TArbol: pointer TCelda; 
 
   TCelda: struct {
-            valor: int; 
+            valor: int;
             izq: TArbol;
             der: TArbol
           };    

@@ -134,8 +134,10 @@ public class Vinculador {
 			abreBloque();
 			insertaID(id, decSubprogramas);
 			List<Parametro> params = ds.getParametros();
-			for (Parametro p : params){
-				vincula(p);			
+			if (params != null){
+				for (Parametro p : params){
+					vincula(p);			
+				}				
 			}
 			
 			Programa prog = ds.getPrograma();
