@@ -313,6 +313,7 @@ public class GeneraCodigo {
 		nivel = nivelCopia;	
 		
 		List<Parametro> params = ds.getParametros();
+		int dir = 2;
 		if (params != null){
 			for (Parametro p : params){
 				int tam = 1;
@@ -320,7 +321,12 @@ public class GeneraCodigo {
 					tam = tamanioVar(p.getTipo());
 				}
 				d.insertaInfoEnNodo(p, "tam", tam);
-		//		System.out.println("TAM de " + p.getIdentificador() + " :" + tam);		
+				d.insertaInfoEnNodo(p, "dir", dir);
+				d.insertaInfoEnNodo(p, "nivel", nivel);
+
+//				System.out.println("TAM, DIR y NIVEL de " + p.getIdentificador() + " : " 
+//							+ "("+tam+","+dir+","+nivel+")");					
+				dir += tam;
 			}
 		}
 	}
@@ -335,6 +341,7 @@ public class GeneraCodigo {
 	}
 
 	private void asignaEspacio(Programa p) {
+		d.insertaInfoEnNodo(p, "nivel", nivel);
 		if (p.getDecTipos() != null) asignaEspacio(p.getDecTipos());
 		if (p.getDecVariables() != null) asignaEspacioVars(p.getDecVariables());
 		if (p.getDecSubprogramas() != null) asignaEspacioSubs(p.getDecSubprogramas());
@@ -352,14 +359,20 @@ public class GeneraCodigo {
 	}
 
 	private void asignaEspacioVars(List<DecVariable> decVariables) {		
+		int dir = 0;
 		for (DecVariable dv : decVariables){
 			d.insertaInfoEnNodo(decVariables, "nivel", nivel);
-			d.insertaInfoEnNodo(decVariables, "dir", dir);
-			int tam = tamanioVar(dv.getTipo());
-			
+			int tam = tamanioVar(dv.getTipo());			
 			d.insertaInfoEnNodo(decVariables, "tam", tam);
-			dir += tam;			
-			System.out.println("TAM de " + dv.getIdentificador() + " :" + tam);		
+			if (this.nivel == 0){
+				d.insertaInfoEnNodo(decVariables, "dir", this.dir);
+				// System.out.println("TAM, DIR y NIVEL de " + dv.getIdentificador() + " : " + "("+tam+","+this.dir+","+nivel+")");	
+			} else {
+				d.insertaInfoEnNodo(decVariables, "dir", dir);	
+				// System.out.println("TAM, DIR y NIVEL de " + dv.getIdentificador() + " : " + "("+tam+","+dir+","+nivel+")");				
+			}
+			dir += tam;				
+			this.dir += tam;
 		}
 	}
 
@@ -385,6 +398,7 @@ public class GeneraCodigo {
 			int tam = 0;
 			List<DecTipo> tipos = struct.getTipos();
 			for (DecTipo tip : tipos){
+				d.insertaInfoEnNodo(tip, "desp", tam);
 				tam += tamanioVar(tip.getTipo());
 			}
 			return tam;

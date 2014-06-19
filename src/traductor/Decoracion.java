@@ -26,9 +26,5 @@ public class Decoracion {
 		return getDecoracion(nodo).get(clave);
 	}
 
-	public Map<Object, Map<String, Object>> getNodosDecorados() {
-		return nodosDecorados;
-	}
-
 	
 }
