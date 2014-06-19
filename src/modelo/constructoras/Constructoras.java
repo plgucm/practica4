@@ -15,6 +15,10 @@ import modelo.instrucciones.Programa;
 import modelo.operadores.OpBinario;
 import modelo.operadores.OpUnario;
 import modelo.tipos.Tipo;
+import modelo.tipos.TipoBool;
+import modelo.tipos.TipoDouble;
+import modelo.tipos.TipoEntero;
+import modelo.tipos.TipoID;
 
 
 public class Constructoras implements IConstructoras {
@@ -69,7 +73,13 @@ public class Constructoras implements IConstructoras {
 	}
 
 	@Override
-	public DecTipo uneListaDecTipos(List<DecTipo> dts, String id, Tipo tipo) {
+	public List<DecTipo> uneListaDecTipos(List<DecTipo> dts, DecTipo dt) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<DecTipo> creaListaDecTipos(DecTipo dt) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -82,40 +92,39 @@ public class Constructoras implements IConstructoras {
 
 	@Override
 	public List<DecVariable> uneListaDecVariables(List<DecVariable> dvs,
-			String id, Tipo tipo) {
+			DecVariable dv) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public List<DecVariable> creaListaDecVariables(String id, Tipo tipo) {
+	public List<DecVariable> creaListaDecVariables(DecVariable dv) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public List<DecVariable> creaListaDecVariablesVacia() {
+	public DecVariable creaDecVariable(String id, Tipo tipo) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public List<DecSubprograma> uneListaDecSubprogramas(
-			List<DecSubprograma> dss, String id, List<Parametro> params,
+			List<DecSubprograma> dss, DecSubprograma ds) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<DecSubprograma> creaListaDecSubprogramas(DecSubprograma ds) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public DecSubprograma creaDecSubprograma(String id, List<Parametro> params,
 			Programa subprograma) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public List<DecSubprograma> uneListaDecSubprogramas(String id,
-			List<Parametro> params, Programa subprograma) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public List<DecSubprograma> uneListaDecSubprogramas() {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -129,12 +138,6 @@ public class Constructoras implements IConstructoras {
 
 	@Override
 	public List<Parametro> creaListaParametros(Parametro p) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public List<Parametro> creaListaParametrosVacia() {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -387,8 +390,13 @@ public class Constructoras implements IConstructoras {
 		return null;
 	}
 
-	
+	@Override
+	public Instruccion creaListaCasos(Caso caso) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
-    
+	
+	
 
 }

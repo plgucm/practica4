@@ -1,21 +1,6 @@
 Programa -> program types DecTipos variables DecVariables subprograms DecSubprogramas IBloque 
 	Programa.a = creaPrograma(DecTipos.a, DecVariables.a, DecSubprogramas.a, IBloque.a)
 
-Tipo -> int
-	Tipo.a = creaInt()
-Tipo -> double
-	Tipo.a = creaDouble()
-Tipo -> boolean
-	Tipo.a = creaBoolean()
-Tipo -> id
-	Tipo.a = creaID(id.lex)
-Tipo -> array Tipo[numeroNatural]
-	Tipo.a = creaArray(Tipo.a, numeroNatural.a)
-Tipo -> struct { DecTipos }
-	Tipo.a = creaStruct(DecTipos.a)
-Tipo -> pointer Tipo 
-	Tipo.a = creaPuntero(Tipo.a)
-
 DecTipos -> DecTipos ; id : Tipo  
 	DecTipos.a = uneListaDecTipos(DecTipos.a, id.a, Tipo.a)
 DecTipos -> id : Tipo 
@@ -30,6 +15,21 @@ DecSubprogramas -> DecSubprogramas ; subprogram id Parametros types DecTipos var
 	DecSubprogramas.a = uneListaDecSubprogramas(DecSubprogramas.a, id.a, Parametros.a, DecTipos.a, DecVariables.a, DecSubprogramas.a, IBloque.a)
 DecSubprogramas ->  subprogram id Parametros types DecTipos variables DecVariables subprograms DecSubprogramas IBloque
 	DecSubprogramas.a = creaListaDecSubprogramas(id.a, Parametros.a, DecTipos.a, DecVariables.a, DecSubprogramas.a, IBloque.a)  
+ 
+Tipo -> int
+	Tipo.a = creaInt()
+Tipo -> double
+	Tipo.a = creaDouble()
+Tipo -> boolean
+	Tipo.a = creaBoolean()
+Tipo -> id
+	Tipo.a = creaID(id.lex)
+Tipo -> array Tipo[numeroNatural]
+	Tipo.a = creaArray(Tipo.a, numeroNatural.a)
+Tipo -> struct { DecTipos }
+	Tipo.a = creaStruct(DecTipos.a)
+Tipo -> pointer Tipo 
+	Tipo.a = creaPuntero(Tipo.a)
  
 Parametros -> ( ListaParametros ) |
 	Parametros.a = ListaParametros.a

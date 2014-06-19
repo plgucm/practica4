@@ -28,21 +28,20 @@ public interface IConstructoras {
     Tipo creaStruct(List<DecTipo> dts);
     Tipo creaPuntero(Tipo tipo);
    
-    DecTipo uneListaDecTipos(List<DecTipo> dts, String id, Tipo tipo);
+    List<DecTipo> uneListaDecTipos(List<DecTipo> dts, DecTipo dt);
+    List<DecTipo> creaListaDecTipos(DecTipo dt);
     DecTipo creaDecTipo(String id, Tipo tipo);
     
-    List<DecVariable> uneListaDecVariables(List<DecVariable> dvs, String id, Tipo tipo);
-    List<DecVariable> creaListaDecVariables(String id, Tipo tipo);
-    List<DecVariable> creaListaDecVariablesVacia();
+    List<DecVariable> uneListaDecVariables(List<DecVariable> dvs, DecVariable dv);
+    List<DecVariable> creaListaDecVariables(DecVariable dv);
+    DecVariable creaDecVariable(String id, Tipo tipo);
     
-    List<DecSubprograma> uneListaDecSubprogramas(List<DecSubprograma> dss, String id, 
-    										  	 List<Parametro> params, Programa subprograma);
-    List<DecSubprograma> uneListaDecSubprogramas(String id, List<Parametro> params, Programa subprograma);
-    List<DecSubprograma> uneListaDecSubprogramas();
+    List<DecSubprograma> uneListaDecSubprogramas(List<DecSubprograma> dss, DecSubprograma ds);
+    List<DecSubprograma> creaListaDecSubprogramas(DecSubprograma ds);
+    DecSubprograma creaDecSubprograma(String id, List<Parametro> params, Programa subprograma);
 
     List<Parametro> uneListaParametros(List<Parametro> params, Parametro p);
     List<Parametro> creaListaParametros(Parametro p);
-    List<Parametro> creaListaParametrosVacia();
 
     Parametro creaParametroValor(String id, Tipo tipo);
     Parametro creaParametroVariable(String id, Tipo tipo);
@@ -52,6 +51,7 @@ public interface IConstructoras {
     Instruccion creaBloqueVacio();
     Instruccion creaIf(List<Caso> casos);
     Instruccion uneListaCasos(List<Caso> casos, Caso caso);
+    Instruccion creaListaCasos(Caso caso);
     Instruccion creaCaso(Expresion exp, Bloque bloque);
     Instruccion creaBucle(List<Caso> casos);
     Instruccion creaLlamadaConArgumentos(String id, List<Expresion> params);

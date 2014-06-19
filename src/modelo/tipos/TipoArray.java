@@ -8,8 +8,8 @@ public class TipoArray extends Tipo {
     private Tipo tipo;
 
 
-    public TipoArray(String id, Integer size, Tipo tipo) {
-    	super(id, Tipos.ARRAY);
+    public TipoArray(Integer size, Tipo tipo) {
+    	super(Tipos.ARRAY);
 		this.dimension = size;
 		this.tipo = tipo;
 	}

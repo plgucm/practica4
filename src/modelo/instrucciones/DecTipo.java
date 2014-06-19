@@ -15,8 +15,14 @@ public class DecTipo {
 		this.tipo = tipo;
 	}
 
+    public String getId() {
+		return id;
+	}
     
-    
+	public Tipo getTipo() {
+		return tipo;
+	}
+	    
     
 
 }

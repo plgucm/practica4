@@ -17,10 +17,10 @@ import modelo.expresiones.TipoExpresion;
 import modelo.instrucciones.Asignacion;
 import modelo.instrucciones.Bloque;
 import modelo.instrucciones.Bucle;
-import modelo.instrucciones.Casos;
+import modelo.instrucciones.Caso;
 import modelo.instrucciones.Condicional;
 import modelo.instrucciones.DecSubprograma;
-import modelo.instrucciones.DecTipos;
+import modelo.instrucciones.DecTipo;
 import modelo.instrucciones.DecVariable;
 import modelo.instrucciones.Delete;
 import modelo.instrucciones.Designador;
@@ -44,13 +44,13 @@ public class Vinculador {
 	public void vincula(Programa p) {
 		iniciaTS();
 		abreBloque();
-		vincula(p.getDecTipos());
-		vincula(p.getDecVariables());
-		vincula(p.getDecSubprogramas());
+		vinculaTipos(p.getDecTipos());
+		vinculaVariables(p.getDecVariables());
+		vinculaSubprogramas(p.getDecSubprogramas());
 		vincula(p.getBloque());
 		cierraBloque();
 	}
-	
+
 	private void iniciaTS() {
 		pilaDeAmbitos = new Stack<Map<String, Object>>();	
 	}
@@ -100,19 +100,57 @@ public class Vinculador {
 		return ts.get(id);
 	}
 
-	private void vincula(DecTipos decTipos) {
-		if (decTipos == null) return;
-		String id = decTipos.getIdentificador();
-		
-		vincula(decTipos.getTipo());
-		
-		if (!insertaID(id, decTipos)){			
-			throw new UnsupportedOperationException("Identificador duplicado. " + id);			
+	private void vinculaTipos(List<DecTipo> decTipos) {
+		if (decTipos == null) return;		
+		for (DecTipo dt : decTipos){
+			vincula(dt);
 		}
+	}
+	
+	private void vinculaVariables(List<DecVariable> decVariables) {
+		if (decVariables == null) return;
+		for (DecVariable dv : decVariables){
+			vincula(dv);
+		}		
+	}
+
+	private void vincula(DecVariable dv) {
+		String id = dv.getIdentificador();
+		if (!insertaID(id, dv)){			
+			throw new UnsupportedOperationException("Identificador duplicado. " + id);			
+		}	
+	}
+
+	private void vinculaSubprogramas(List<DecSubprograma> decSubprogramas) {
+		if (decSubprogramas == null) return;
+		for (DecSubprograma ds : decSubprogramas){
+			String id = ds.getIdentificador();
+			
+			if (!insertaID(id, decSubprogramas)){			
+				throw new UnsupportedOperationException("Identificador duplicado. " + id);			
+			}	
+			declaracionDe(id);
+			abreBloque();
+			insertaID(id, decSubprogramas);
+			List<Parametro> params = ds.getParametros();
+			for (Parametro p : params){
+				vincula(p);			
+			}
+			
+			Programa prog = ds.getPrograma();
+			if (prog != null){
+				vinculaProg(prog);
+			}
+			cierraBloque();		
+		}	
 		
-		DecTipos siguiente = decTipos.getDecTipos();
-		if (siguiente != null) { 
-			vincula(siguiente);	
+	}
+
+	private void vincula(DecTipo dt) {
+		String id = dt.getId();
+		vincula(dt.getTipo());
+		if (!insertaID(id, dt)){			
+			throw new UnsupportedOperationException("Identificador duplicado. " + id);			
 		}
 	}
 
@@ -130,11 +168,11 @@ public class Vinculador {
 		case IDENT:
 			TipoID tipoId = (TipoID) tipoInterno;
 			
-			Object dec = declaracionDe(tipoId.getIdentificador());
+			Object dec = declaracionDe(tipoId.getId());
 			if (dec == null){
 				throw new UnsupportedOperationException("Identificador no declarado. ");				
 			} else {
-				insertaID(tipoId.getIdentificador(), tipoId);
+				insertaID(tipoId.getId(), tipoId);
 			}
 			
 			break;
@@ -145,17 +183,14 @@ public class Vinculador {
 		case STRUCT:
 			
 			TipoStruct tipoStruct = (TipoStruct) tipoInterno;
-			List<String> ids = tipoStruct.getIdentificadores();
-			List<Tipo> tipos = tipoStruct.getTipos();
 			Map<String, Object> campos = new HashMap<String, Object>();
-			for (int i = 0, l = ids.size(); i < l; i++){
-				String id = ids.get(i);
+			for (DecTipo dt : tipoStruct.getTipos()){
+				String id = dt.getId();
 				if (campos.get(id) != null){
 					throw new UnsupportedOperationException("Campo duplicado. "+id);						
 				}
-				// System.out.println(tipos.get(i));
-				campos.put(id, tipos.get(i));
-			}	
+				campos.put(id, dt.getTipo());				
+			}			
 			
 			break;
 		default:
@@ -164,63 +199,10 @@ public class Vinculador {
 		
 	}
 
-	private void vincula(DecVariable decVariables) {
-		if (decVariables == null) return;
-		String id = decVariables.getIdentificador();
-		if (!insertaID(id, decVariables)){			
-			throw new UnsupportedOperationException("Identificador duplicado. " + id);			
-		}	
-		DecVariable siguiente = decVariables.getDecVariables();
-		if (siguiente != null) { 
-			vincula(siguiente);	
-		}
-	}
-
-	private void vincula(DecSubprograma decSubprogramas) {
-		if (decSubprogramas == null) return;
-		String id = decSubprogramas.getIdentificador();
-		if (id == null){ // SUBPROGRAMS			
-
-			//System.out.println("Subprograms:"+id);
-			
-			DecSubprograma decsubprog = decSubprogramas.getDecSubprogramas();
-			if (decsubprog != null){	
-				vincula(decsubprog);	
-			}
-			
-		} else { // SUBPROGRAM		
-
-			//System.out.println("Program:"+id);
-			
-			if (!insertaID(id, decSubprogramas)){			
-				throw new UnsupportedOperationException("Identificador duplicado. " + id);			
-			}	
-			declaracionDe(id);
-			abreBloque();
-			insertaID(id, decSubprogramas);
-			List<Parametro> params = decSubprogramas.getParametros();
-			for (Parametro p : params){
-				vincula(p);			
-			}
-			
-			Programa prog = decSubprogramas.getPrograma();
-			if (prog != null){
-				vinculaProg(prog);
-			}
-			cierraBloque();	
-			
-			DecSubprograma ds = decSubprogramas.getDecSubprogramas();
-			if (ds != null){
-				vincula(ds);
-			}	
-			
-		}
-	}
-
 	private void vinculaProg(Programa p) {
-		vincula(p.getDecTipos());
-		vincula(p.getDecVariables());
-		vincula(p.getDecSubprogramas());		
+		vinculaTipos(p.getDecTipos());
+		vinculaVariables(p.getDecVariables());
+		vinculaSubprogramas(p.getDecSubprogramas());		
 		vincula(p.getBloque());		
 	}
 
@@ -319,7 +301,7 @@ public class Vinculador {
 				vincula((Bucle) i);
 			}; break;
 			case CASOS: {
-				vincula((Casos) i);
+				vincula((List<Caso>) i);
 			}; break;
 			case DELETE: {
 				vincula((Delete) i);
@@ -340,6 +322,14 @@ public class Vinculador {
 				vincula((Write) i);
 			}; break;
 			default: break;
+		}		
+	}
+
+	private void vincula(List<Caso> i) {
+		if (i == null) return;
+		for (Caso caso : i){
+			vincula(caso.getBloque());
+			vincula(caso.getExpresion());			
 		}		
 	}
 
@@ -380,16 +370,6 @@ public class Vinculador {
 	private void vincula(Delete i) {
 		if (i == null) return;
 		vincula(i.getDesignador());
-	}
-
-	private void vincula(Casos i) {
-		if (i == null) return;
-		vincula(i.getBloque());
-		vincula(i.getExpresion());
-		Casos cs = i.getCasos();
-		if (cs != null){
-			vincula(cs);
-		}
 	}
 
 	private void vincula(Bucle i) {

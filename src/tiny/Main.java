@@ -19,7 +19,6 @@ public class Main {
 		Programa p = AnalizadorSintacticoTiny.programaRaiz;	
 		
 
-		System.out.println(p.getDecTipos().getIdentificador());
 		
 		
 		//TablaDeSimbolos ts = new TablaDeSimbolos();

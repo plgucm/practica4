@@ -17,11 +17,6 @@ parser code {:
    }
    static Programa programaRaiz;
    static Constructoras cons;
-   static class Campo {
-   		public Campo(String id, Tipo tipo){ this.id = id; this.tipo = tipo; }
-   		public String id;
-   		public Tipo tipo;
-   }
 :};
 init with {: 
    errores = new GestionErroresTiny();
@@ -45,7 +40,7 @@ non terminal Programa, SeccionTipos, SeccionVariables, SeccionSubprogramas, DecT
 Programa ::= PROGRAM SeccionTipos : st SeccionVariables : sv SeccionSubprogramas : ss IBloque : ib
 	{: 
 	RESULT = AnalizadorSintacticoTiny.programaRaiz = AnalizadorSintacticoTiny.cons
-					.creaPrograma((DecTipos)st, (DecVariables)sv, (DecSubprogramas)ss, (Bloque)ib); 
+					.creaPrograma((List<DecTipo>)st, (List<DecVariable>)sv, (List<DecSubprograma>)ss, (Bloque)ib); 
 	:};
 	
 SeccionTipos ::= TYPES DecTipos : dt
@@ -59,24 +54,24 @@ SeccionVariables ::=
 	{: RESULT = null; :};
 
 SeccionSubprogramas ::= SUBPROGRAMS DecSubprogramas : ds
-	{: RESULT = AnalizadorSintacticoTiny.cons.creaDecSubprogramas((DecSubprogramas)ds, null, null, null); :};
-	
+	{: RESULT = ds; :};	
 SeccionSubprogramas ::= 
 	{: RESULT = null; :};
 
 DecTipos ::= DecTipos : dts PYCOMA DecTipo : dt 
 	{: 
-		DecTipos dtsReal = (DecTipos) dts;
-		DecTipos dtReal = (DecTipos) dt;
-		RESULT = AnalizadorSintacticoTiny.cons.creaDecTipos(dtsReal, dtReal.getIdentificador(), dtReal.getTipo()); 
+		List<DecTipo> dtsReal = (List<DecTipo>) dts;
+		DecTipo dtReal = (DecTipo) dt;
+		RESULT = AnalizadorSintacticoTiny.cons.uneListaDecTipos(dtsReal, dtReal); 
 	:};
 DecTipos ::= DecTipo : dt 
 	{: 
-		RESULT = dt; 
+		DecTipo dtReal = (DecTipo) dt;
+		RESULT = AnalizadorSintacticoTiny.cons.creaListaDecTipos(dtReal); 
 	:};	
 DecTipo ::= ID : id DOSPUNTOS Tipo : tipo
 	{: 
-		RESULT = AnalizadorSintacticoTiny.cons.creaDecTipos(null, id, (Tipo) tipo); 
+		RESULT = AnalizadorSintacticoTiny.cons.creaDecTipo(id, (Tipo) tipo);
 	:};	
 
 Tipo ::= INT 
@@ -89,83 +84,70 @@ Tipo ::= ID : id
 	{: RESULT = AnalizadorSintacticoTiny.cons.creaID(id); :};
 Tipo ::= ARRAY Tipo : tipo CAP NUMERO_NATURAL : cap CCIERRE 
 	{: 
-		RESULT = AnalizadorSintacticoTiny.cons.creaArray(Integer.valueOf((String)cap), (Tipo) tipo); 
+		RESULT = AnalizadorSintacticoTiny.cons.creaArray((Tipo) tipo, Integer.valueOf((String)cap)); 
 	:}; 
 Tipo ::= STRUCT LLAVEAP Campos : campos LLAVECIERRE 
-	{: 	
-		List<String> ids = new ArrayList<String>();
-		List<Tipo> tipos = new ArrayList<Tipo>();
-		
-		List<Campo> camposReal = (List<Campo>) campos;
-		for (Campo c : camposReal){
-			ids.add(c.id);
-			tipos.add(c.tipo);
-		}
-		RESULT = AnalizadorSintacticoTiny.cons.creaStruct(ids, tipos); 
+	{: 			
+		List<DecTipo> camposReal = (List<DecTipo>) campos;
+		RESULT = AnalizadorSintacticoTiny.cons.creaStruct(camposReal); 
 	:};
 Tipo ::= POINTER Tipo : tipo
 	{: 	RESULT = AnalizadorSintacticoTiny.cons.creaPuntero((Tipo) tipo); :};
 
 Campos ::= Campos : cpos PYCOMA Campo : c
 	{: 
-		List<Campo> nuevosCampos = new ArrayList<Campo>(); 
-		List<Campo> camposReal = (List<Campo>) cpos;
-		for(Campo ca : camposReal){ nuevosCampos.add(ca); }
-		nuevosCampos.add((Campo)c);	
-		RESULT = nuevosCampos;
+		List<DecTipo> nuevosCampos = (List<DecTipo>) cpos; 
+		DecTipo camposReal = (DecTipo) c;
+		RESULT = AnalizadorSintacticoTiny.cons.uneListaDecTipos(nuevosCampos, camposReal); 
 	:};
 	
 Campos ::= Campo : c 
 	{: 	
-		List<Campo> nuevosCampos = new ArrayList<Campo>(); 	
-		nuevosCampos.add((Campo)c);
-		RESULT = nuevosCampos;
+		RESULT = AnalizadorSintacticoTiny.cons.creaListaDecTipos((DecTipo) c); 
 	:};
 
 Campo   ::= ID : id DOSPUNTOS Tipo : tipo
 	{: 
-		RESULT = new Campo(id, (Tipo) tipo);
+		RESULT = AnalizadorSintacticoTiny.cons.creaDecTipo(id, (Tipo) tipo); 
 	:};
 
 DecVariables ::= DecVariables : dvs PYCOMA DecVariable : dv
 	{:
-		 DecVariables dvsReal = (DecVariables) dvs;
-		 DecVariables dvReal = (DecVariables) dv;
-		 RESULT = AnalizadorSintacticoTiny.cons.creaDecVariables(dvsReal,
-		 								 dvReal.getIdentificador(), dvReal.getTipo()); 
+		 List<DecVariable> dvsReal = (List<DecVariable>) dvs;
+		 DecVariable dvReal = (DecVariable) dv;
+		 RESULT = AnalizadorSintacticoTiny.cons.uneListaDecVariables(dvsReal, dvReal); 
 	:};
 	
 DecVariables ::= DecVariable : dv
 	{:
-		 RESULT = dv;
+		 DecVariable dvReal = (DecVariable) dv;
+		 RESULT = AnalizadorSintacticoTiny.cons.creaListaDecVariables(dvReal); 
 	:};
 	
 DecVariable ::= ID : id DOSPUNTOS Tipo : tipo
 	{:		
-		 RESULT = AnalizadorSintacticoTiny.cons.creaDecVariables(null, id, (Tipo)tipo); 
+		 RESULT = AnalizadorSintacticoTiny.cons.creaDecVariable(id, (Tipo)tipo); 
 	:};
 	
 DecSubprogramas ::= DecSubprogramas : dss PYCOMA DecSubprograma : ds
 	{:		
-		 DecSubprogramas dssReal = (DecSubprogramas) dss;
-		 DecSubprogramas dsReal = (DecSubprogramas) ds;
-		 RESULT = AnalizadorSintacticoTiny.cons.creaDecSubprogramas(dssReal, 
-		 									dsReal.getIdentificador(), 
-		 									dsReal.getParametros(), 
-		 									dsReal.getPrograma()); 
+		 List<DecSubprograma> dssReal = (List<DecSubprograma>) dss;
+		 DecSubprograma dsReal = (DecSubprograma) ds;
+		 RESULT = AnalizadorSintacticoTiny.cons.uneListaDecSubprogramas(dssReal, dsReal); 
 	:};
 	
 DecSubprogramas ::= DecSubprograma : ds
 	{:		
-		 RESULT = ds; 
+		 DecSubprograma dsReal = (DecSubprograma) ds;
+		 RESULT = AnalizadorSintacticoTiny.cons.creaListaDecSubprogramas(dsReal);  
 	:};
 	
 DecSubprograma ::= SUBPROGRAM ID : id Parametros : params
 				SeccionTipos : tipos SeccionVariables : vars SeccionSubprogramas : ss IBloque : bloque
 	{:		
-		 RESULT = AnalizadorSintacticoTiny.cons.creaDecSubprogramas(null, id, ((List<Parametro>) params), 
-				AnalizadorSintacticoTiny.cons.
-				creaPrograma((DecTipos)tipos, (DecVariables)vars, (DecSubprogramas)ss, (Bloque)bloque)); 
+		 RESULT = AnalizadorSintacticoTiny.cons.creaDecSubprograma(id, ((List<Parametro>) params), 
+					AnalizadorSintacticoTiny.cons.creaPrograma((List<DecTipo>)tipos, 
+					(List<DecVariable>)vars, (List<DecSubprograma>)ss, (Bloque)bloque)); 
 	:};
 	
 Parametros ::= PAP ListaParametros : lp PCIERRE  
@@ -175,31 +157,30 @@ Parametros ::= PAP ListaParametros : lp PCIERRE
 
 Parametros ::= PAP PCIERRE
 	{:
-		RESULT = new ArrayList<Parametro>();
+		RESULT = null;
 	:};
 	
 ListaParametros ::= ListaParametros : lp COMA Parametro : p
 	{:
 		List<Parametro> pars = (ArrayList<Parametro>) lp;
-		pars.add((Parametro)p);		
-		RESULT = pars;
+		Parametro par = (Parametro) p;
+		RESULT = AnalizadorSintacticoTiny.cons.uneListaParametros(pars, par);
 	:};
 
 ListaParametros ::= Parametro : p
 	{:
-		List<Parametro> pars = new ArrayList<Parametro>();
-		pars.add((Parametro)p);
-		RESULT = pars;
+		Parametro par = (Parametro) p;
+		RESULT = AnalizadorSintacticoTiny.cons.creaListaParametros(par);
 	:};
 	
 Parametro ::= ID : id DOSPUNTOS Tipo : tipo
 	{:
-		RESULT = AnalizadorSintacticoTiny.cons.creaParametro(true, id, (Tipo) tipo);
+		RESULT = AnalizadorSintacticoTiny.cons.creaParametroValor(id, (Tipo) tipo);
 	:};
 
 Parametro ::= AMP ID : id DOSPUNTOS Tipo : tipo
 	{:
-		RESULT = AnalizadorSintacticoTiny.cons.creaParametro(false, id, (Tipo) tipo);
+		RESULT = AnalizadorSintacticoTiny.cons.creaParametroVariable(id, (Tipo) tipo);
 	:};
 	
 Instruccion ::= IAsig : ins 
@@ -270,33 +251,36 @@ Instrucciones ::= Instruccion : i
 	
 ICond ::= IF Casos : c ENDIF
 	{:
-		RESULT = AnalizadorSintacticoTiny.cons.creaCasos((Casos) c, (Expresion) null, (Bloque) null);	
+		RESULT = AnalizadorSintacticoTiny.cons.creaIf((List<Caso>) c);	
 	:};
 	
 Casos ::= Casos : cs CAP CCIERRE Caso : ca
 	{:
-		Casos caReal = (Casos) ca;
-		RESULT = AnalizadorSintacticoTiny.cons.creaCasos((Casos) cs, caReal.getExpresion(), caReal.getBloque());			
+		RESULT = AnalizadorSintacticoTiny.cons.uneListaCasos((List<Caso>) cs, (Caso) ca);			
 	:};
 
 Casos ::= Caso : c
 	{:
-		RESULT = AnalizadorSintacticoTiny.cons.creaCasos((Casos) c, (Expresion) null, (Bloque) null);			
+		RESULT = AnalizadorSintacticoTiny.cons.creaListaCasos((Caso) c);			
 	:};
 	
 Caso  ::= Exp0 : e DOSPUNTOS IBloque : b
 	{:
-		RESULT = AnalizadorSintacticoTiny.cons.creaCasos(null, (Expresion) e, (Bloque) b);			
+		RESULT = AnalizadorSintacticoTiny.cons.creaCaso((Expresion) e, (Bloque) b);			
 	:};
 	
 IBucle ::= DO Casos : c ENDDO
 	{:
-		RESULT = AnalizadorSintacticoTiny.cons.creaBucle((Casos) c);		
+		RESULT = AnalizadorSintacticoTiny.cons.creaBucle((List<Caso>) c);		
 	:};
 	
 ILlamada  ::= ID : id Argumentos : args
 	{:		
-		RESULT = AnalizadorSintacticoTiny.cons.creaLlamada(id, (List<Expresion>) args);
+		if (args != null){	
+			RESULT = AnalizadorSintacticoTiny.cons.creaLlamadaConArgumentos(id, (List<Expresion>) args);		
+		} else {		
+			RESULT = AnalizadorSintacticoTiny.cons.creaLlamada(id);
+		}
 	:};
 	
 IRead ::= READ Designador: d
@@ -326,12 +310,14 @@ ListaArgumentos ::= ListaArgumentos : la COMA Exp0 : e
 		List<Expresion> las = new ArrayList<Expresion>();
 		for (Expresion exp : (List<Expresion>)la){ las.add((Expresion)la); }
 		las.add((Expresion)e);
-		RESULT = las;	
+		RESULT = las;
 	:};
 
 ListaArgumentos ::= Exp0 : e
 	{:
-		RESULT = AnalizadorSintacticoTiny.cons.creaArgumentos((Expresion) e);
+		List<Expresion> las = new ArrayList<Expresion>();
+		las.add((Expresion)e);
+		RESULT = las;
 	:};
 	
 
@@ -382,44 +368,44 @@ Exp4 ::= PAP Exp0 PCIERRE;
 
 
 
-OpComp ::= IGUAL  : v
-	{: RESULT = AnalizadorSintacticoTiny.cons.creaOpBinario((String)v); :};
-OpComp ::= DISTINTO : v
-	{: RESULT = AnalizadorSintacticoTiny.cons.creaOpBinario((String)v); :};
-OpComp ::= MAYOR  : v
-	{: RESULT = AnalizadorSintacticoTiny.cons.creaOpBinario((String)v); :};
-OpComp ::= MAYOROIGUAL  : v
-	{: RESULT = AnalizadorSintacticoTiny.cons.creaOpBinario((String)v); :};
-OpComp ::= MENOR  : v
-	{: RESULT = AnalizadorSintacticoTiny.cons.creaOpBinario((String)v); :};
-OpComp ::= MENOROIGUAL : v
-	{: RESULT = AnalizadorSintacticoTiny.cons.creaOpBinario((String)v); :};	
+OpComp ::= IGUAL  
+	{: RESULT = AnalizadorSintacticoTiny.cons.creaOperadorIgual(); :};
+OpComp ::= DISTINTO 
+	{: RESULT = AnalizadorSintacticoTiny.cons.creaOperadorDistinto(); :};
+OpComp ::= MAYOR  
+	{: RESULT = AnalizadorSintacticoTiny.cons.creaOperadorMayor(); :};
+OpComp ::= MAYOROIGUAL  
+	{: RESULT = AnalizadorSintacticoTiny.cons.creaOperadorMayorIgual(); :};
+OpComp ::= MENOR  
+	{: RESULT = AnalizadorSintacticoTiny.cons.creaOperadorMenor(); :};
+OpComp ::= MENOROIGUAL 
+	{: RESULT = AnalizadorSintacticoTiny.cons.creaOperadorMenorIgual(); :};	
 	
 
-OpAditivo ::= OR  : v
-	{: RESULT = AnalizadorSintacticoTiny.cons.creaOpBinario((String)v); :};
-OpAditivo ::= MENOS : v
-	{: RESULT = AnalizadorSintacticoTiny.cons.creaOpBinario((String)v); :};
-OpAditivo ::= MAS : v
-	{: RESULT = AnalizadorSintacticoTiny.cons.creaOpBinario((String)v); :};
+OpAditivo ::= OR  
+	{: RESULT = AnalizadorSintacticoTiny.cons.creaOperadorOr(); :};
+OpAditivo ::= MENOS 
+	{: RESULT = AnalizadorSintacticoTiny.cons.creaOperadorMenos(); :};
+OpAditivo ::= MAS 
+	{: RESULT = AnalizadorSintacticoTiny.cons.creaOperadorMas(); :};
 
-OpMultiplicativo ::= AND  : v
-	{: RESULT = AnalizadorSintacticoTiny.cons.creaOpBinario((String)v); :};
-OpMultiplicativo ::= MOD : v
-	{: RESULT = AnalizadorSintacticoTiny.cons.creaOpBinario((String)v); :};
-OpMultiplicativo ::= DIV : v
-	{: RESULT = AnalizadorSintacticoTiny.cons.creaOpBinario((String)v); :};
-OpMultiplicativo ::= POR : v
-	{: RESULT = AnalizadorSintacticoTiny.cons.creaOpBinario((String)v); :};
+OpMultiplicativo ::= AND  
+	{: RESULT = AnalizadorSintacticoTiny.cons.creaOperadorAnd(); :};
+OpMultiplicativo ::= MOD 
+	{: RESULT = AnalizadorSintacticoTiny.cons.creaOperadorModulo(); :};
+OpMultiplicativo ::= DIV 
+	{: RESULT = AnalizadorSintacticoTiny.cons.creaOperadorDivision(); :};
+OpMultiplicativo ::= POR 
+	{: RESULT = AnalizadorSintacticoTiny.cons.creaOperadorMultiplicacion(); :};
 
-OpUnario ::= TODOUBLE  : v
-	{: RESULT = AnalizadorSintacticoTiny.cons.creaOpUnario((String)v); :};
-OpUnario ::= MENOS : v
-	{: RESULT = AnalizadorSintacticoTiny.cons.creaOpUnario((String)v); :};
-OpUnario ::= NOT : v
-	{: RESULT = AnalizadorSintacticoTiny.cons.creaOpUnario((String)v); :};
-OpUnario ::= TOINT : v
-	{: RESULT = AnalizadorSintacticoTiny.cons.creaOpUnario((String)v); :};
+OpUnario ::= TODOUBLE  
+	{: RESULT = AnalizadorSintacticoTiny.cons.creaOperadorToDouble(); :};
+OpUnario ::= MENOS 
+	{: RESULT = AnalizadorSintacticoTiny.cons.creaOperadorMenosUnario(); :};
+OpUnario ::= NOT 
+	{: RESULT = AnalizadorSintacticoTiny.cons.creaOperadorNot(); :};
+OpUnario ::= TOINT 
+	{: RESULT = AnalizadorSintacticoTiny.cons.creaOperadorToInt(); :};
 
 
  
