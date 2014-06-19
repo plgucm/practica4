@@ -125,7 +125,7 @@ public class GeneraCodigo {
 			params += codigo(exp);
 		}
 		
-		
+		System.out.println(params);
 		
 		
 		
@@ -271,7 +271,43 @@ public class GeneraCodigo {
 	}
 
 	private void codigo(ExpresionDesignador expresion) {
-		// TODO Auto-generated method stub
+		Designador designador = expresion.getValor();
+		if (designador == null) return;
+		
+		
+		Expresion e = designador.getExpresion();
+		Designador des = designador.getDesignador();
+		String id = designador.getIdentificador();
+		
+		switch(designador.getTipo()){
+			case ARRAY: {
+				
+				break;
+			}
+			case ID: {
+				String cod = "";
+				if (id.equalsIgnoreCase("null")){ 
+					cod += instrConAlgo(APILA, 0);
+				} else {
+//					Integer tam = (Integer) this.d.getDecoracion(id).get("tam");
+					Object obj = ts.get(id);
+					Map<String, Object> m = this.d.getDecoracion(obj);
+					System.out.println("TAM de "+ id +":"+m);
+					
+				}
+
+				break;
+			}
+			case STRUCT: {
+
+				break;				
+			}
+			case PUNTERO: {
+
+				break;
+			}
+		default: break;
+		}		
 		
 	}
 
@@ -345,11 +381,7 @@ public class GeneraCodigo {
 		if (p.getDecTipos() != null) asignaEspacio(p.getDecTipos());
 		if (p.getDecVariables() != null) asignaEspacioVars(p.getDecVariables());
 		if (p.getDecSubprogramas() != null) asignaEspacioSubs(p.getDecSubprogramas());
-		/*if (p.getBloque() != null) asignaEspacio(p.getBloque());		*/
 	}
-
-
-	//private void asignaEspacio(Bloque bloque) { }
 
 	private void asignaEspacio(List<DecTipo> decTipos) {		
 		for (DecTipo dec : decTipos){
