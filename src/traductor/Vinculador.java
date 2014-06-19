@@ -69,10 +69,10 @@ public class Vinculador {
 	}
 	
 	private void debugTS(String from){
-		/*System.out.println("--- Debug llamado desde " + from);
+		System.out.println("--- Debug llamado desde " + from);
 		System.out.println("Nivel: " + (pilaDeAmbitos.size()-1));
 		System.out.println("Ámbito: " + pilaDeAmbitos.peek());
-		*/
+		
 	}
 
 	private boolean insertaID(String id, Object declaracion){
@@ -115,6 +115,7 @@ public class Vinculador {
 	}
 
 	private void vincula(DecVariable dv) {
+		if (dv == null) return;
 		String id = dv.getIdentificador();
 		if (!insertaID(id, dv)){			
 			throw new UnsupportedOperationException("Identificador duplicado. " + id);			

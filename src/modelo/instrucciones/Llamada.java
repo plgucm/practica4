@@ -1,5 +1,6 @@
 package modelo.instrucciones;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import modelo.expresiones.Expresion;
@@ -15,6 +16,13 @@ public class Llamada extends Instruccion {
     	super(TiposInstruccion.LLAMADA);
 		this.identificador = id;
 		this.params = params;
+	}
+    
+    
+    public Llamada(String id) {
+    	super(TiposInstruccion.LLAMADA);
+		this.identificador = id;
+		this.params = new ArrayList<Expresion>();
 	}
 
 	public String getIdentificador() {

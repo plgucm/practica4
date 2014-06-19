@@ -50,8 +50,8 @@ public interface IConstructoras {
     Instruccion creaBloque(List<Instruccion> insts);
     Instruccion creaBloqueVacio();
     Instruccion creaIf(List<Caso> casos);
-    Instruccion uneListaCasos(List<Caso> casos, Caso caso);
-    Instruccion creaListaCasos(Caso caso);
+    List<Caso> uneListaCasos(List<Caso> casos, Caso caso);
+    List<Caso> creaListaCasos(Caso caso);
     Instruccion creaCaso(Expresion exp, Bloque bloque);
     Instruccion creaBucle(List<Caso> casos);
     Instruccion creaLlamadaConArgumentos(String id, List<Expresion> params);

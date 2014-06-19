@@ -10,8 +10,8 @@ public class Parametro {
     private Tipo tipo;
 
 
-    public Parametro(boolean modo, String id, Tipo tipo2) {
-		this.porValor = modo;
+    public Parametro(boolean valor, String id, Tipo tipo2) {
+		this.porValor = valor;
 		this.identificador = id;
 		this.tipo = tipo2;
 	}

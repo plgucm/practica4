@@ -1,24 +1,42 @@
 package modelo.constructoras;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import modelo.expresiones.Expresion;
+import modelo.expresiones.ExpresionBinaria;
+import modelo.expresiones.ExpresionBoolean;
+import modelo.expresiones.ExpresionDesignador;
+import modelo.expresiones.ExpresionDouble;
+import modelo.expresiones.ExpresionInteger;
+import modelo.expresiones.ExpresionUnaria;
+import modelo.instrucciones.Asignacion;
 import modelo.instrucciones.Bloque;
+import modelo.instrucciones.Bucle;
 import modelo.instrucciones.Caso;
+import modelo.instrucciones.Condicional;
 import modelo.instrucciones.DecSubprograma;
 import modelo.instrucciones.DecTipo;
 import modelo.instrucciones.DecVariable;
+import modelo.instrucciones.Delete;
 import modelo.instrucciones.Designador;
 import modelo.instrucciones.Instruccion;
+import modelo.instrucciones.Llamada;
+import modelo.instrucciones.New;
 import modelo.instrucciones.Parametro;
 import modelo.instrucciones.Programa;
+import modelo.instrucciones.Read;
+import modelo.instrucciones.Write;
 import modelo.operadores.OpBinario;
 import modelo.operadores.OpUnario;
 import modelo.tipos.Tipo;
+import modelo.tipos.TipoArray;
 import modelo.tipos.TipoBool;
 import modelo.tipos.TipoDouble;
 import modelo.tipos.TipoEntero;
 import modelo.tipos.TipoID;
+import modelo.tipos.TipoPuntero;
+import modelo.tipos.TipoStruct;
 
 
 public class Constructoras implements IConstructoras {
@@ -26,374 +44,327 @@ public class Constructoras implements IConstructoras {
 	@Override
 	public Programa creaPrograma(List<DecTipo> dts, List<DecVariable> dvs,
 			List<DecSubprograma> dss, Bloque b) {
-		// TODO Auto-generated method stub
-		return null;
+		return new Programa(dts, dvs, dss, b);
 	}
 
 	@Override
 	public Tipo creaBool() {
-		// TODO Auto-generated method stub
-		return null;
+		return new TipoBool();
 	}
 
 	@Override
 	public Tipo creaInt() {
-		// TODO Auto-generated method stub
-		return null;
+		return new TipoEntero();
 	}
 
 	@Override
 	public Tipo creaDouble() {
-		// TODO Auto-generated method stub
-		return null;
+		return new TipoDouble();
 	}
 
 	@Override
 	public Tipo creaID(String id) {
-		// TODO Auto-generated method stub
-		return null;
+		return new TipoID(id);
 	}
 
 	@Override
 	public Tipo creaArray(Tipo tipo, Integer size) {
-		// TODO Auto-generated method stub
-		return null;
+		return new TipoArray(size, tipo);
 	}
 
 	@Override
 	public Tipo creaStruct(List<DecTipo> dts) {
-		// TODO Auto-generated method stub
-		return null;
+		return new TipoStruct(dts);
 	}
 
 	@Override
 	public Tipo creaPuntero(Tipo tipo) {
-		// TODO Auto-generated method stub
-		return null;
+		return new TipoPuntero(tipo);
 	}
 
 	@Override
 	public List<DecTipo> uneListaDecTipos(List<DecTipo> dts, DecTipo dt) {
-		// TODO Auto-generated method stub
-		return null;
+		dts.add(dt);
+		return dts;
 	}
 
 	@Override
 	public List<DecTipo> creaListaDecTipos(DecTipo dt) {
-		// TODO Auto-generated method stub
-		return null;
+		List<DecTipo> dts = new ArrayList<DecTipo>();
+		dts.add(dt);
+		return dts;
 	}
 
 	@Override
 	public DecTipo creaDecTipo(String id, Tipo tipo) {
-		// TODO Auto-generated method stub
-		return null;
+		return new DecTipo(id, tipo);
 	}
 
 	@Override
 	public List<DecVariable> uneListaDecVariables(List<DecVariable> dvs,
 			DecVariable dv) {
-		// TODO Auto-generated method stub
-		return null;
+		dvs.add(dv);
+		return dvs;
 	}
 
 	@Override
 	public List<DecVariable> creaListaDecVariables(DecVariable dv) {
-		// TODO Auto-generated method stub
-		return null;
+		List<DecVariable> dts = new ArrayList<DecVariable>();
+		dts.add(dv);
+		return dts;
 	}
 
 	@Override
 	public DecVariable creaDecVariable(String id, Tipo tipo) {
-		// TODO Auto-generated method stub
-		return null;
+		return new DecVariable(id, tipo);
 	}
 
 	@Override
 	public List<DecSubprograma> uneListaDecSubprogramas(
 			List<DecSubprograma> dss, DecSubprograma ds) {
-		// TODO Auto-generated method stub
-		return null;
+		dss.add(ds);
+		return dss;
 	}
 
 	@Override
 	public List<DecSubprograma> creaListaDecSubprogramas(DecSubprograma ds) {
-		// TODO Auto-generated method stub
-		return null;
+		List<DecSubprograma> dts = new ArrayList<DecSubprograma>();
+		dts.add(ds);
+		return dts;
 	}
 
 	@Override
 	public DecSubprograma creaDecSubprograma(String id, List<Parametro> params,
 			Programa subprograma) {
-		// TODO Auto-generated method stub
-		return null;
+		return new DecSubprograma(id, params, subprograma);
 	}
 
 	@Override
 	public List<Parametro> uneListaParametros(List<Parametro> params,
 			Parametro p) {
-		// TODO Auto-generated method stub
-		return null;
+		params.add(p);
+		return params;
 	}
 
 	@Override
 	public List<Parametro> creaListaParametros(Parametro p) {
-		// TODO Auto-generated method stub
-		return null;
+		List<Parametro> dts = new ArrayList<Parametro>();
+		dts.add(p);
+		return dts;
 	}
 
 	@Override
 	public Parametro creaParametroValor(String id, Tipo tipo) {
-		// TODO Auto-generated method stub
-		return null;
+		return new Parametro(true, id, tipo);
 	}
 
 	@Override
 	public Parametro creaParametroVariable(String id, Tipo tipo) {
-		// TODO Auto-generated method stub
-		return null;
+		return new Parametro(false, id, tipo);
 	}
 
 	@Override
 	public Instruccion creaAsignacion(Designador ds, Expresion exp) {
-		// TODO Auto-generated method stub
-		return null;
+		return new Asignacion(ds, exp);
 	}
 
 	@Override
 	public Instruccion creaBloque(List<Instruccion> insts) {
-		// TODO Auto-generated method stub
-		return null;
+		return new Bloque(insts);
 	}
 
 	@Override
 	public Instruccion creaBloqueVacio() {
-		// TODO Auto-generated method stub
-		return null;
+		return new Bloque(new ArrayList<Instruccion>());
 	}
 
 	@Override
 	public Instruccion creaIf(List<Caso> casos) {
-		// TODO Auto-generated method stub
-		return null;
+		return new Condicional(casos);
 	}
 
 	@Override
-	public Instruccion uneListaCasos(List<Caso> casos, Caso caso) {
-		// TODO Auto-generated method stub
-		return null;
+	public List<Caso> uneListaCasos(List<Caso> casos, Caso caso) {
+		casos.add(caso);
+		return casos;
 	}
 
 	@Override
-	public Instruccion creaCaso(Expresion exp, Bloque bloque) {
-		// TODO Auto-generated method stub
-		return null;
+	public List<Caso> creaListaCasos(Caso caso) {
+		List<Caso> casos = new ArrayList<Caso>();
+		casos.add(caso);
+		return casos;
+	}
+
+	@Override
+	public Caso creaCaso(Expresion exp, Bloque bloque) {
+		return new Caso(exp, bloque);
 	}
 
 	@Override
 	public Instruccion creaBucle(List<Caso> casos) {
-		// TODO Auto-generated method stub
-		return null;
+		return new Bucle(casos);
 	}
 
 	@Override
 	public Instruccion creaLlamadaConArgumentos(String id,
 			List<Expresion> params) {
-		// TODO Auto-generated method stub
-		return null;
+		return new Llamada(id, params);
 	}
 
 	@Override
 	public Instruccion creaLlamada(String id) {
-		// TODO Auto-generated method stub
-		return null;
+		return new Llamada(id);
 	}
 
 	@Override
 	public Instruccion creaRead(Designador ds) {
-		// TODO Auto-generated method stub
-		return null;
+		return new Read(ds);
 	}
 
 	@Override
 	public Instruccion creaWrite(Expresion exp) {
-		// TODO Auto-generated method stub
-		return null;
+		return new Write(exp);
 	}
 
 	@Override
 	public Instruccion creaNew(Designador ds) {
-		// TODO Auto-generated method stub
-		return null;
+		return new New(ds);
 	}
 
 	@Override
 	public Instruccion creaDelete(Designador ds) {
-		// TODO Auto-generated method stub
-		return null;
+		return new Delete(ds);
 	}
 
 	@Override
 	public Designador creaDesignador(String id) {
-		// TODO Auto-generated method stub
-		return null;
+		return new Designador(id);
 	}
 
 	@Override
 	public Designador creaDesignador(Designador designador, Expresion exp) {
-		// TODO Auto-generated method stub
-		return null;
+		return new Designador(designador, exp);
 	}
 
 	@Override
 	public Designador creaDesignador(Designador designador, String id) {
-		// TODO Auto-generated method stub
-		return null;
+		return new Designador(designador, id);
 	}
 
 	@Override
-	public Expresion creaExpresionBinaria(Expresion exp0, OpBinario op,
-			Expresion exp1) {
-		// TODO Auto-generated method stub
-		return null;
+	public Expresion creaExpresionBinaria(Expresion exp0, OpBinario op, Expresion exp1) {
+		return new ExpresionBinaria(exp0, op, exp1);
 	}
 
 	@Override
 	public Expresion creaExpresionUnaria(OpUnario op, Expresion exp) {
-		// TODO Auto-generated method stub
-		return null;
+		return new ExpresionUnaria(op, exp);
 	}
 
 	@Override
 	public Expresion creaExpresionBoolean(boolean val) {
-		// TODO Auto-generated method stub
-		return null;
+		return new ExpresionBoolean(val);
 	}
 
 	@Override
 	public Expresion creaExpresionInteger(Integer val) {
-		// TODO Auto-generated method stub
-		return null;
+		return new ExpresionInteger(val);
 	}
 
 	@Override
 	public Expresion creaExpresionDouble(Double val) {
-		// TODO Auto-generated method stub
-		return null;
+		return new ExpresionDouble(val);
 	}
 
 	@Override
 	public Expresion creaExpresionDesignador(Designador ds) {
-		// TODO Auto-generated method stub
-		return null;
+		return new ExpresionDesignador(ds);
 	}
 
 	@Override
 	public OpBinario creaOperadorIgual() {
-		// TODO Auto-generated method stub
-		return null;
+		return new OpBinario("=");
 	}
 
 	@Override
 	public OpBinario creaOperadorDistinto() {
-		// TODO Auto-generated method stub
-		return null;
+		return new OpBinario("!=");
 	}
 
 	@Override
 	public OpBinario creaOperadorMenor() {
-		// TODO Auto-generated method stub
-		return null;
+		return new OpBinario("<");
 	}
 
 	@Override
 	public OpBinario creaOperadorMayor() {
-		// TODO Auto-generated method stub
-		return null;
+		return new OpBinario(">");
 	}
 
 	@Override
 	public OpBinario creaOperadorMenorIgual() {
-		// TODO Auto-generated method stub
-		return null;
+		return new OpBinario("<=");
 	}
 
 	@Override
 	public OpBinario creaOperadorMayorIgual() {
-		// TODO Auto-generated method stub
-		return null;
+		return new OpBinario(">=");
 	}
 
 	@Override
 	public OpBinario creaOperadorMultiplicacion() {
-		// TODO Auto-generated method stub
-		return null;
+		return new OpBinario("*");
 	}
 
 	@Override
 	public OpBinario creaOperadorDivision() {
-		// TODO Auto-generated method stub
-		return null;
+		return new OpBinario("/");
 	}
 
 	@Override
 	public OpBinario creaOperadorModulo() {
-		// TODO Auto-generated method stub
-		return null;
+		return new OpBinario("%");
 	}
 
 	@Override
 	public OpBinario creaOperadorAnd() {
-		// TODO Auto-generated method stub
-		return null;
+		return new OpBinario("&");
 	}
 
 	@Override
 	public OpBinario creaOperadorMas() {
-		// TODO Auto-generated method stub
-		return null;
+		return new OpBinario("+");
 	}
 
 	@Override
 	public OpBinario creaOperadorMenos() {
-		// TODO Auto-generated method stub
-		return null;
+		return new OpBinario("-");
 	}
 
 	@Override
 	public OpBinario creaOperadorOr() {
-		// TODO Auto-generated method stub
-		return null;
+		return new OpBinario("or");
 	}
 
 	@Override
 	public OpUnario creaOperadorMenosUnario() {
-		// TODO Auto-generated method stub
-		return null;
+		return new OpUnario("-");
 	}
 
 	@Override
 	public OpUnario creaOperadorNot() {
-		// TODO Auto-generated method stub
-		return null;
+		return new OpUnario("not");
 	}
 
 	@Override
 	public OpUnario creaOperadorToInt() {
-		// TODO Auto-generated method stub
-		return null;
+		return new OpUnario("toint");
 	}
 
 	@Override
 	public OpUnario creaOperadorToDouble() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Instruccion creaListaCasos(Caso caso) {
-		// TODO Auto-generated method stub
-		return null;
+		return new OpUnario("todouble");
 	}
 
 	
