@@ -58,7 +58,8 @@ public class GeneraCodigo {
 	}
 
 	private void codigoProgramaDesdeRaiz(Programa p) {		
-		//codigoSubprograma(p.getDecSubprogramas());		
+		
+		codigoSubprograma(p.getDecSubprogramas());		
 		codigo(p.getBloque());				
 		String inicio = generaInicio(
 						(Integer)d.getDecoracion(p.getDecVariables()).get("tam")+
@@ -280,16 +281,16 @@ public class GeneraCodigo {
 	}
 
 	private String codigo(Designador designador) {
-
+		
 		
 		return null;
 	}
 
-	private void codigoSubprograma(DecSubprograma decSubprogramas) {
-		
-		
-		
-		
+	private void codigoSubprograma(List<DecSubprograma> list) {
+		for (DecSubprograma ds : list){
+			ds.getParametros();
+			ds.getPrograma();
+		}
 	}
 	
 	// ASIGNA ESPACIOS
@@ -318,7 +319,7 @@ public class GeneraCodigo {
 				if (p.isPorValor()){
 					tam = tamanioVar(p.getTipo());
 				}
-				d.insertaInfoEnNodo(params, "tam", tam);
+				d.insertaInfoEnNodo(p, "tam", tam);
 		//		System.out.println("TAM de " + p.getIdentificador() + " :" + tam);		
 			}
 		}
@@ -358,8 +359,8 @@ public class GeneraCodigo {
 			
 			d.insertaInfoEnNodo(decVariables, "tam", tam);
 			dir += tam;			
+			System.out.println("TAM de " + dv.getIdentificador() + " :" + tam);		
 		}
-		// System.out.println("TAM de " + decVariables.getIdentificador() + " :" + tam);		
 	}
 
 	private int tamanioVar(Tipo tipo) {
