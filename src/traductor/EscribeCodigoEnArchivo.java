@@ -42,11 +42,11 @@ public class EscribeCodigoEnArchivo {
 	}
 
 	public void escribeCodigo(String nombreArchivo) {
-		abreArchivo(nombreArchivo);
+		//abreArchivo(nombreArchivo);
+		//System.out.println(d.getDecoracion(prog).get("cod"));
 		
 		
-		
-		cierraArchivo();
+		//cierraArchivo();
 	}
 
 }

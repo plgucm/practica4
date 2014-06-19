@@ -302,6 +302,7 @@ public class Vinculador {
 		}		
 	}
 	
+	@SuppressWarnings("unchecked")
 	private void vincula(Instruccion i) {
 		if (i == null) return;
 		TiposInstruccion tipo = i.getTipoInstruccion();

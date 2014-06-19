@@ -31,7 +31,11 @@ public class LenguajeP {
 	
 	public static String AND = "and\n";
 	public static String OR = "or\n";
+	
 	public static String NOT = "not\n";
+	public static String NEG = "neg\n";
+	public static String TOINT = "toint\n";
+	public static String TODOUBLE = "todouble\n";	
 	
 	public static String CLONA = "clona\n";
 	public static String DUP = "dup\n";
@@ -69,26 +73,6 @@ public class LenguajeP {
 		sb.append(instrConAlgo(IR_A, dirSalto));
 		
 		return sb.toString();
-	}
-	
-	public static String tipoOperadorUnarioP(String tipoOp){
-		switch(tipoOp){
-			case "TODOUBLE" : return ""; 
-			case "TOINT" :  return "";
-			case "MENOS" :  return "";
-			case "NOT" :  return "";
-		}
-		return tipoOp;		
-	}
-	
-	public static String tipoOperadorBinarioP(String tipoOp){
-		switch(tipoOp){
-			case "" :  return "";
-			case "TOINT" :  return "";
-			case "MENOS" :  return "";
-			case "NOT" : return "";
-		}
-		return tipoOp;		
 	}
 	
 	public static String generaEpilogo(int nivel, int tamDatos){

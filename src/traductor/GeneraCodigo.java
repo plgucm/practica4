@@ -1,8 +1,7 @@
 package traductor;
 
 
-import static traductor.LenguajeP.DESAPILA_IND;
-import static traductor.LenguajeP.generaInicio;
+import static traductor.LenguajeP.*;
 
 import java.util.List;
 import java.util.Map;
@@ -34,6 +33,7 @@ import modelo.instrucciones.Read;
 import modelo.instrucciones.TiposInstruccion;
 import modelo.instrucciones.Write;
 import modelo.operadores.OpBinario;
+import modelo.operadores.OpUnario;
 import modelo.tipos.Tipo;
 import modelo.tipos.TipoArray;
 import modelo.tipos.TipoID;
@@ -119,7 +119,12 @@ public class GeneraCodigo {
 		String id = i.getIdentificador();
 		List<Expresion> exps = i.getParams();
 		
-		System.out.println(id);
+		String params = "";
+		for (Expresion exp : exps){
+			params += codigo(exp);
+		}
+		
+		
 		
 		
 		
@@ -205,17 +210,52 @@ public class GeneraCodigo {
 		String cod2 = codigo(expresion.getExp1());
 		OpBinario tipo = expresion.getOpBinario();
 		String tipoOp = tipo.getTipo();
+		
 		if (tipoOp.equalsIgnoreCase("+")){
-			
-		}
+			d.insertaInfoEnNodo(expresion, "cod", cod1 + cod2 + SUMA);
+		} else if (tipoOp.equalsIgnoreCase("-")){
+			d.insertaInfoEnNodo(expresion, "cod", cod1 + cod2 + RESTA );
+		} else if (tipoOp.equalsIgnoreCase("*")){
+			d.insertaInfoEnNodo(expresion, "cod", cod1 + cod2 + MUL );
+		} else if (tipoOp.equalsIgnoreCase("/")){
+			d.insertaInfoEnNodo(expresion, "cod", cod1 + cod2 + DIV );
+		} else if (tipoOp.equalsIgnoreCase("%")){
+			d.insertaInfoEnNodo(expresion, "cod", cod1 + cod2 + MOD );
+		} else if (tipoOp.equalsIgnoreCase("and")){
+			d.insertaInfoEnNodo(expresion, "cod", cod1 + cod2 + AND );
+		} else if (tipoOp.equalsIgnoreCase("or")){
+			d.insertaInfoEnNodo(expresion, "cod", cod1 + cod2 + OR );
+		} else if (tipoOp.equalsIgnoreCase(">")){
+			d.insertaInfoEnNodo(expresion, "cod", cod1 + cod2 + MAYOR );
+		} else if (tipoOp.equalsIgnoreCase("<")){
+			d.insertaInfoEnNodo(expresion, "cod", cod1 + cod2 + MENOR );
+		} else if (tipoOp.equalsIgnoreCase(">=")){
+			d.insertaInfoEnNodo(expresion, "cod", cod1 + cod2 + MAYOR_IGUAL );
+		} else if (tipoOp.equalsIgnoreCase("<=")){
+			d.insertaInfoEnNodo(expresion, "cod", cod1 + cod2 + MENOR_IGUAL );
+		} else if (tipoOp.equalsIgnoreCase("=")){
+			d.insertaInfoEnNodo(expresion, "cod", cod1 + cod2 + IGUAL );
+		} else if (tipoOp.equalsIgnoreCase("!=")){
+			d.insertaInfoEnNodo(expresion, "cod", cod1 + cod2 + DISTINTO );
+		} 		
 		
-		
-	}
-	
+	}	
 	
 	
 	private void codigo(ExpresionUnaria expresion) {
-		// TODO Auto-generated method stub
+		
+		String cod1 = codigo(expresion.getExp());
+		OpUnario tipo = expresion.getOpUnario();
+		String tipoOp = tipo.getTipo();
+		if (tipoOp.equalsIgnoreCase("not")){
+			d.insertaInfoEnNodo(expresion, "cod", cod1 + NOT );
+		} else if (tipoOp.equalsIgnoreCase("-")){
+			d.insertaInfoEnNodo(expresion, "cod", cod1 + NEG );
+		} else if (tipoOp.equalsIgnoreCase("toint")){
+			d.insertaInfoEnNodo(expresion, "cod", cod1 + TOINT );
+		} else if (tipoOp.equalsIgnoreCase("todouble")){
+			d.insertaInfoEnNodo(expresion, "cod", cod1 + TODOUBLE );
+		}
 		
 	}
 
@@ -303,17 +343,14 @@ public class GeneraCodigo {
 
 	//private void asignaEspacio(Bloque bloque) { }
 
-	private void asignaEspacio(List<DecTipo> decTipos) {
-		
+	private void asignaEspacio(List<DecTipo> decTipos) {		
 		for (DecTipo dec : decTipos){
 			int tam = tamanioVar(dec.getTipo());
 			d.insertaInfoEnNodo(dec.getId(), "tam", tam);
-		}		
-		
+		}			
 	}
 
-	private void asignaEspacioVars(List<DecVariable> decVariables) {
-		
+	private void asignaEspacioVars(List<DecVariable> decVariables) {		
 		for (DecVariable dv : decVariables){
 			d.insertaInfoEnNodo(decVariables, "nivel", nivel);
 			d.insertaInfoEnNodo(decVariables, "dir", dir);
@@ -322,9 +359,7 @@ public class GeneraCodigo {
 			d.insertaInfoEnNodo(decVariables, "tam", tam);
 			dir += tam;			
 		}
-
-		// System.out.println("TAM de " + decVariables.getIdentificador() + " :" + tam);
-		
+		// System.out.println("TAM de " + decVariables.getIdentificador() + " :" + tam);		
 	}
 
 	private int tamanioVar(Tipo tipo) {
