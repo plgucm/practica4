@@ -5,6 +5,7 @@ import static traductor.LenguajeP.DESAPILA_IND;
 import static traductor.LenguajeP.generaInicio;
 
 import java.util.List;
+import java.util.Map;
 
 import modelo.expresiones.Expresion;
 import modelo.expresiones.ExpresionBinaria;
@@ -17,8 +18,10 @@ import modelo.expresiones.TipoExpresion;
 import modelo.instrucciones.Asignacion;
 import modelo.instrucciones.Bloque;
 import modelo.instrucciones.Bucle;
+import modelo.instrucciones.Caso;
 import modelo.instrucciones.Condicional;
 import modelo.instrucciones.DecSubprograma;
+import modelo.instrucciones.DecTipo;
 import modelo.instrucciones.DecVariable;
 import modelo.instrucciones.Delete;
 import modelo.instrucciones.Designador;
@@ -40,10 +43,10 @@ public class GeneraCodigo {
 	
 	private int dir, nivel, cinst;
 	private Decoracion d;
-	private TablaDeSimbolos ts;	
+	private Map<Object, Object> ts;
 	
-	public GeneraCodigo(TablaDeSimbolos ts, Decoracion d) {	
-		dir = nivel = 0;
+	public GeneraCodigo(Map<Object, Object> ts, Decoracion d) {	
+		this.dir = this.nivel = 0;
 		this.d = d;
 		this.ts = ts;
 	}
@@ -55,7 +58,7 @@ public class GeneraCodigo {
 	}
 
 	private void codigoProgramaDesdeRaiz(Programa p) {		
-		codigoSubprograma(p.getDecSubprogramas());		
+		//codigoSubprograma(p.getDecSubprogramas());		
 		codigo(p.getBloque());				
 		String inicio = generaInicio(
 						(Integer)d.getDecoracion(p.getDecVariables()).get("tam")+
@@ -73,7 +76,7 @@ public class GeneraCodigo {
 		} else if (tipo == TiposInstruccion.BUCLE) {
 			return codigo((Bucle) i);
 		} else if (tipo == TiposInstruccion.CASOS) {
-			return codigo((Casos) i);
+			return codigo((List<Caso>) i);
 		} else if (tipo == TiposInstruccion.DELETE) {
 			return codigo((Delete) i);
 		} else if (tipo == TiposInstruccion.IF) {
@@ -88,6 +91,11 @@ public class GeneraCodigo {
 			return codigo((Write) i);
 		}  
 		return "";
+	}
+
+	private String codigo(List<Caso> i) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	private String codigo(Write i) {
@@ -128,7 +136,7 @@ public class GeneraCodigo {
 		return null;
 	}
 
-	private String codigo(Casos i) {
+	private String codigoCasos(List<Caso> i) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -243,12 +251,17 @@ public class GeneraCodigo {
 		
 		
 	}
+	
+	// ASIGNA ESPACIOS
+	
+
+	private void asignaEspacioSubs(List<DecSubprograma> decSubprogramas) {
+		for (DecSubprograma ds : decSubprogramas){
+			asignaEspacio(ds);
+		}
+	}
 
 	private void asignaEspacio(DecSubprograma ds) {
-		if (ds.getDecSubprogramas() != null){
-			// esto es debido a que el árbol no esta correctamente construído.
-			asignaEspacio(ds.getDecSubprogramas());
-		}
 		int dirCopia = dir;
 		int nivelCopia = nivel;
 		if (ds.getPrograma() != null){
@@ -272,7 +285,7 @@ public class GeneraCodigo {
 	}
 
 	private void asignaEspacioDesdeRaiz(Programa p) {
-		DecSubprograma ds = p.getDecSubprogramas();
+		List<DecSubprograma> ds = p.getDecSubprogramas();
 		dir = anidamiento(ds);
 		d.insertaInfoEnNodo(p, "finDatos", dir);
 		System.out.println("Anidamiento: " + dir);
@@ -282,29 +295,36 @@ public class GeneraCodigo {
 
 	private void asignaEspacio(Programa p) {
 		if (p.getDecTipos() != null) asignaEspacio(p.getDecTipos());
-		if (p.getDecVariables() != null) asignaEspacio(p.getDecVariables());
-		if (p.getDecSubprogramas() != null) asignaEspacio(p.getDecSubprogramas());
+		if (p.getDecVariables() != null) asignaEspacioVars(p.getDecVariables());
+		if (p.getDecSubprogramas() != null) asignaEspacioSubs(p.getDecSubprogramas());
 		/*if (p.getBloque() != null) asignaEspacio(p.getBloque());		*/
 	}
 
+
 	//private void asignaEspacio(Bloque bloque) { }
 
-	private void asignaEspacio(DecTipos decTipos) {
-		int tam = tamanioVar(decTipos.getTipo());
-		d.insertaInfoEnNodo(decTipos.getIdentificador(), "tam", tam);
-		DecTipos dv = decTipos.getDecTipos();
-		if (dv != null){ asignaEspacio(dv); }		
+	private void asignaEspacio(List<DecTipo> decTipos) {
+		
+		for (DecTipo dec : decTipos){
+			int tam = tamanioVar(dec.getTipo());
+			d.insertaInfoEnNodo(dec.getId(), "tam", tam);
+		}		
+		
 	}
 
-	private void asignaEspacio(DecVariable decVariables) {
-		d.insertaInfoEnNodo(decVariables, "nivel", nivel);
-		d.insertaInfoEnNodo(decVariables, "dir", dir);
-		int tam = tamanioVar(decVariables.getTipo());
+	private void asignaEspacioVars(List<DecVariable> decVariables) {
+		
+		for (DecVariable dv : decVariables){
+			d.insertaInfoEnNodo(decVariables, "nivel", nivel);
+			d.insertaInfoEnNodo(decVariables, "dir", dir);
+			int tam = tamanioVar(dv.getTipo());
+			
+			d.insertaInfoEnNodo(decVariables, "tam", tam);
+			dir += tam;			
+		}
+
 		// System.out.println("TAM de " + decVariables.getIdentificador() + " :" + tam);
-		d.insertaInfoEnNodo(decVariables, "tam", tam);
-		dir += tam;
-		DecVariable dv = decVariables.getDecVariables();
-		if (dv != null){ asignaEspacio(dv); }				
+		
 	}
 
 	private int tamanioVar(Tipo tipo) {
@@ -317,7 +337,7 @@ public class GeneraCodigo {
 			return 1;
 		case IDENT:
 			TipoID tipoReal = (TipoID)tipo;
-			int tamanio = (Integer) d.getDecoracion(tipoReal.getIdentificador()).get("tam");
+			int tamanio = (Integer) d.getDecoracion(tipoReal.getId()).get("tam");
 			return tamanio;
 		case ARRAY:
 			TipoArray arr = (TipoArray) tipo;
@@ -327,9 +347,9 @@ public class GeneraCodigo {
 		case STRUCT:
 			TipoStruct struct = (TipoStruct) tipo;
 			int tam = 0;
-			List<Tipo> tipos = struct.getTipos();
-			for (Tipo tip : tipos){
-				tam += tamanioVar(tip);
+			List<DecTipo> tipos = struct.getTipos();
+			for (DecTipo tip : tipos){
+				tam += tamanioVar(tip.getTipo());
 			}
 			return tam;
 			default: break;
@@ -338,28 +358,23 @@ public class GeneraCodigo {
 		return 0;
 	}
 
-	private int anidamiento(DecSubprograma decSubprogramas) {
-		int miAnidamiento = 0;
-		int maxAnidamientoHermanos = 0;
-		DecSubprograma dh = decSubprogramas.getDecSubprogramas();	
-		Programa dp = decSubprogramas.getPrograma();					
-		
-		if (dh != null && dp != null){
-			maxAnidamientoHermanos = anidamiento(dh);	
-			miAnidamiento++; 				
-			if (dp.getDecSubprogramas() != null){
-				miAnidamiento += anidamiento(dp.getDecSubprogramas());						
-			}
-		} else if (dh == null){
-			miAnidamiento++; 
-			if (dp.getDecSubprogramas() != null){
-				miAnidamiento += anidamiento(dp.getDecSubprogramas());						
-			}
-		} else {
-			maxAnidamientoHermanos = anidamiento(dh);	
-		}
+	private int anidamiento(List<DecSubprograma> ds) {
+		if (ds == null) return 0;
+		int maxAnidamiento = 0;
 
-		return Math.max(miAnidamiento, maxAnidamientoHermanos);
+		for (DecSubprograma d : ds){
+			maxAnidamiento = Math.max(maxAnidamiento, anidamiento(d));
+		}
+		
+		return maxAnidamiento;
+	}
+
+	private int anidamiento(DecSubprograma d) {
+		Programa p = d.getPrograma();
+		if (p == null) return 1;
+		List<DecSubprograma> ds = p.getDecSubprogramas();
+		if (ds == null) return 1;
+		return anidamiento(ds)+1;
 	}
 
 	

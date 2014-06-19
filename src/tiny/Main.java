@@ -3,8 +3,13 @@ package tiny;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.util.Map;
 
 import modelo.instrucciones.Programa;
+import traductor.Chequeo;
+import traductor.Decoracion;
+import traductor.EscribeCodigoEnArchivo;
+import traductor.GeneraCodigo;
 import traductor.Vinculador;
 
 public class Main {
@@ -17,26 +22,15 @@ public class Main {
 		Programa p = AnalizadorSintacticoTiny.programaRaiz;	
 		
 
-		
-		
-		//TablaDeSimbolos ts = new TablaDeSimbolos();
 		Vinculador vinculador = new Vinculador();
-		vinculador.vincula(p);
-		//Map<String, Object> ts = vinculador.getTS().peek();
-		//System.out.println(ts.get("LeeValores"));
+		Map<Object, Object> ts = vinculador.vincula(p).peek();
 		
-		
-		
-		
-		
-		/*
-		Chequeo ch = new Chequeo(ts);
+		Chequeo ch = new Chequeo();
 		ch.chequea(p);
 		Decoracion d = new Decoracion();
 		GeneraCodigo gc = new GeneraCodigo(ts, d);
 		gc.generaCodigo(p);
 		EscribeCodigoEnArchivo ea = new EscribeCodigoEnArchivo(p, d);
 		ea.escribeCodigo("cod.txt");
-		*/
 	}
 }

@@ -71,17 +71,16 @@ public class Vinculador {
 		System.out.println("--- Debug llamado desde " + from);
 		System.out.println("Nivel: " + (pilaDeAmbitos.size()-1));
 		System.out.println("Ámbito: " + pilaDeAmbitos.peek());
-		
 	}
 	
 	private void insertaVinculo(Object key, Object value){
-		debugTS("insertaVinculo");
+		//debugTS("insertaVinculo");
 		Map<Object, Object> ts = pilaDeAmbitos.peek();		
 		ts.put(key, value);
 	}
 
 	private boolean insertaID(String id, Object declaracion){
-		debugTS("insertaID");
+		//debugTS("insertaID");
 		Map<Object, Object> ts = pilaDeAmbitos.peek();		
 		if (ts.get(id) != null){ return false; }
 		ts.put(id, declaracion);
