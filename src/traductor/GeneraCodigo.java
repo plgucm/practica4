@@ -43,12 +43,12 @@ public class GeneraCodigo {
 	
 	private int dir, nivel, cinst;
 	private Decoracion d;
-	private List<Map<String, Object>> ts;
+	private Map<Object, Object> vinculos;
 	
-	public GeneraCodigo(List<Map<String, Object>> ts, Decoracion d) {	
+	public GeneraCodigo(Map<Object, Object> vinculos, Decoracion d) {	
 		this.dir = this.cinst = this.nivel = 0;
 		this.d = d;
-		this.ts = ts;
+		this.vinculos = vinculos;
 	}
 
 	public void generaCodigo(Programa p) {
@@ -326,7 +326,7 @@ public class GeneraCodigo {
 				if (id.equalsIgnoreCase("null")){ 
 					codID = instrConAlgo(APILA, 0);
 				} else {					
-					Object obj = getTS(designador.getIdentificador());
+					Object obj = vinculos.get(designador);
 					Map<String, Object> m = this.d.getDecoracion(obj);
 					
 					System.out.println(m);
@@ -334,7 +334,6 @@ public class GeneraCodigo {
 					if (m.get("campos") != null){
 						System.out.println("ojo es un struct");
 					}
-					
 					
 					int dir = (int) m.get("dir");
 					int niv = (int) m.get("nivel");
@@ -378,15 +377,6 @@ public class GeneraCodigo {
 		default: break;
 		}		
 		
-		return null;
-	}
-	
-	@SuppressWarnings("unchecked")
-	private Object getTS(String object){
-		for (int i = 0; i < ts.size(); ++i){
-			Map<String, Object> map = ts.get(i);
-			return map.get(object);
-		}
 		return null;
 	}
 

@@ -24,12 +24,12 @@ public class Main {
 		
 
 		Vinculador vinculador = new Vinculador();
-		List<Map<String, Object>> ts = vinculador.vincula(p);
+		Map<Object, Object> vinculos = vinculador.vincula(p);
 		
 		Chequeo ch = new Chequeo();
 		ch.chequea(p);
 		Decoracion d = new Decoracion();
-		GeneraCodigo gc = new GeneraCodigo(ts, d);
+		GeneraCodigo gc = new GeneraCodigo(vinculos, d);
 		gc.generaCodigo(p);
 		EscribeCodigoEnArchivo ea = new EscribeCodigoEnArchivo(p, d);
 		ea.escribeCodigo("cod.txt");
