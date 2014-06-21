@@ -1,5 +1,6 @@
 package traductor;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
@@ -39,31 +40,69 @@ import modelo.tipos.TipoStruct;
 
 public class Vinculador {
 	
-	private Stack<Map<Object, Object>> pilaDeAmbitos;
+	private static final String CAMPOS = ".campos";
+	private Stack<Map<String, Object>> pilaDeAmbitos;
+	private List<Map<String, Object>> tablaDeSimbolosCompleta;
+	private boolean vinculandoPunteros;
 
-	public Stack<Map<Object, Object>> vincula(Programa p) {
+	public List<Map<String, Object>> vincula(Programa p) {
 		iniciaTS();
 		abreBloque();
+		vinculandoPunteros = false;
 		vinculaTipos(p.getDecTipos());
 		vinculaVariables(p.getDecVariables());
 		vinculaSubprogramas(p.getDecSubprogramas());
 		vincula(p.getBloque());
-		return pilaDeAmbitos;
+		vinculandoPunteros = true;
+		vinculaTiposDef(p.getDecTipos());
+		vinculaVariablesDef(p.getDecVariables());
+		vinculaSubprogramasDef(p.getDecSubprogramas());
+		vinculaDef(p.getBloque());
+		return tablaDeSimbolosCompleta;
+	}
+
+	private void vinculaDef(Bloque bloque) {
+		List<Instruccion> insts = bloque.getInstrucciones();
+		for (Instruccion i : insts){
+			vinculaDef(i);
+		}
+	}
+
+	private void vinculaDef(Instruccion i) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private void vinculaSubprogramasDef(List<DecSubprograma> decSubprogramas) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private void vinculaVariablesDef(List<DecVariable> decVariables) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private void vinculaTiposDef(List<DecTipo> decTipos) {
+		// TODO Auto-generated method stub
+		
 	}
 
 	private void iniciaTS() {
-		pilaDeAmbitos = new Stack<Map<Object, Object>>();	
+		pilaDeAmbitos = new Stack<Map<String, Object>>();	
+		tablaDeSimbolosCompleta = new ArrayList<Map<String, Object>>();	
 	}
 	
 	private void abreBloque() {
-		pilaDeAmbitos.push(new HashMap<Object, Object>());		
+		pilaDeAmbitos.push(new HashMap<String, Object>());		
 	}
 
 	private void cierraBloque() {
-		pilaDeAmbitos.pop();
+		Map<String, Object> cima = pilaDeAmbitos.pop();
+		tablaDeSimbolosCompleta.add(cima);
 	}
 	
-	public Stack<Map<Object, Object>> getTS(){
+	public Stack<Map<String, Object>> getTS(){
 		return pilaDeAmbitos;
 	}
 	
@@ -72,26 +111,20 @@ public class Vinculador {
 		System.out.println("Nivel: " + (pilaDeAmbitos.size()-1));
 		System.out.println("Ámbito: " + pilaDeAmbitos.peek());
 	}
-	
-	private void insertaVinculo(Object key, Object value){
-		//debugTS("insertaVinculo");
-		Map<Object, Object> ts = pilaDeAmbitos.peek();		
-		ts.put(key, value);
-	}
 
 	private boolean insertaID(String id, Object declaracion){
-		//debugTS("insertaID");
-		Map<Object, Object> ts = pilaDeAmbitos.peek();		
+		debugTS("insertaID");
+		Map<String, Object> ts = pilaDeAmbitos.peek();		
 		if (ts.get(id) != null){ return false; }
 		ts.put(id, declaracion);
 		return true;
 	}
 	
 	private Object declaracionDe(String id){
-		Map<Object, Object> ts = pilaDeAmbitos.peek();
+		Map<String, Object> ts = pilaDeAmbitos.peek();
 		if (ts.get(id) == null){
 			// Si no está en el ámbito actual, miro en los ámbitos superiores.
-			ListIterator<Map<Object, Object>> it = pilaDeAmbitos.listIterator(pilaDeAmbitos.size()-1);
+			ListIterator<Map<String, Object>> it = pilaDeAmbitos.listIterator(pilaDeAmbitos.size()-1);
 			while (it.hasPrevious()){
 				Object e = it.previous().get(id);
 				if (e != null){
@@ -113,8 +146,8 @@ public class Vinculador {
 
 	private void vincula(DecTipo dt) {
 		if (dt == null) return;
-		vincula(dt.getTipo());
 		String id = dt.getId();
+		vinculaTipo(dt.getTipo());
 		if (!insertaID(id, dt)){			
 			throw new UnsupportedOperationException("Identificador duplicado. " + id);			
 		}
@@ -129,8 +162,8 @@ public class Vinculador {
 
 	private void vincula(DecVariable dv) {
 		if (dv == null) return;
-		vincula(dv.getTipo());
 		String id = dv.getIdentificador();
+		vinculaTipo(dv.getTipo());
 		if (!insertaID(id, dv)){			
 			throw new UnsupportedOperationException("Identificador duplicado. " + id);			
 		}	
@@ -166,19 +199,20 @@ public class Vinculador {
 		
 	}
 
-	private void vincula(Tipo tipoInterno) {
+	private void vinculaTipo(Tipo tipoInterno) {
 		// System.out.println(tipoInterno.getTipoConcreto());
 		switch(tipoInterno.getTipoConcreto()){
 		case ARRAY:	
 			TipoArray tipoArray = (TipoArray) tipoInterno;
-			vincula(tipoArray.getTipoInterno());
+			vinculaTipo(tipoArray.getTipoInterno());
 			break;
 		case BOOL:
 			break;
 		case DOUBLE:
 			break;
 		case IDENT:
-			TipoID tipoId = (TipoID) tipoInterno;
+			
+			TipoID tipoId = (TipoID) tipoInterno;			
 			
 			Object dec = declaracionDe(tipoId.getId());
 			if (dec == null){
@@ -188,9 +222,17 @@ public class Vinculador {
 			}
 			
 			break;
-		case INT:
+		case INT:	
 			break;
 		case POINTER:
+			
+			if (vinculandoPunteros){
+				System.out.println("POINTER");
+				
+				
+				
+			}
+			
 			break;
 		case STRUCT:
 			
@@ -201,9 +243,11 @@ public class Vinculador {
 				if (campos.get(id) != null){
 					throw new UnsupportedOperationException("Campo duplicado. "+id);						
 				}
-				campos.put(id, dt.getTipo());				
+				campos.put(id, dt.getTipo());		
+				vinculaTipo(dt.getTipo());
 			}	
-			insertaVinculo(tipoStruct, campos);
+			
+			insertaID(tipoStruct+CAMPOS, campos); // TODO: invento total.
 			
 			break;
 		default:
@@ -253,7 +297,7 @@ public class Vinculador {
 	private void vincula(ExpresionBoolean expresion) { }
 	
 	private void vincula(ExpresionDesignador expresion) {
-		vincula(expresion.getValor());
+		vinculaDesignador(expresion.getValor());
 	}
 
 	private void vincula(ExpresionUnaria expresion) {
@@ -267,7 +311,7 @@ public class Vinculador {
 	
 	/// DESIGNADOR
 
-	private void vincula(Designador designador) {
+	private void vinculaDesignador(Designador designador) {
 		if (designador == null) return;
 		
 		Expresion e = designador.getExpresion();
@@ -276,7 +320,7 @@ public class Vinculador {
 		
 		switch(designador.getTipo()){
 			case ARRAY: {
-				vincula(d);
+				vinculaDesignador(d);
 				vincula(e);
 				break;
 			}
@@ -287,15 +331,20 @@ public class Vinculador {
 				if (vinculo == null){
 					throw new UnsupportedOperationException("Identificador no declarado. " + id);			
 				}		
-				insertaVinculo(designador, vinculo);	
+				insertaID(id, vinculo);	
 				break;
 			}
 			case STRUCT: {
-				vincula(d);
+				Object vinculo = declaracionDe(id);				
+				if (vinculo == null){
+					throw new UnsupportedOperationException("Identificador no declarado. " + id);			
+				}		
+				insertaID(id, vinculo);
+				vinculaDesignador(d);
 				break;				
 			}
 			case PUNTERO: {
-				vincula(d);
+				vinculaDesignador(d);
 				break;
 			}
 		default: break;
@@ -356,12 +405,12 @@ public class Vinculador {
 
 	private void vincula(Read i) {
 		if (i == null) return;
-		vincula(i.getDesignador());
+		vinculaDesignador(i.getDesignador());
 	}
 
 	private void vincula(New i) {
 		if (i == null) return;
-		vincula(i.getDesignador());
+		vinculaDesignador(i.getDesignador());
 	}
 
 	private void vincula(Llamada i) {
@@ -371,7 +420,7 @@ public class Vinculador {
 		if (vinculo == null){
 			throw new UnsupportedOperationException("Identificador no declarado. " + id);			
 		}	
-		insertaVinculo(i, vinculo);
+		insertaID(id, vinculo);
 		
 		List<Expresion> l = i.getParams();
 		if (l != null){
@@ -388,7 +437,7 @@ public class Vinculador {
 
 	private void vincula(Delete i) {
 		if (i == null) return;
-		vincula(i.getDesignador());
+		vinculaDesignador(i.getDesignador());
 	}
 
 	private void vincula(Bucle i) {
@@ -398,7 +447,7 @@ public class Vinculador {
 
 	private void vincula(Asignacion i) {
 		if (i == null) return;
-		vincula(i.getDesignador());
+		vinculaDesignador(i.getDesignador());
 		vincula(i.getExpresion());
 	}
 	

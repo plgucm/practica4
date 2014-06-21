@@ -3,6 +3,7 @@ package tiny;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.util.List;
 import java.util.Map;
 
 import modelo.instrucciones.Programa;
@@ -23,7 +24,7 @@ public class Main {
 		
 
 		Vinculador vinculador = new Vinculador();
-		Map<Object, Object> ts = vinculador.vincula(p).peek();
+		List<Map<String, Object>> ts = vinculador.vincula(p);
 		
 		Chequeo ch = new Chequeo();
 		ch.chequea(p);

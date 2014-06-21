@@ -17,8 +17,8 @@ public class LenguajeP {
 	public static String APILA_IND = "apila_ind\n";
 	public static String DESAPILA_IND = "desapila_ind\n";
 	
-	public static String READ = "read ALGO\n";
-	public static String WRITE = "write ALGO\n";
+	public static String READ = "lee\n";
+	public static String WRITE = "escribe\n";
 	
 	public static String TRUE = "true";
 	public static String FALSE = "false";
@@ -122,6 +122,10 @@ public class LenguajeP {
 				instrConAlgo(APILA_DIR, 0) +
 				instrConAlgo(APILA, 1) +
 				SUMA;
+	
+	public static String instrConAlgo(String inst, boolean algo){
+		return inst.replace("ALGO", String.valueOf(algo));
+	}
 	
 	public static String instrConAlgo(String inst, int algo){
 		return inst.replace("ALGO", String.valueOf(algo));

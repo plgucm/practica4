@@ -13,7 +13,7 @@ public class ExpresionBoolean extends Expresion {
 	}
 
 
-    public boolean isValor() {
+    public boolean getValor() {
         // Automatically generated method. Please delete this comment before entering specific code.
         return this.valor;
     }

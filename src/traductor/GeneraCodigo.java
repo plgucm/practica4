@@ -43,10 +43,10 @@ public class GeneraCodigo {
 	
 	private int dir, nivel, cinst;
 	private Decoracion d;
-	private Map<Object, Object> ts;
+	private List<Map<String, Object>> ts;
 	
-	public GeneraCodigo(Map<Object, Object> ts, Decoracion d) {	
-		this.dir = this.nivel = 0;
+	public GeneraCodigo(List<Map<String, Object>> ts, Decoracion d) {	
+		this.dir = this.cinst = this.nivel = 0;
 		this.d = d;
 		this.ts = ts;
 	}
@@ -57,16 +57,34 @@ public class GeneraCodigo {
 		System.out.println("Código generado.");
 	}
 
-	private void codigoProgramaDesdeRaiz(Programa p) {		
-		
-		codigoSubprograma(p.getDecSubprogramas());		
-		codigo(p.getBloque());				
+	private void codigoProgramaDesdeRaiz(Programa p) {							
 		String inicio = generaInicio(
 						(Integer)d.getDecoracion(p.getDecVariables()).get("tam")+
-						(Integer)d.getDecoracion(p).get("finDatos")+1, cinst);
+						(Integer)d.getDecoracion(p).get("finDatos"), cinst);
+		aumentaCI(numeroInstrucciones(inicio));
+		codigoSubprograma(p.getDecSubprogramas());		
+		codigo(p.getBloque());	
 		d.insertaInfoEnNodo(p, "cod", inicio);		
 	}
+	
+	private void aumentaCI(int cantidad){
+		cinst += cantidad;
+//		System.out.println("Cinst:"+cinst);
+	}
+	
+	private void setCI(int cantidad){
+		cinst = cantidad;
+//		System.out.println("Cinst:"+cinst);
+	}
 
+	private int numeroInstrucciones(String cod) {
+		if (cod != null){
+			return cod.split("\n").length;
+		}
+		return 0;
+	}
+
+	@SuppressWarnings("unchecked")
 	private String codigoInstruccion(Instruccion i) {
 		if (i == null) return "";
 		TiposInstruccion tipo = i.getTipoInstruccion();
@@ -95,63 +113,76 @@ public class GeneraCodigo {
 	}
 
 	private String codigo(List<Caso> i) {
-		// TODO Auto-generated method stub
-		return null;
+		String cod = "";
+		for (Caso c : i){
+			cod += codigo(c.getExpresion());
+			cod += codigo(c.getBloque());
+		}			
+		d.insertaInfoEnNodo(i, "cod", cod);	
+		return cod;
 	}
 
 	private String codigo(Write i) {
-		
-		
-		return null;
+		String cod = codigo(i.getExpresion());
+		cod += WRITE;
+		d.insertaInfoEnNodo(i, "cod", cod);
+		return cod;
 	}
 
 	private String codigo(Read i) {
-		// TODO Auto-generated method stub
-		return null;
+		String cod = READ;
+		cod += codigo(i.getDesignador());
+		cod += DESAPILA_IND;
+		d.insertaInfoEnNodo(i, "cod", cod);
+		return cod;
 	}
 
 	private String codigo(New i) {
-		// TODO Auto-generated method stub
-		return null;
+		i.getDesignador();
+		String cod = "";
+		d.insertaInfoEnNodo(i, "cod", cod);
+		return cod;
 	}
 
 	private String codigo(Llamada i) {
 
+		// TODO
+		
 		String id = i.getIdentificador();
 		List<Expresion> exps = i.getParams();
+		
+		//System.out.println(getTS(i).get("dir"));
 		
 		String params = "";
 		for (Expresion exp : exps){
 			params += codigo(exp);
 		}
 		
-		System.out.println(params);
+//		generaPrellamada(params, cinst+1, dirSalto);
 		
+		this.d.insertaInfoEnNodo(i, "cod", params);
 		
-		
-		return null;
+		return params;
 	}
 
 	private String codigo(Condicional i) {
-		// TODO Auto-generated method stub
+		codigo(i.getCasos());
+		
+		
 		return null;
 	}
 
 	private String codigo(Delete i) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	private String codigoCasos(List<Caso> i) {
-		// TODO Auto-generated method stub
+		
+		
 		return null;
 	}
 
 	private String codigo(Bucle i) {
-
-		
-		
-		return null;
+		 codigo(i.getCasos());
+		 
+		 
+		 return null;
 	}
 
 	private String codigo(Bloque i) {
@@ -161,22 +192,16 @@ public class GeneraCodigo {
 			sb.append(codigoInstruccion(in));
 		}
 		d.insertaInfoEnNodo(i, "cod", sb.toString());
-		System.out.println(sb.toString());
+//		System.out.println(sb.toString());
 		return sb.toString();
 	}
 
 	private String codigo(Asignacion i) {
-		
-		// donde
 		String cod = codigo(i.getDesignador());
-		
-		// que
 		String cod2 = codigo(i.getExpresion());
-		
-		// hazlo
-		String cod3 = DESAPILA_IND;
-		
-		return cod + cod2 + cod3;
+		String cod3 = cod + cod2 + DESAPILA_IND;		
+		d.insertaInfoEnNodo(i, "cod", cod3);
+		return cod3;
 	}
 
 	private String codigo(Expresion expresion) {
@@ -261,20 +286,25 @@ public class GeneraCodigo {
 	}
 
 	private void codigo(ExpresionInteger expresion) {
-		// TODO Auto-generated method stub
-		
+		d.insertaInfoEnNodo(expresion, "cod", instrConAlgo(APILA, expresion.getValor()));		
 	}
 
 	private void codigo(ExpresionDouble expresion) {
-		// TODO Auto-generated method stub
-		
+		d.insertaInfoEnNodo(expresion, "cod", instrConAlgo(APILA, expresion.getValor()));
 	}
 
 	private void codigo(ExpresionDesignador expresion) {
 		Designador designador = expresion.getValor();
 		if (designador == null) return;
-		
-		
+		codigo(designador);		
+	}
+
+	private void codigo(ExpresionBoolean expresion) {
+		d.insertaInfoEnNodo(expresion, "cod", instrConAlgo(APILA, expresion.getValor()));
+	}
+
+	private String codigo(Designador designador) {		
+		// códigos para acceder (saber posición)
 		Expresion e = designador.getExpresion();
 		Designador des = designador.getDesignador();
 		String id = designador.getIdentificador();
@@ -282,55 +312,104 @@ public class GeneraCodigo {
 		switch(designador.getTipo()){
 			case ARRAY: {
 				
-				break;
+				String codArray = codigo(des);
+				codArray += codigo(e);
+				codArray += SUMA;			
+				
+//				System.out.println(codArray);
+				this.d.insertaInfoEnNodo(designador, "cod", codArray);				
+				
+				return codArray;
 			}
 			case ID: {
-				String cod = "";
+				String codID;
 				if (id.equalsIgnoreCase("null")){ 
-					cod += instrConAlgo(APILA, 0);
-				} else {
-//					Integer tam = (Integer) this.d.getDecoracion(id).get("tam");
-					Object obj = ts.get(id);
+					codID = instrConAlgo(APILA, 0);
+				} else {					
+					Object obj = getTS(designador.getIdentificador());
 					Map<String, Object> m = this.d.getDecoracion(obj);
-					System.out.println("TAM de "+ id +":"+m);
+					
+					System.out.println(m);
+					
+					if (m.get("campos") != null){
+						System.out.println("ojo es un struct");
+					}
+					
+					
+					int dir = (int) m.get("dir");
+					int niv = (int) m.get("nivel");
+					
+					if (niv == 0){
+						codID = instrConAlgo(APILA, dir);
+					} else {						
+						codID = instrConAlgo(APILA_DIR, nivel) +
+								instrConAlgo(APILA, dir) +
+								SUMA;						
+					}				
 					
 				}
-
-				break;
+//				System.out.println(codID);
+				this.d.insertaInfoEnNodo(designador, "cod", codID);
+				return codID;
 			}
 			case STRUCT: {
+				
+				// TODO
+				
+				//String codStruct = codigo(designador);
 
-				break;				
+//				Map<String, Object> obj = (Map<String, Object>) ts.getTS(id);
+//				if (obj != null){
+//					Object m = obj.get(id);
+//				
+//				}
+
+//				return codStruct;				
 			}
 			case PUNTERO: {
+				
+				// TODO
 
-				break;
+				//String codPuntero = codigo(designador);
+				
+				
+//				return codPuntero;
 			}
 		default: break;
 		}		
 		
+		return null;
 	}
-
-	private void codigo(ExpresionBoolean expresion) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	private String codigo(Designador designador) {
-		
-		
+	
+	@SuppressWarnings("unchecked")
+	private Object getTS(String object){
+		for (int i = 0; i < ts.size(); ++i){
+			Map<String, Object> map = ts.get(i);
+			return map.get(object);
+		}
 		return null;
 	}
 
-	private void codigoSubprograma(List<DecSubprograma> list) {
+	private String codigoSubprograma(List<DecSubprograma> list) {
+		if (list == null){ return ""; }
+		String cod = "";
 		for (DecSubprograma ds : list){
-			ds.getParametros();
-			ds.getPrograma();
+//			codigoPars(ds.getParametros());
+			cod += codigo(ds.getPrograma());
 		}
+		return cod;
+	}
+	
+	private String codigo(Programa programa) {
+		if (programa == null){ return ""; }
+		// TODO
+		String cod = "";
+		cod += codigoSubprograma(programa.getDecSubprogramas());
+		cod += codigo(programa.getBloque());
+		return cod;
 	}
 	
 	// ASIGNA ESPACIOS
-	
 
 	private void asignaEspacioSubs(List<DecSubprograma> decSubprogramas) {
 		for (DecSubprograma ds : decSubprogramas){
@@ -392,20 +471,26 @@ public class GeneraCodigo {
 
 	private void asignaEspacioVars(List<DecVariable> decVariables) {		
 		int dir = 0;
+		int oldDir = this.dir;
+		d.insertaInfoEnNodo(decVariables, "dir", this.dir);
 		for (DecVariable dv : decVariables){
-			d.insertaInfoEnNodo(decVariables, "nivel", nivel);
-			int tam = tamanioVar(dv.getTipo());			
-			d.insertaInfoEnNodo(decVariables, "tam", tam);
+			int tam = tamanioVar(dv.getTipo());		
+			
 			if (this.nivel == 0){
-				d.insertaInfoEnNodo(decVariables, "dir", this.dir);
-				// System.out.println("TAM, DIR y NIVEL de " + dv.getIdentificador() + " : " + "("+tam+","+this.dir+","+nivel+")");	
+				d.insertaInfoEnNodo(dv, "dir", this.dir);
+//				System.out.println("TAM, DIR y NIVEL de " + dv.getIdentificador() + " : " + "("+tam+","+this.dir+","+nivel+")");	
 			} else {
-				d.insertaInfoEnNodo(decVariables, "dir", dir);	
-				// System.out.println("TAM, DIR y NIVEL de " + dv.getIdentificador() + " : " + "("+tam+","+dir+","+nivel+")");				
+				d.insertaInfoEnNodo(dv, "dir", dir);	
+//				 System.out.println("TAM, DIR y NIVEL de " + dv.getIdentificador() + " : " + "("+tam+","+dir+","+nivel+")");				
 			}
+
+			d.insertaInfoEnNodo(dv, "nivel", nivel);	
+			d.insertaInfoEnNodo(dv, "tam", tam);
 			dir += tam;				
 			this.dir += tam;
 		}
+		d.insertaInfoEnNodo(decVariables, "tam", this.dir-oldDir);
+		
 	}
 
 	private int tamanioVar(Tipo tipo) {
