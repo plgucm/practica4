@@ -1,6 +1,8 @@
 package traductor;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import modelo.instrucciones.Asignacion;
 import modelo.instrucciones.Bloque;
@@ -23,10 +25,12 @@ import modelo.tipos.Tipo;
 
 public class Chequeo {
 
+	private Map<Object, Object> vinculos;
+	private Map<Object, Object> tipos;
 
-	public Chequeo() {
-
-		
+	public Chequeo(Map<Object, Object> vinculos) {
+		this.vinculos = vinculos;		
+		this.tipos = new HashMap<Object, Object>();
 	}
 
 	public void chequea(Programa p) {
@@ -52,18 +56,20 @@ public class Chequeo {
 	private void simplificaDefTipos(DecSubprograma d) {
 		List<Parametro> params = d.getParametros();
 		for (Parametro p : params){
-			
+			simplificaDefTipo(p);
 		}
 		d.getPrograma();
 	}
 
+	private void simplificaDefTipo(Parametro p) {
+		
+	}
+
 	private void simplificaDefTipos(DecVariable d) {
-		// TODO Auto-generated method stub
 		
 	}
 
 	private void simplificaDefTipos(DecTipo d) {
-		// TODO Auto-generated method stub
 		
 	}
 
@@ -91,6 +97,8 @@ public class Chequeo {
 	private void chequea(Tipo tipo) {
 		switch(tipo.getTipoConcreto()){
 		case ARRAY:
+			
+			
 			break;
 		case BOOL:
 			break;
@@ -142,7 +150,7 @@ public class Chequeo {
 				chequea((Bucle) i);
 			}; break;
 			case CASOS: {
-				chequea((List<Caso>) i);
+				chequeaCasos((List<Caso>) i);
 			}; break;
 			case DELETE: {
 				chequea((Delete) i);
@@ -167,47 +175,38 @@ public class Chequeo {
 	}
 
 	private void chequea(Write i) {
-		// TODO Auto-generated method stub
 		
 	}
 
 	private void chequea(Read i) {
-		// TODO Auto-generated method stub
 		
 	}
 
 	private void chequea(New i) {
-		// TODO Auto-generated method stub
 		
 	}
 
 	private void chequea(Llamada i) {
-		// TODO Auto-generated method stub
 		
 	}
 
 	private void chequea(Condicional i) {
-		// TODO Auto-generated method stub
 		
 	}
 
 	private void chequea(Delete i) {
-		// TODO Auto-generated method stub
 		
 	}
 
 	private void chequea(Bucle i) {
-		// TODO Auto-generated method stub
 		
 	}
 
 	private void chequea(Asignacion i) {
-		// TODO Auto-generated method stub
 		
 	}
 
-	private void chequea(List<Caso> i) {
-		// TODO Auto-generated method stub
+	private void chequeaCasos(List<Caso> i) {
 		
 	}
 

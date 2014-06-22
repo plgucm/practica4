@@ -2,19 +2,19 @@ Programa -> program types DecTipos variables DecVariables subprograms DecSubprog
 	Programa.a = creaPrograma(DecTipos.a, DecVariables.a, DecSubprogramas.a, IBloque.a)
 
 DecTipos -> DecTipos ; id : Tipo  
-	DecTipos.a = uneListaDecTipos(DecTipos.a, id.a, Tipo.a)
+	DecTipos.a = uneListaDecTipos(DecTipos.a, id.lex, Tipo.a)
 DecTipos -> id : Tipo 
-	DecTipos.a = creaListaDecTipos(id.a, Tipo.a)
+	DecTipos.a = creaListaDecTipos(id.lex, Tipo.a)
 
 DecVariables -> DecVariables ; id : Tipo 
-	DecVariables.a = uneListaDecVariables(DecVariables.a, id.a, Tipo.a)
+	DecVariables.a = uneListaDecVariables(DecVariables.a, id.lex, Tipo.a)
 DecVariables ->  id : Tipo 
-	DecVariables.a = creaListaDecVariables(id.a, Tipo.a)
+	DecVariables.a = creaListaDecVariables(id.lex, Tipo.a)
 
 DecSubprogramas -> DecSubprogramas ; subprogram id Parametros types DecTipos variables DecVariables subprograms DecSubprogramas IBloque
-	DecSubprogramas.a = uneListaDecSubprogramas(DecSubprogramas.a, id.a, Parametros.a, DecTipos.a, DecVariables.a, DecSubprogramas.a, IBloque.a)
+	DecSubprogramas.a = uneListaDecSubprogramas(DecSubprogramas.a, id.lex, Parametros.a, DecTipos.a, DecVariables.a, DecSubprogramas.a, IBloque.a)
 DecSubprogramas ->  subprogram id Parametros types DecTipos variables DecVariables subprograms DecSubprogramas IBloque
-	DecSubprogramas.a = creaListaDecSubprogramas(id.a, Parametros.a, DecTipos.a, DecVariables.a, DecSubprogramas.a, IBloque.a)  
+	DecSubprogramas.a = creaListaDecSubprogramas(id.lex, Parametros.a, DecTipos.a, DecVariables.a, DecSubprogramas.a, IBloque.a)  
  
 Tipo -> int
 	Tipo.a = creaInt()
@@ -43,9 +43,9 @@ ListaParametros -> Parametro
 
 	
 Parametro -> id : Tipo 
-	Parametro.a = creaParametroValor(id.a, Tipo.a)
+	Parametro.a = creaParametroValor(id.lex, Tipo.a)
 Parametro -> & id: Tipo
-	Parametro.a = creaParametroVariable(id.a, Tipo.a)
+	Parametro.a = creaParametroVariable(id.lex, Tipo.a)
 
 Instrucciones -> Instrucciones ; Instruccion
 	Instrucciones.a = creaInstrucciones(Instrucciones.a, Instruccion.a)
@@ -87,9 +87,9 @@ Casos ->  Exp : IBloque
 IBucle -> do Casos enddo 
 	IBucle.a = creaBucle(Casos.a)
 ILlamada -> id ( ListaArgumentos ) 
-	ILlamada.a = creaLlamadaConArgumentos(id.a, ListaArgumentos.a)
+	ILlamada.a = creaLlamadaConArgumentos(id.lex, ListaArgumentos.a)
 ILlamada -> id ( ) 
-	ILLamada.a = creaLlamada(id.a)
+	ILLamada.a = creaLlamada(id.lex)
 ListaArgumentos -> ListaArgumentos , Exp 
 	ListaArgumentos.a = creaListaArgumentosCompuesta(ListaArgumetos.a, Exp.a)
 ListaArgumentos -> Exp 
@@ -105,11 +105,11 @@ IDelete -> delete Designador
 	IDelete.a = creaDelete(Designador.a)
 
 Designador -> id 
-	Designador.a = creaDesignador(id.a)
+	Designador.a = creaDesignador(id.lex)
 Designador -> Designador1[Exp] 
 	Designador.a = creaDesignador(Designador1.a, Exp.a)
 Designador -> Designador1.id
-	Designador.a = creaDesignador(Designador1.a, id.a)
+	Designador.a = creaDesignador(Designador1.a, id.lex)
 
 Exp -> Exp1 OpBinario Exp2
 	Exp.a = creaExpresionBinaria(Exp1.a, OpBinario.a, Exp2.a)
@@ -144,7 +144,7 @@ OpBinario -> or
 	OpBinario.a = creaOperadorOr()
 
 OpUnario -> - 
-	OpUnario.a = creaOperadorMenos()
+	OpUnario.a = creaOperadorMenosUnario()
 OpUnario -> not 
 	OpUnario.a = creaOperadorNot()
 OpUnario -> toint 

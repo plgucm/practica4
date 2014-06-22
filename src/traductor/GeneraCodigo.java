@@ -3,6 +3,7 @@ package traductor;
 
 import static traductor.LenguajeP.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -41,14 +42,51 @@ import modelo.tipos.TipoStruct;
 
 public class GeneraCodigo {	
 	
-	private int dir, nivel, cinst;
 	private Decoracion d;
 	private Map<Object, Object> vinculos;
+	
+	private List<String> codigo;
+	private int dir, nivel, cinst;
+
+	private BloqueDeCodigo bloqueRaiz, bloqueActual;
 	
 	public GeneraCodigo(Map<Object, Object> vinculos, Decoracion d) {	
 		this.dir = this.cinst = this.nivel = 0;
 		this.d = d;
 		this.vinculos = vinculos;
+	}
+	
+	class BloqueDeCodigo {
+		
+		List<BloqueDeCodigo> bl;
+		String codigo;
+		
+		public BloqueDeCodigo(String codigo) {
+			this.codigo = codigo;
+			this.bl = null;
+		}
+		
+		public void addBloque(BloqueDeCodigo bloque){
+			if (bl == null){
+				bl = new ArrayList<BloqueDeCodigo>();
+			}
+			bl.add(bloque);
+		}
+		
+		public List<String> getCodigo(){
+			List<String> codigos = new ArrayList<String>();
+			codigos.add(codigo);
+			if (bl != null){
+				for (BloqueDeCodigo b : bl){
+					List<String> codigosAgregados = b.getCodigo();
+					for (String cod : codigosAgregados){
+						codigos.add(cod);
+					}
+				}
+			}
+			return codigos;
+		}
+		
 	}
 
 	public void generaCodigo(Programa p) {
@@ -61,20 +99,24 @@ public class GeneraCodigo {
 		String inicio = generaInicio(
 						(Integer)d.getDecoracion(p.getDecVariables()).get("tam")+
 						(Integer)d.getDecoracion(p).get("finDatos"), cinst);
-		aumentaCI(numeroInstrucciones(inicio));
+		bloqueActual = bloqueRaiz = new BloqueDeCodigo(inicio);		
+		d.insertaInfoEnNodo(p, "inicio", getCI());		
+		aumentaCI(numeroInstrucciones(inicio));	
 		codigoSubprograma(p.getDecSubprogramas());		
-		codigo(p.getBloque());	
-		d.insertaInfoEnNodo(p, "cod", inicio);		
+		codigo(p.getBloque());
+		d.insertaInfoEnNodo(p, "fin", getCI());	
 	}
 	
 	private void aumentaCI(int cantidad){
 		cinst += cantidad;
-//		System.out.println("Cinst:"+cinst);
 	}
 	
 	private void setCI(int cantidad){
 		cinst = cantidad;
-//		System.out.println("Cinst:"+cinst);
+	}
+	
+	private int getCI(){
+		return cinst;
 	}
 
 	private int numeroInstrucciones(String cod) {
@@ -150,22 +192,29 @@ public class GeneraCodigo {
 		
 		String id = i.getIdentificador();
 		List<Expresion> exps = i.getParams();
-		
-		//System.out.println(getTS(i).get("dir"));
-		
-		String params = "";
+	
+		ArrayList<String> params = new ArrayList<String>();
 		for (Expresion exp : exps){
-			params += codigo(exp);
+			params.add(codigo(exp));
 		}
 		
-//		generaPrellamada(params, cinst+1, dirSalto);
+		DecSubprograma ds = (DecSubprograma) vinculos.get(i);
 		
-		this.d.insertaInfoEnNodo(i, "cod", params);
+		Integer dirSalto = (int) d.getDecoracion(ds).get("inicio");
 		
-		return params;
+		if (dirSalto == null){
+			throw new UnsupportedOperationException("En la llamada no se dónde ir.");
+		}
+		
+		String cod = generaPrellamada(params, cinst+1, dirSalto);
+		
+		this.d.insertaInfoEnNodo(i, "cod", cod);
+		
+		return cod;
 	}
 
 	private String codigo(Condicional i) {
+		
 		codigo(i.getCasos());
 		
 		
@@ -329,11 +378,7 @@ public class GeneraCodigo {
 					Object obj = vinculos.get(designador);
 					Map<String, Object> m = this.d.getDecoracion(obj);
 					
-					System.out.println(m);
-					
-					if (m.get("campos") != null){
-						System.out.println("ojo es un struct");
-					}
+//					System.out.println(m);
 					
 					int dir = (int) m.get("dir");
 					int niv = (int) m.get("nivel");
@@ -355,15 +400,16 @@ public class GeneraCodigo {
 				
 				// TODO
 				
-				//String codStruct = codigo(designador);
+				// String codStruct = codigo(des);
 
-//				Map<String, Object> obj = (Map<String, Object>) ts.getTS(id);
 //				if (obj != null){
 //					Object m = obj.get(id);
-//				
 //				}
+				
 
-//				return codStruct;				
+				
+				
+				//return codStruct;				
 			}
 			case PUNTERO: {
 				
@@ -532,6 +578,10 @@ public class GeneraCodigo {
 		List<DecSubprograma> ds = p.getDecSubprogramas();
 		if (ds == null) return 1;
 		return anidamiento(ds)+1;
+	}
+
+	public List<String> getCodigo() {
+		return bloqueRaiz.getCodigo();
 	}
 
 	

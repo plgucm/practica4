@@ -3,7 +3,6 @@ package tiny;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.util.List;
 import java.util.Map;
 
 import modelo.instrucciones.Programa;
@@ -21,17 +20,18 @@ public class Main {
 		asint.parse();
 		System.out.println("Análisis completado. Se supone que el árbol está construído.");
 		Programa p = AnalizadorSintacticoTiny.programaRaiz;	
-		
 
 		Vinculador vinculador = new Vinculador();
 		Map<Object, Object> vinculos = vinculador.vincula(p);
 		
-		Chequeo ch = new Chequeo();
+		Chequeo ch = new Chequeo(vinculos);
 		ch.chequea(p);
+		
 		Decoracion d = new Decoracion();
 		GeneraCodigo gc = new GeneraCodigo(vinculos, d);
 		gc.generaCodigo(p);
-		EscribeCodigoEnArchivo ea = new EscribeCodigoEnArchivo(p, d);
+		
+		EscribeCodigoEnArchivo ea = new EscribeCodigoEnArchivo(gc.getCodigo());
 		ea.escribeCodigo("cod.txt");
 	}
 }

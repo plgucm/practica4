@@ -41,7 +41,6 @@ public class Vinculador {
 	
 	private Stack<Map<String, Object>> tablaDeSimbolos;
 	private Map<Object, Object> vinculos;
-	private static final String CAMPOS = ".campos";
 
 	public Map<Object, Object> vincula(Programa p) {
 		iniciaTS();
@@ -82,7 +81,7 @@ public class Vinculador {
 	}
 
 	private boolean insertaID(String id, Object declaracion){
-		debugTS("insertaID");
+//		debugTS("insertaID");
 		Map<String, Object> ts = tablaDeSimbolos.peek();		
 		if (ts.get(id) != null){ return false; }
 		ts.put(id, declaracion);
