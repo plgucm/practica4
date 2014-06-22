@@ -39,6 +39,7 @@ import modelo.tipos.Tipo;
 import modelo.tipos.TipoArray;
 import modelo.tipos.TipoID;
 import modelo.tipos.TipoStruct;
+import modelo.tipos.Tipos;
 
 public class GeneraCodigo {	
 	
@@ -215,18 +216,35 @@ public class GeneraCodigo {
 
 		bd.addBloque(new BloqueDeCodigo(PRELLAMADA_INICIO)); 
 		aumentaCI(3);
+
+		DecSubprograma obj = (DecSubprograma) vinculos.get(i);		
+		Integer dirSalto = (Integer) d.getDecoracion(obj).get("inicio");
 		
 		List<Expresion> exps = i.getParams();	
-		int j = 0;
-		for (Expresion exp : exps){
+		List<Parametro> pars = obj.getParametros();
+		for (int j = 0, s = exps.size(); j < s; j++){
 			bd.addBloque(new BloqueDeCodigo(DUP+instrConAlgo(APILA, j)+SUMA));
 			aumentaCI(3);
-			codigo(exp);			
+			codigo(exps.get(j));			
 			bd.addBloque(bloqueActual);			
+			
+			Parametro p = pars.get(j);
+			if (p.isPorValor() && !p.getTipo().getTipoConcreto().equals(Tipos.POINTER)){
+				// Por valor y no es puntero. Se clona.
+				Integer tam =  (Integer) d.getDecoracion(p).get("tam");
+				if (tam == null){
+					tam = 0;
+//					throw new UnsupportedOperationException("tam es null");
+				}
+				bd.addBloque(new BloqueDeCodigo(instrConAlgo(CLONA, tam)));
+				aumentaCI(1);
+			} else {
+				// Se pasa un valor entero.
+				bd.addBloque(new BloqueDeCodigo(DESAPILA_IND));
+				aumentaCI(1);
+			}
 		}
 		
-		Object obj = vinculos.get(i);		
-		Integer dirSalto = (Integer) d.getDecoracion(obj).get("inicio");
 		
 		aumentaCI(6);	
 		BloqueDeCodigo bd1 = new BloqueDeCodigo(PRELLAMADA_FINAL+
@@ -477,7 +495,7 @@ public class GeneraCodigo {
 						bd.setCodigo(instrConAlgo(APILA, dir));
 						aumentaCI(1);
 					} else {						
-						bd.setCodigo(instrConAlgo(APILA_DIR, nivel) +
+						bd.setCodigo(instrConAlgo(APILA_DIR, niv) +
 								instrConAlgo(APILA, dir) +
 								SUMA);
 						aumentaCI(1);
@@ -532,15 +550,21 @@ public class GeneraCodigo {
 			Programa programa = ds.getPrograma();
 			
 			Integer tamDatos = (Integer) d.getDecoracion(programa.getDecVariables()).get("tam");
-			if (tamDatos == null){
+			if (tamDatos == null){ 
+//				throw new UnsupportedOperationException("tamDatos null"); 
 				tamDatos = 0;
+			}
+			Integer nivel = (Integer) d.getDecoracion(programa.getDecVariables()).get("nivel");
+			if (nivel == null){ 
+//				throw new UnsupportedOperationException("nivel null"); 
+				nivel = 0;
 			}
 			
 			String prologo = generaPrologo(nivel, tamDatos);
 			bd.addBloque(new BloqueDeCodigo(prologo));
 			aumentaCI(10); // cantidad del prologo			
 			
-			if (programa != null){ 		
+			if (programa != null){ 
 				codigoDecSubprogramas(programa.getDecSubprogramas());
 				bd.addBloque(bloqueActual);
 				codigoBloque(programa.getBloque());
@@ -640,6 +664,7 @@ public class GeneraCodigo {
 			this.dir += tam;
 		}
 		d.insertaInfoEnNodo(decVariables, "tam", this.dir-oldDir);
+		d.insertaInfoEnNodo(decVariables, "nivel", nivel);
 		
 	}
 
