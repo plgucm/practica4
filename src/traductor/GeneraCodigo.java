@@ -81,7 +81,7 @@ public class GeneraCodigo {
 			if (!bl.contains(bloque) && bloque != this){
 				bl.add(bloque);
 			} else {				
-				throw new UnsupportedOperationException("Bloque ya existente");
+//				throw new UnsupportedOperationException("Bloque ya existente");
 			}
 		}
 		
@@ -92,9 +92,14 @@ public class GeneraCodigo {
 			}
 			if (bl != null){
 				for (BloqueDeCodigo b : bl){
-					List<String> codigosAgregados = b.getCodigo();
-					for (String cod : codigosAgregados){
-						codigos.add(cod);
+					List<String> codigosAgregados = null;
+					if (b != null){
+						codigosAgregados = b.getCodigo();
+					}
+					if (codigosAgregados != null){
+						for (String cod : codigosAgregados){
+							codigos.add(cod);
+						}
 					}
 				}
 			}
@@ -164,10 +169,14 @@ public class GeneraCodigo {
 	}
 
 	private void codigoCasos(List<Caso> i) {
+		BloqueDeCodigo bd = new BloqueDeCodigo();
 		for (Caso c : i){
-			codigo(c.getExpresion());			
+			codigo(c.getExpresion());	
+			bd.addBloque(bloqueActual);
 			codigoBloque(c.getBloque());
+			bd.addBloque(bloqueActual);
 		}	
+		bloqueActual = bd;
 	}
 
 	private void codigo(Write i) {
@@ -283,10 +292,13 @@ public class GeneraCodigo {
 	}
 	
 	private void codigoBloque(Bloque i) {
+		BloqueDeCodigo bd = new BloqueDeCodigo();
 		List<Instruccion> insts = i.getInstrucciones();
 		for (Instruccion in : insts){
 			codigoInstruccion(in);
+			bd.addBloque(bloqueActual);
 		}
+		bloqueActual = bd;
 	}
 
 	private void codigo(Asignacion i) {
@@ -409,20 +421,26 @@ public class GeneraCodigo {
 	}
 
 	private void codigo(ExpresionDesignador expresion) {
+		BloqueDeCodigo bd = new BloqueDeCodigo();	
 		Designador designador = expresion.getValor();
-		if (designador == null) return;
-		codigo(designador);		
+		if (designador == null){
+			codigo(designador);	
+			bd.addBloque(bloqueActual);
+			bd.addBloque(new BloqueDeCodigo(DESAPILA_IND));
+		}
+		bloqueActual = bd;
 	}
 
-	private void codigo(Designador designador) {		
-		// cÃ³digos para acceder (saber posiciÃ³n)
-		if (designador == null){ return; }
+	private void codigo(Designador designador) {	
+		BloqueDeCodigo bd = new BloqueDeCodigo();
+		if (designador == null){
+			bloqueActual = bd;
+			return;
+		}
 		
 		Expresion e = designador.getExpresion();
 		Designador des = designador.getDesignador();
-		String id = designador.getIdentificador();
-		
-		BloqueDeCodigo bd = new BloqueDeCodigo();
+		String id = designador.getIdentificador();		
 		
 		switch(designador.getTipo()){
 			case ARRAY: {
@@ -507,18 +525,36 @@ public class GeneraCodigo {
 			return; 
 		}
 		
+		BloqueDeCodigo bd = new BloqueDeCodigo();
+		
 		for (DecSubprograma ds : list){
 			d.insertaInfoEnNodo(ds, "inicio", getCI());
 			Programa programa = ds.getPrograma();
 			
+			Integer tamDatos = (Integer) d.getDecoracion(programa.getDecVariables()).get("tam");
+			if (tamDatos == null){
+				tamDatos = 0;
+			}
 			
+			String epilogo = generaEpilogo(nivel, tamDatos);
+			bd.addBloque(new BloqueDeCodigo(epilogo));
+			aumentaCI(14); // cantidad del epílogo
 			
 			if (programa != null){ 		
 				codigoDecSubprogramas(programa.getDecSubprogramas());
+				bd.addBloque(bloqueActual);
 				codigoBloque(programa.getBloque());
+				bd.addBloque(bloqueActual);
 			}
+			
+			String prologo = generaPrologo(nivel, tamDatos);
+			bd.addBloque(new BloqueDeCodigo(prologo));
+			aumentaCI(10); // cantidad del epílogo
+			
 		}
 		
+		
+		bloqueActual = bd;		
 	}
 	
 	// ASIGNA ESPACIOS

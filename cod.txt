@@ -1,30 +1,579 @@
 apila 14
 apila_dir 0
-ir_a 470
+ir_a 777
 apila_dir 0
+apila 4
+resta
+desapila_dir 0
+apila_dir 0
+apila 2
+suma
+apila_ind
+desapila_dir 0
+desapila_dir 0
 apila 1
 suma
-not
+apila_ind
+ir_ind
 apila_dir 0
+apila 2
+resta
+desapila_dir 0
+apila_dir 0
+apila 2
+suma
+apila_ind
+desapila_dir 0
+desapila_dir 0
 apila 1
 suma
-not
-ir_f 470
+apila_ind
+ir_ind
+lee
+apila_dir 0
+apila 2
+suma
+desapila_ind
+desapila_ind
+apila 2
+apila 2
+suma
+apila 1
 desapila_ind
 apila_dir 0
+apila 0
+suma
+apila_dir 0
+apila 2
+suma
+apila_dir 0
+desapila_ind
+desapila_dir 0
+apila_dir 0
+apila 2
+suma
+desapila_dir 0
+apila_dir 0
+apila 2
+resta
+desapila_dir 0
+apila_dir 0
+apila 2
+suma
+apila_ind
+desapila_dir 0
+desapila_dir 0
 apila 1
 suma
-ir_v 452
+apila_ind
+ir_ind
+apila_dir 0
+apila 2
+resta
+desapila_dir 0
+apila_dir 0
+apila 2
+suma
+apila_ind
+desapila_dir 0
+desapila_dir 0
+apila 1
+suma
+apila_ind
+ir_ind
+lee
+apila_dir 0
+apila 2
+suma
+desapila_ind
+desapila_ind
+apila 2
+apila 2
+suma
+apila 1
+desapila_ind
+apila_dir 0
+apila 0
+suma
+reserva
+desapila_ind
+apila_dir 0
+apila 2
+suma
+desapila_ind
+apila_dir 0
+apila 2
+suma
+apila 0
+suma
+desapila_ind
+apila_dir 0
+apila 2
+suma
+apila 1
+suma
+desapila_ind
+apila_dir 0
+apila 2
+suma
+apila 2
+suma
+apila_dir 0
+apila 2
+suma
+apila_dir 0
+desapila_ind
+desapila_dir 0
+apila_dir 0
+apila 2
+suma
+desapila_dir 0
+igual
+ir_f 112
+apila_dir 0
+apila 3
+suma
+apila_dir 0
+apila 1
+suma
+apila 112
+desapila_ind
+ir_a 64
+menor
+ir_f 126
 apila_dir 0
 apila 3
 suma
 dup
 apila 0
 suma
-apila 3
 apila_dir 0
 apila 1
 suma
-apila 523
+apila 126
 desapila_ind
-ir_a 447
+ir_a 50
+mayor
+ir_f 140
+apila_dir 0
+apila 3
+suma
+dup
+apila 0
+suma
+apila_dir 0
+apila 1
+suma
+apila 140
+desapila_ind
+ir_a 50
+apila_dir 0
+apila 2
+suma
+apila_dir 0
+desapila_ind
+desapila_dir 0
+apila_dir 0
+apila 2
+suma
+desapila_dir 0
+desapila_ind
+apila_dir 0
+apila 0
+suma
+apila false
+not
+apila_dir 0
+apila 3
+suma
+dup
+apila 0
+suma
+apila_dir 0
+apila 1
+suma
+apila 166
+desapila_ind
+ir_a 17
+not
+ir_f 180
+apila_dir 0
+apila 3
+suma
+dup
+apila 0
+suma
+apila_dir 0
+apila 1
+suma
+apila 180
+desapila_ind
+ir_a 50
+ir_v 152
+apila_dir 0
+apila 2
+suma
+apila_dir 0
+desapila_ind
+desapila_dir 0
+apila_dir 0
+apila 4
+suma
+desapila_dir 0
+apila_dir 0
+apila 3
+resta
+desapila_dir 0
+apila_dir 0
+apila 2
+suma
+apila_ind
+desapila_dir 0
+desapila_dir 0
+apila 1
+suma
+apila_ind
+ir_ind
+apila_dir 0
+apila 2
+resta
+desapila_dir 0
+apila_dir 0
+apila 2
+suma
+apila_ind
+desapila_dir 0
+desapila_dir 0
+apila 1
+suma
+apila_ind
+ir_ind
+desapila_ind
+apila_dir 0
+apila 0
+suma
+apila false
+not
+apila_dir 0
+apila 3
+suma
+dup
+apila 0
+suma
+apila_dir 0
+apila 1
+suma
+apila 166
+desapila_ind
+ir_a 17
+not
+ir_f 180
+apila_dir 0
+apila 3
+suma
+dup
+apila 0
+suma
+apila_dir 0
+apila 1
+suma
+apila 180
+desapila_ind
+ir_a 50
+ir_v 152
+ir_f 254
+apila_dir 0
+apila 3
+suma
+dup
+apila 0
+suma
+apila_dir 0
+apila 1
+suma
+apila 233
+desapila_ind
+ir_a 204
+apila 10
+menor
+ir_f 242
+desapila_ind
+apila 3
+desapila_ind
+apila_dir 0
+apila 0
+suma
+apila 1
+suma
+apila_dir 0
+apila 3
+suma
+dup
+apila 0
+suma
+apila_dir 0
+apila 1
+suma
+apila 254
+desapila_ind
+ir_a 204
+apila_dir 0
+apila 2
+suma
+apila_dir 0
+desapila_ind
+desapila_dir 0
+apila_dir 0
+apila 2
+suma
+desapila_dir 0
+desapila_ind
+apila_dir 0
+apila 0
+suma
+apila 0
+apila_dir 0
+apila 3
+suma
+dup
+apila 0
+suma
+apila_dir 0
+apila 1
+suma
+apila 279
+desapila_ind
+ir_a 204
+apila 10
+menor
+ir_f 286
+desapila_ind
+apila 3
+apila 1
+neg
+apila_dir 0
+apila 2
+suma
+apila_dir 0
+desapila_ind
+desapila_dir 0
+apila_dir 0
+apila 3
+suma
+desapila_dir 0
+apila_dir 0
+apila 2
+resta
+desapila_dir 0
+apila_dir 0
+apila 2
+suma
+apila_ind
+desapila_dir 0
+desapila_dir 0
+apila 1
+suma
+apila_ind
+ir_ind
+apila_dir 0
+apila 2
+resta
+desapila_dir 0
+apila_dir 0
+apila 2
+suma
+apila_ind
+desapila_dir 0
+desapila_dir 0
+apila 1
+suma
+apila_ind
+ir_ind
+desapila_ind
+apila_dir 0
+apila 0
+suma
+apila 0
+apila_dir 0
+apila 3
+suma
+dup
+apila 0
+suma
+apila_dir 0
+apila 1
+suma
+apila 279
+desapila_ind
+ir_a 204
+apila 10
+menor
+ir_f 286
+desapila_ind
+apila 3
+apila 1
+neg
+distinto
+ir_f 702
+apila_dir 0
+apila 3
+suma
+dup
+apila 0
+suma
+apila_dir 0
+apila 1
+suma
+apila 338
+desapila_ind
+ir_a 309
+apila_dir 0
+apila 3
+suma
+dup
+apila 0
+suma
+apila_dir 0
+apila 1
+suma
+apila 350
+desapila_ind
+ir_a 309
+apila_dir 0
+apila 2
+suma
+libera
+apila_dir 0
+apila 2
+suma
+apila_dir 0
+desapila_ind
+desapila_dir 0
+apila_dir 0
+apila 2
+suma
+desapila_dir 0
+apila_dir 0
+apila 3
+suma
+dup
+apila 0
+suma
+apila_dir 0
+apila 1
+suma
+apila 724
+desapila_ind
+ir_a 309
+desapila_ind
+apila 2
+apila_dir 0
+apila 2
+suma
+apila_dir 0
+desapila_ind
+desapila_dir 0
+apila_dir 0
+apila 2
+suma
+desapila_dir 0
+apila_dir 0
+apila 4
+resta
+desapila_dir 0
+apila_dir 0
+apila 2
+suma
+apila_ind
+desapila_dir 0
+desapila_dir 0
+apila 1
+suma
+apila_ind
+ir_ind
+desapila_ind
+apila_dir 0
+apila 0
+suma
+apila 0
+desapila_ind
+apila_dir 0
+apila 1
+suma
+not
+escribe
+desapila_ind
+apila_dir 0
+apila 0
+suma
+apila 1
+suma
+desapila_ind
+apila_dir 0
+apila 1
+suma
+not
+ir_f 767
+desapila_ind
+apila_dir 0
+apila 1
+suma
+ir_v 754
+apila_dir 0
+apila 2
+suma
+apila_dir 0
+desapila_ind
+desapila_dir 0
+apila_dir 0
+apila 4
+suma
+desapila_dir 0
+apila_dir 0
+apila 3
+suma
+dup
+apila 0
+suma
+apila_dir 0
+apila 1
+suma
+apila 790
+desapila_ind
+ir_a 3
+apila_dir 0
+apila 3
+suma
+dup
+apila 0
+suma
+apila_dir 0
+apila 1
+suma
+apila 802
+desapila_ind
+ir_a 190
+apila_dir 0
+apila 3
+suma
+dup
+apila 0
+suma
+apila_dir 0
+apila 1
+suma
+apila 814
+desapila_ind
+ir_a 295
+apila_dir 0
+apila 3
+suma
+dup
+apila 0
+suma
+apila_dir 0
+apila 1
+suma
+apila 826
+desapila_ind
+ir_a 735
