@@ -52,27 +52,8 @@ public class LenguajeP {
 	
 	public static String generaInicio(int tamDatos, int dirMain){
 		return instrConAlgo(APILA, tamDatos) +
-			   instrConAlgo(APILA_DIR, 0) +
+			   instrConAlgo(DESAPILA_DIR, 0) +
 			   instrConAlgo(IR_A, dirMain);
-	}
-	
-	public static String generaPrellamada(ArrayList<String> params, int dirRetorno, int dirSalto){
-		StringBuilder sb = new StringBuilder();
-		
-		sb.append(PRELLAMADA_INICIO); 
-		for (int i = 0, s = params.size(); i < s; ++i){
-			sb.append(DUP);
-			sb.append(instrConAlgo(APILA, i));
-			sb.append(SUMA);
-			sb.append(params.get(i));
-		}		
-		
-		sb.append(PRELLAMADA_FINAL);
-		sb.append(instrConAlgo(APILA, dirRetorno));
-		sb.append(DESAPILA_IND);
-		sb.append(instrConAlgo(IR_A, dirSalto));
-		
-		return sb.toString();
 	}
 	
 	public static String generaEpilogo(int nivel, int tamDatos){

@@ -81,7 +81,7 @@ public class GeneraCodigo {
 			if (!bl.contains(bloque) && bloque != this){
 				bl.add(bloque);
 			} else {				
-//				throw new UnsupportedOperationException("Bloque ya existente");
+				throw new UnsupportedOperationException("Bloque ya existente");
 			}
 		}
 		
@@ -521,11 +521,11 @@ public class GeneraCodigo {
 	}
 
 	private void codigoDecSubprogramas(List<DecSubprograma> list) {
-		if (list == null){ 
-			return; 
-		}
-		
 		BloqueDeCodigo bd = new BloqueDeCodigo();
+		if (list == null){ 
+			bloqueActual = bd;
+			return; 
+		}		
 		
 		for (DecSubprograma ds : list){
 			d.insertaInfoEnNodo(ds, "inicio", getCI());
@@ -536,9 +536,9 @@ public class GeneraCodigo {
 				tamDatos = 0;
 			}
 			
-			String epilogo = generaEpilogo(nivel, tamDatos);
-			bd.addBloque(new BloqueDeCodigo(epilogo));
-			aumentaCI(14); // cantidad del epílogo
+			String prologo = generaPrologo(nivel, tamDatos);
+			bd.addBloque(new BloqueDeCodigo(prologo));
+			aumentaCI(10); // cantidad del prologo			
 			
 			if (programa != null){ 		
 				codigoDecSubprogramas(programa.getDecSubprogramas());
@@ -546,11 +546,10 @@ public class GeneraCodigo {
 				codigoBloque(programa.getBloque());
 				bd.addBloque(bloqueActual);
 			}
-			
-			String prologo = generaPrologo(nivel, tamDatos);
-			bd.addBloque(new BloqueDeCodigo(prologo));
-			aumentaCI(10); // cantidad del epílogo
-			
+
+			String epilogo = generaEpilogo(nivel, tamDatos);
+			bd.addBloque(new BloqueDeCodigo(epilogo));
+			aumentaCI(14); // cantidad del epílogo
 		}
 		
 		
