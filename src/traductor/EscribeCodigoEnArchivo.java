@@ -40,7 +40,7 @@ public class EscribeCodigoEnArchivo {
 
 	public void imprimeCodigo(List<String> codigo){
 		for (String s : codigo){
-			System.out.println(s);
+//			System.out.println(s);
 			escribeEnArchivo(s);
 		}
 	}

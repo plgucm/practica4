@@ -1,6 +1,6 @@
 apila 14
 apila_dir 0
-ir_a 537
+ir_a 470
 apila_dir 0
 apila 1
 suma
@@ -9,12 +9,12 @@ apila_dir 0
 apila 1
 suma
 not
-ir_f 485
+ir_f 470
 desapila_ind
 apila_dir 0
 apila 1
 suma
-ir_v 464
+ir_v 452
 apila_dir 0
 apila 3
 suma
@@ -25,6 +25,6 @@ apila 3
 apila_dir 0
 apila 1
 suma
-apila 538
+apila 523
 desapila_ind
-ir_a 459
+ir_a 447

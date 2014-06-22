@@ -326,11 +326,17 @@ Designador  ::= ID : id
 		RESULT = AnalizadorSintacticoTiny.cons.creaDesignadorId(id); 
 	:};
 Designador  ::= Designador : d CAP Exp0 : e CCIERRE
-	{: RESULT = AnalizadorSintacticoTiny.cons.creaDesignadorArray((Designador)d, (Expresion)e); :};
+	{: 
+		RESULT = AnalizadorSintacticoTiny.cons.creaDesignadorArray((Designador)d, (Expresion)e); 
+	:};
 Designador  ::= Designador : d PUNTO ID : id
-	{: RESULT = AnalizadorSintacticoTiny.cons.creaDesignadorStruct((Designador)d, id); :};
+	{: 
+		RESULT = AnalizadorSintacticoTiny.cons.creaDesignadorStruct((Designador)d, id); 
+	:};
 Designador  ::= Designador : d FLECHA
-	{: RESULT = AnalizadorSintacticoTiny.cons.creaDesignadorPuntero((Designador)d); :};
+	{: 
+		RESULT = AnalizadorSintacticoTiny.cons.creaDesignadorPuntero((Designador)d); 
+	:};
 
 Exp0 ::= Exp1 : e0 OpComp : op Exp1 : e1 
 	{: RESULT = AnalizadorSintacticoTiny.cons.creaExpresionBinaria((Expresion) e0,

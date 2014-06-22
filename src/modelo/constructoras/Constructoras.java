@@ -372,7 +372,4 @@ public class Constructoras implements IConstructoras {
 		return new Designador(designador);
 	}
 
-	
-	
-
 }

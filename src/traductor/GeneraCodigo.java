@@ -45,7 +45,6 @@ public class GeneraCodigo {
 	private Decoracion d;
 	private Map<Object, Object> vinculos;
 	
-	private List<String> codigo;
 	private int dir, nivel, cinst;
 
 	private BloqueDeCodigo bloqueRaiz, bloqueActual;
@@ -80,8 +79,9 @@ public class GeneraCodigo {
 				bl = new ArrayList<BloqueDeCodigo>();
 			}
 			if (!bl.contains(bloque) && bloque != this){
-				System.out.println(bloque.getCodigo());
 				bl.add(bloque);
+			} else {				
+				throw new UnsupportedOperationException("Bloque ya existente");
 			}
 		}
 		
@@ -116,12 +116,13 @@ public class GeneraCodigo {
 		
 		codigoDecSubprogramas(p.getDecSubprogramas());		
 		bd.addBloque(bloqueActual);
-		codigoBloque(p.getBloque());
-		bd.addBloque(bloqueActual);
 		
 		String inicio = generaInicio(
 				(Integer)d.getDecoracion(p.getDecVariables()).get("tam")+
 				(Integer)d.getDecoracion(p).get("finDatos"), getCI());
+		
+		codigoBloque(p.getBloque());
+		bd.addBloque(bloqueActual);		
 		
 		bd.setCodigo(inicio);
 		
@@ -299,7 +300,11 @@ public class GeneraCodigo {
 	}
 
 	private void codigo(Expresion expresion) {
-		if (expresion == null) return;
+		if (expresion == null){
+			BloqueDeCodigo bd = new BloqueDeCodigo();
+			bloqueActual = bd;
+			return;
+		}
 		TipoExpresion te = expresion.getTipoExpresion();
 		switch(te){
 			case BINARIA: {
@@ -411,7 +416,7 @@ public class GeneraCodigo {
 
 	private void codigo(Designador designador) {		
 		// códigos para acceder (saber posición)
-		if (designador == null) return;		
+		if (designador == null){ return; }
 		
 		Expresion e = designador.getExpresion();
 		Designador des = designador.getDesignador();
@@ -432,7 +437,8 @@ public class GeneraCodigo {
 				
 //				System.out.println(codArray);
 //				this.d.insertaInfoEnNodo(designador, "cod", codArray);				
-				
+
+				break;
 			}
 			case ID: {
 
@@ -462,20 +468,21 @@ public class GeneraCodigo {
 				}
 //				System.out.println(codID);
 				bloqueActual = bd;
+				break;
 			}
 			case STRUCT: {
 				
-				// TODO
-				
 				codigo(des);
 				bd.addBloque(bloqueActual);
+				bd.addBloque(new BloqueDeCodigo(
+						instrConAlgo(APILA, (Integer) d.getDecoracion(id).get("desp"))+
+						SUMA
+						));
+				aumentaCI(1);
+				
 				bloqueActual = bd;
 
-//				if (obj != null){
-//					Object m = obj.get(id);
-//				}
-				
-		
+				break;
 			}
 			case PUNTERO: {
 				
@@ -487,6 +494,7 @@ public class GeneraCodigo {
 				
 				
 //				return codPuntero;
+				break;
 			}
 		default: break;
 		}		
@@ -495,11 +503,16 @@ public class GeneraCodigo {
 	}
 
 	private void codigoDecSubprogramas(List<DecSubprograma> list) {
-		if (list == null){ return; }
+		if (list == null){ 
+			return; 
+		}
 		
 		for (DecSubprograma ds : list){
 			d.insertaInfoEnNodo(ds, "inicio", getCI());
-			Programa programa = ds.getPrograma();			
+			Programa programa = ds.getPrograma();
+			
+			
+			
 			if (programa != null){ 		
 				codigoDecSubprogramas(programa.getDecSubprogramas());
 				codigoBloque(programa.getBloque());
@@ -614,13 +627,13 @@ public class GeneraCodigo {
 			return dim * tamInterior;			
 		case STRUCT:
 			TipoStruct struct = (TipoStruct) tipo;
-			int tam = 0;
+			int despl = 0;
 			List<DecTipo> tipos = struct.getTipos();
 			for (DecTipo tip : tipos){
-				d.insertaInfoEnNodo(tip, "desp", tam);
-				tam += tamanioVar(tip.getTipo());
+				d.insertaInfoEnNodo(tip.getId(), "desp", despl);
+				despl += tamanioVar(tip.getTipo());
 			}
-			return tam;
+			return despl;
 			default: break;
 		}		
 		
