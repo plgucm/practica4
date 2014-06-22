@@ -8,10 +8,10 @@ import java.util.List;
 public class EscribeCodigoEnArchivo {
 	
 	private FileWriter fw;	
-	private List<String> b;
+	private List<String> codigo;
 	
-	public EscribeCodigoEnArchivo(List<String> b) {
-		this.b = b;
+	public EscribeCodigoEnArchivo(List<String> codigo) {
+		this.codigo = codigo;
 	}
 	
 	private void abreArchivo(String nombreArchivo){
@@ -34,7 +34,7 @@ public class EscribeCodigoEnArchivo {
 
 	public void escribeCodigo(String nombreArchivo) {
 		abreArchivo(nombreArchivo);
-		imprimeCodigo(b);	
+		imprimeCodigo(codigo);	
 		cierraArchivo();
 	}	
 

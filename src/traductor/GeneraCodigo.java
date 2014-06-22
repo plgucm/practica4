@@ -61,21 +61,35 @@ public class GeneraCodigo {
 		List<BloqueDeCodigo> bl;
 		String codigo;
 		
+		public BloqueDeCodigo() {
+			this.codigo = null;
+			this.bl = null;	
+		}
+		
 		public BloqueDeCodigo(String codigo) {
 			this.codigo = codigo;
 			this.bl = null;
 		}
 		
+		public void setCodigo(String codigo) {
+			this.codigo = codigo;
+		}
+
 		public void addBloque(BloqueDeCodigo bloque){
 			if (bl == null){
 				bl = new ArrayList<BloqueDeCodigo>();
 			}
-			bl.add(bloque);
+			if (!bl.contains(bloque) && bloque != this){
+				System.out.println(bloque.getCodigo());
+				bl.add(bloque);
+			}
 		}
 		
 		public List<String> getCodigo(){
 			List<String> codigos = new ArrayList<String>();
-			codigos.add(codigo);
+			if (codigo != null){
+				codigos.add(codigo);
+			}
 			if (bl != null){
 				for (BloqueDeCodigo b : bl){
 					List<String> codigosAgregados = b.getCodigo();
@@ -92,169 +106,200 @@ public class GeneraCodigo {
 	public void generaCodigo(Programa p) {
 		asignaEspacioDesdeRaiz(p);
 		codigoProgramaDesdeRaiz(p);	
-		System.out.println("Código generado.");
 	}
 
-	private void codigoProgramaDesdeRaiz(Programa p) {							
+	private void codigoProgramaDesdeRaiz(Programa p) {	
+
+		aumentaCI(3);	
+		
+		BloqueDeCodigo bd = new BloqueDeCodigo();
+		
+		codigoDecSubprogramas(p.getDecSubprogramas());		
+		bd.addBloque(bloqueActual);
+		codigoBloque(p.getBloque());
+		bd.addBloque(bloqueActual);
+		
 		String inicio = generaInicio(
-						(Integer)d.getDecoracion(p.getDecVariables()).get("tam")+
-						(Integer)d.getDecoracion(p).get("finDatos"), cinst);
-		bloqueActual = bloqueRaiz = new BloqueDeCodigo(inicio);		
-		d.insertaInfoEnNodo(p, "inicio", getCI());		
-		aumentaCI(numeroInstrucciones(inicio));	
-		codigoSubprograma(p.getDecSubprogramas());		
-		codigo(p.getBloque());
-		d.insertaInfoEnNodo(p, "fin", getCI());	
+				(Integer)d.getDecoracion(p.getDecVariables()).get("tam")+
+				(Integer)d.getDecoracion(p).get("finDatos"), getCI());
+		
+		bd.setCodigo(inicio);
+		
+		bloqueRaiz = bd;	
 	}
 	
 	private void aumentaCI(int cantidad){
 		cinst += cantidad;
 	}
 	
-	private void setCI(int cantidad){
-		cinst = cantidad;
-	}
-	
 	private int getCI(){
 		return cinst;
 	}
 
-	private int numeroInstrucciones(String cod) {
-		if (cod != null){
-			return cod.split("\n").length;
-		}
-		return 0;
-	}
-
 	@SuppressWarnings("unchecked")
-	private String codigoInstruccion(Instruccion i) {
-		if (i == null) return "";
+	private void codigoInstruccion(Instruccion i) {
 		TiposInstruccion tipo = i.getTipoInstruccion();
 		if (tipo == TiposInstruccion.ASIG) {
-			return codigo((Asignacion) i);
+			 codigo((Asignacion) i);
 		} else if (tipo == TiposInstruccion.BLOQUE) {
-			return codigo((Bloque) i);
+			 codigoBloque((Bloque) i);
 		} else if (tipo == TiposInstruccion.BUCLE) {
-			return codigo((Bucle) i);
+			 codigo((Bucle) i);
 		} else if (tipo == TiposInstruccion.CASOS) {
-			return codigo((List<Caso>) i);
+			 codigoCasos((List<Caso>) i);
 		} else if (tipo == TiposInstruccion.DELETE) {
-			return codigo((Delete) i);
+			 codigo((Delete) i);
 		} else if (tipo == TiposInstruccion.IF) {
-			return codigo((Condicional) i);
+			 codigo((Condicional) i);
 		} else if (tipo == TiposInstruccion.LLAMADA) {
-			return codigo((Llamada) i);
+			 codigo((Llamada) i);
 		} else if (tipo == TiposInstruccion.NEW) {
-			return codigo((New) i);
+			 codigo((New) i);
 		} else if (tipo == TiposInstruccion.READ) {
-			return codigo((Read) i);
+			 codigo((Read) i);
 		} else if (tipo == TiposInstruccion.WRITE) {
-			return codigo((Write) i);
+			 codigo((Write) i);
 		}  
-		return "";
 	}
 
-	private String codigo(List<Caso> i) {
-		String cod = "";
+	private void codigoCasos(List<Caso> i) {
 		for (Caso c : i){
-			cod += codigo(c.getExpresion());
-			cod += codigo(c.getBloque());
-		}			
-		d.insertaInfoEnNodo(i, "cod", cod);	
-		return cod;
+			codigo(c.getExpresion());			
+			codigoBloque(c.getBloque());
+		}	
 	}
 
-	private String codigo(Write i) {
-		String cod = codigo(i.getExpresion());
-		cod += WRITE;
-		d.insertaInfoEnNodo(i, "cod", cod);
-		return cod;
+	private void codigo(Write i) {
+		BloqueDeCodigo bd = new BloqueDeCodigo();
+		codigo(i.getExpresion());
+		bd.addBloque(bloqueActual);
+		bd.addBloque(new BloqueDeCodigo(WRITE));
+		aumentaCI(1);
+		bloqueActual = bd;		
 	}
 
-	private String codigo(Read i) {
-		String cod = READ;
-		cod += codigo(i.getDesignador());
-		cod += DESAPILA_IND;
-		d.insertaInfoEnNodo(i, "cod", cod);
-		return cod;
+	private void codigo(Read i) {
+		BloqueDeCodigo bd = new BloqueDeCodigo(READ);
+		aumentaCI(1);
+		codigo(i.getDesignador());
+		bd.addBloque(bloqueActual);
+		bd.addBloque(new BloqueDeCodigo(DESAPILA_IND));
+		aumentaCI(1);
+		bloqueActual = bd;
 	}
 
-	private String codigo(New i) {
-		i.getDesignador();
-		String cod = "";
-		d.insertaInfoEnNodo(i, "cod", cod);
-		return cod;
+	private void codigo(New i) {
+		BloqueDeCodigo bd = new BloqueDeCodigo();
+		Object o = vinculos.get(i.getDesignador());
+		String codigo = instrConAlgo(RESERVA, ((Integer) d.getDecoracion(o).get("tam")))+
+						DESAPILA_IND;
+		aumentaCI(2);
+		bd.addBloque(new BloqueDeCodigo(codigo));
+		codigo(i.getDesignador());
+		bd.addBloque(bloqueActual);
+		bloqueActual = bd;		
 	}
 
-	private String codigo(Llamada i) {
+	private void codigo(Llamada i) {
+		BloqueDeCodigo bd = new BloqueDeCodigo();
 
-		// TODO
+		bd.addBloque(new BloqueDeCodigo(PRELLAMADA_INICIO)); 
+		aumentaCI(3);
 		
-		String id = i.getIdentificador();
-		List<Expresion> exps = i.getParams();
-	
-		ArrayList<String> params = new ArrayList<String>();
+		List<Expresion> exps = i.getParams();	
+		int j = 0;
 		for (Expresion exp : exps){
-			params.add(codigo(exp));
+			bd.addBloque(new BloqueDeCodigo(DUP+instrConAlgo(APILA, j)+SUMA));
+			aumentaCI(3);
+			codigo(exp);			
+			bd.addBloque(bloqueActual);			
 		}
 		
-		DecSubprograma ds = (DecSubprograma) vinculos.get(i);
+		Object obj = vinculos.get(i);		
+		Integer dirSalto = (Integer) d.getDecoracion(obj).get("inicio");
 		
-		Integer dirSalto = (int) d.getDecoracion(ds).get("inicio");
+		aumentaCI(6);	
+		BloqueDeCodigo bd1 = new BloqueDeCodigo(PRELLAMADA_FINAL+
+				instrConAlgo(APILA, getCI()+1)+
+				DESAPILA_IND+
+				instrConAlgo(IR_A, dirSalto));	
+		bd.addBloque(bd1);
 		
-		if (dirSalto == null){
-			throw new UnsupportedOperationException("En la llamada no se dónde ir.");
+		bloqueActual = bd;
+	}
+
+	private void codigo(Condicional i) {	
+		BloqueDeCodigo bd = new BloqueDeCodigo();	
+//		codigoCasos(i.getCasos());
+		
+		List<Caso> casos = i.getCasos();
+		if (casos != null){
+			for (Caso c : casos){
+				codigo(c.getExpresion());
+				bd.addBloque(bloqueActual);
+				aumentaCI(1);
+				codigoBloque(c.getBloque());
+				BloqueDeCodigo bd2 = new BloqueDeCodigo(
+						instrConAlgo(IR_F, getCI()+1));
+				bd.addBloque(bd2);
+				bd.addBloque(bloqueActual);
+			}
 		}
 		
-		String cod = generaPrellamada(params, cinst+1, dirSalto);
-		
-		this.d.insertaInfoEnNodo(i, "cod", cod);
-		
-		return cod;
+		bloqueActual = bd;
 	}
 
-	private String codigo(Condicional i) {
+	private void codigo(Bucle i) {
+		BloqueDeCodigo bd = new BloqueDeCodigo();
 		
-		codigo(i.getCasos());
+		List<Caso> casos = i.getCasos();
+		if (casos != null){
+			for (Caso c : casos){
+				Integer dirInicioBucle = getCI();
+				codigo(c.getExpresion());
+				bd.addBloque(bloqueActual);
+				codigoBloque(c.getBloque());
+				bd.addBloque(bloqueActual);
+				BloqueDeCodigo bd2 = new BloqueDeCodigo(
+						instrConAlgo(IR_V, dirInicioBucle));
+				aumentaCI(1);
+				bd.addBloque(bd2);
+			}
+		}
 		
-		
-		return null;
+		bloqueActual = bd;
 	}
 
-	private String codigo(Delete i) {
-		
-		
-		return null;
+	private void codigo(Delete i) {
+		BloqueDeCodigo bd = new BloqueDeCodigo();
+		codigo(i.getDesignador());
+		bd.addBloque(bloqueActual);
+		Object o = vinculos.get(i.getDesignador());
+		String cod = instrConAlgo(LIBERA, ((Integer)d.getDecoracion(o).get("tam")));
+		aumentaCI(getCI()+1);
+		bd.addBloque(new BloqueDeCodigo(cod));
+		bloqueActual = bd;
 	}
-
-	private String codigo(Bucle i) {
-		 codigo(i.getCasos());
-		 
-		 
-		 return null;
-	}
-
-	private String codigo(Bloque i) {
-		StringBuilder sb = new StringBuilder();
+	
+	private void codigoBloque(Bloque i) {
 		List<Instruccion> insts = i.getInstrucciones();
 		for (Instruccion in : insts){
-			sb.append(codigoInstruccion(in));
+			codigoInstruccion(in);
 		}
-		d.insertaInfoEnNodo(i, "cod", sb.toString());
-//		System.out.println(sb.toString());
-		return sb.toString();
 	}
 
-	private String codigo(Asignacion i) {
-		String cod = codigo(i.getDesignador());
-		String cod2 = codigo(i.getExpresion());
-		String cod3 = cod + cod2 + DESAPILA_IND;		
-		d.insertaInfoEnNodo(i, "cod", cod3);
-		return cod3;
+	private void codigo(Asignacion i) {
+		BloqueDeCodigo bd = new BloqueDeCodigo(DESAPILA_IND);	
+		aumentaCI(1);
+		codigo(i.getDesignador());
+		bd.addBloque(bloqueActual);
+		codigo(i.getExpresion());
+		bd.addBloque(bloqueActual);
+		bloqueActual = bd;
 	}
 
-	private String codigo(Expresion expresion) {
-		if (expresion == null) return "";
+	private void codigo(Expresion expresion) {
+		if (expresion == null) return;
 		TipoExpresion te = expresion.getTipoExpresion();
 		switch(te){
 			case BINARIA: {
@@ -276,70 +321,86 @@ public class GeneraCodigo {
 				codigo((ExpresionUnaria)expresion);
 			} break;
 			default: break;		
-		}
-		return "";		
+		}	
 	}
 
 	private void codigo(ExpresionBinaria expresion) {
-		String cod1 = codigo(expresion.getExp0());
-		String cod2 = codigo(expresion.getExp1());
+		BloqueDeCodigo bd = new BloqueDeCodigo();
+		codigo(expresion.getExp0());
+		bd.addBloque(bloqueActual);
+		codigo(expresion.getExp1());
+		bd.addBloque(bloqueActual);
 		OpBinario tipo = expresion.getOpBinario();
 		String tipoOp = tipo.getTipo();
-		
+				
 		if (tipoOp.equalsIgnoreCase("+")){
-			d.insertaInfoEnNodo(expresion, "cod", cod1 + cod2 + SUMA);
+			bd.addBloque(new BloqueDeCodigo(SUMA));
 		} else if (tipoOp.equalsIgnoreCase("-")){
-			d.insertaInfoEnNodo(expresion, "cod", cod1 + cod2 + RESTA );
+			bd.addBloque(new BloqueDeCodigo(RESTA ));
 		} else if (tipoOp.equalsIgnoreCase("*")){
-			d.insertaInfoEnNodo(expresion, "cod", cod1 + cod2 + MUL );
+			bd.addBloque(new BloqueDeCodigo(MUL ));
 		} else if (tipoOp.equalsIgnoreCase("/")){
-			d.insertaInfoEnNodo(expresion, "cod", cod1 + cod2 + DIV );
+			bd.addBloque(new BloqueDeCodigo(DIV ));
 		} else if (tipoOp.equalsIgnoreCase("%")){
-			d.insertaInfoEnNodo(expresion, "cod", cod1 + cod2 + MOD );
+			bd.addBloque(new BloqueDeCodigo(MOD ));
 		} else if (tipoOp.equalsIgnoreCase("and")){
-			d.insertaInfoEnNodo(expresion, "cod", cod1 + cod2 + AND );
+			bd.addBloque(new BloqueDeCodigo(AND ));
 		} else if (tipoOp.equalsIgnoreCase("or")){
-			d.insertaInfoEnNodo(expresion, "cod", cod1 + cod2 + OR );
+			bd.addBloque(new BloqueDeCodigo(OR ));
 		} else if (tipoOp.equalsIgnoreCase(">")){
-			d.insertaInfoEnNodo(expresion, "cod", cod1 + cod2 + MAYOR );
+			bd.addBloque(new BloqueDeCodigo(MAYOR ));
 		} else if (tipoOp.equalsIgnoreCase("<")){
-			d.insertaInfoEnNodo(expresion, "cod", cod1 + cod2 + MENOR );
+			bd.addBloque(new BloqueDeCodigo(MENOR ));
 		} else if (tipoOp.equalsIgnoreCase(">=")){
-			d.insertaInfoEnNodo(expresion, "cod", cod1 + cod2 + MAYOR_IGUAL );
+			bd.addBloque(new BloqueDeCodigo(MAYOR_IGUAL ));
 		} else if (tipoOp.equalsIgnoreCase("<=")){
-			d.insertaInfoEnNodo(expresion, "cod", cod1 + cod2 + MENOR_IGUAL );
+			bd.addBloque(new BloqueDeCodigo(MENOR_IGUAL ));
 		} else if (tipoOp.equalsIgnoreCase("=")){
-			d.insertaInfoEnNodo(expresion, "cod", cod1 + cod2 + IGUAL );
+			bd.addBloque(new BloqueDeCodigo(IGUAL ));
 		} else if (tipoOp.equalsIgnoreCase("!=")){
-			d.insertaInfoEnNodo(expresion, "cod", cod1 + cod2 + DISTINTO );
+			bd.addBloque(new BloqueDeCodigo(DISTINTO ));
 		} 		
 		
+		aumentaCI(1);
+		bloqueActual = bd;
 	}	
 	
 	
 	private void codigo(ExpresionUnaria expresion) {
-		
-		String cod1 = codigo(expresion.getExp());
+		BloqueDeCodigo bd = new BloqueDeCodigo();		
+		codigo(expresion.getExp());
+		bd.addBloque(bloqueActual);
 		OpUnario tipo = expresion.getOpUnario();
 		String tipoOp = tipo.getTipo();
 		if (tipoOp.equalsIgnoreCase("not")){
-			d.insertaInfoEnNodo(expresion, "cod", cod1 + NOT );
+			bd.addBloque(new BloqueDeCodigo(NOT ));
 		} else if (tipoOp.equalsIgnoreCase("-")){
-			d.insertaInfoEnNodo(expresion, "cod", cod1 + NEG );
+			bd.addBloque(new BloqueDeCodigo(NEG ));
 		} else if (tipoOp.equalsIgnoreCase("toint")){
-			d.insertaInfoEnNodo(expresion, "cod", cod1 + TOINT );
+			bd.addBloque(new BloqueDeCodigo(TOINT ));
 		} else if (tipoOp.equalsIgnoreCase("todouble")){
-			d.insertaInfoEnNodo(expresion, "cod", cod1 + TODOUBLE );
+			bd.addBloque(new BloqueDeCodigo(TODOUBLE ));
 		}
-		
+		aumentaCI(1);
+		bloqueActual = bd;		
 	}
 
 	private void codigo(ExpresionInteger expresion) {
-		d.insertaInfoEnNodo(expresion, "cod", instrConAlgo(APILA, expresion.getValor()));		
+		BloqueDeCodigo bd = new BloqueDeCodigo(instrConAlgo(APILA, expresion.getValor()));		
+		aumentaCI(1);
+		bloqueActual = bd;	
 	}
 
 	private void codigo(ExpresionDouble expresion) {
-		d.insertaInfoEnNodo(expresion, "cod", instrConAlgo(APILA, expresion.getValor()));
+		BloqueDeCodigo bd = new BloqueDeCodigo(instrConAlgo(APILA, expresion.getValor()));		
+		aumentaCI(1);
+		bloqueActual = bd;	
+	}
+
+	private void codigo(ExpresionBoolean expresion) {
+		BloqueDeCodigo bd = new BloqueDeCodigo(instrConAlgo(APILA, expresion.getValor()));		
+		aumentaCI(1);
+		bloqueActual = bd;	
 	}
 
 	private void codigo(ExpresionDesignador expresion) {
@@ -348,32 +409,37 @@ public class GeneraCodigo {
 		codigo(designador);		
 	}
 
-	private void codigo(ExpresionBoolean expresion) {
-		d.insertaInfoEnNodo(expresion, "cod", instrConAlgo(APILA, expresion.getValor()));
-	}
-
-	private String codigo(Designador designador) {		
+	private void codigo(Designador designador) {		
 		// códigos para acceder (saber posición)
+		if (designador == null) return;		
+		
 		Expresion e = designador.getExpresion();
 		Designador des = designador.getDesignador();
 		String id = designador.getIdentificador();
 		
+		BloqueDeCodigo bd = new BloqueDeCodigo();
+		
 		switch(designador.getTipo()){
 			case ARRAY: {
 				
-				String codArray = codigo(des);
-				codArray += codigo(e);
-				codArray += SUMA;			
+				codigo(des);
+				bd.addBloque(bloqueActual);
+				codigo(e);
+				bd.addBloque(bloqueActual);
+				
+				bloqueActual = bd;
+//				codArray = SUMA;			
 				
 //				System.out.println(codArray);
-				this.d.insertaInfoEnNodo(designador, "cod", codArray);				
+//				this.d.insertaInfoEnNodo(designador, "cod", codArray);				
 				
-				return codArray;
 			}
 			case ID: {
-				String codID;
-				if (id.equalsIgnoreCase("null")){ 
-					codID = instrConAlgo(APILA, 0);
+
+				if (id == null || id.equalsIgnoreCase("null")){ 
+					bd.setCodigo(instrConAlgo(APILA, 0));
+					aumentaCI(1);
+					
 				} else {					
 					Object obj = vinculos.get(designador);
 					Map<String, Object> m = this.d.getDecoracion(obj);
@@ -384,38 +450,40 @@ public class GeneraCodigo {
 					int niv = (int) m.get("nivel");
 					
 					if (niv == 0){
-						codID = instrConAlgo(APILA, dir);
+						bd.setCodigo(instrConAlgo(APILA, dir));
+						aumentaCI(1);
 					} else {						
-						codID = instrConAlgo(APILA_DIR, nivel) +
+						bd.setCodigo(instrConAlgo(APILA_DIR, nivel) +
 								instrConAlgo(APILA, dir) +
-								SUMA;						
+								SUMA);
+						aumentaCI(1);
 					}				
 					
 				}
 //				System.out.println(codID);
-				this.d.insertaInfoEnNodo(designador, "cod", codID);
-				return codID;
+				bloqueActual = bd;
 			}
 			case STRUCT: {
 				
 				// TODO
 				
-				// String codStruct = codigo(des);
+				codigo(des);
+				bd.addBloque(bloqueActual);
+				bloqueActual = bd;
 
 //				if (obj != null){
 //					Object m = obj.get(id);
 //				}
 				
-
-				
-				
-				//return codStruct;				
+		
 			}
 			case PUNTERO: {
 				
 				// TODO
 
-				//String codPuntero = codigo(designador);
+				codigo(des);
+				bd.addBloque(bloqueActual);
+				bloqueActual = bd;
 				
 				
 //				return codPuntero;
@@ -423,32 +491,29 @@ public class GeneraCodigo {
 		default: break;
 		}		
 		
-		return null;
+//		return null;
 	}
 
-	private String codigoSubprograma(List<DecSubprograma> list) {
-		if (list == null){ return ""; }
-		String cod = "";
+	private void codigoDecSubprogramas(List<DecSubprograma> list) {
+		if (list == null){ return; }
+		
 		for (DecSubprograma ds : list){
-//			codigoPars(ds.getParametros());
-			cod += codigo(ds.getPrograma());
+			d.insertaInfoEnNodo(ds, "inicio", getCI());
+			Programa programa = ds.getPrograma();			
+			if (programa != null){ 		
+				codigoDecSubprogramas(programa.getDecSubprogramas());
+				codigoBloque(programa.getBloque());
+			}
 		}
-		return cod;
-	}
-	
-	private String codigo(Programa programa) {
-		if (programa == null){ return ""; }
-		// TODO
-		String cod = "";
-		cod += codigoSubprograma(programa.getDecSubprogramas());
-		cod += codigo(programa.getBloque());
-		return cod;
+		
 	}
 	
 	// ASIGNA ESPACIOS
 
 	private void asignaEspacioSubs(List<DecSubprograma> decSubprogramas) {
+		if (decSubprogramas == null){ return; }
 		for (DecSubprograma ds : decSubprogramas){
+			d.insertaInfoEnNodo(ds, "inicio", getCI());
 			asignaEspacio(ds);
 		}
 	}
@@ -486,7 +551,7 @@ public class GeneraCodigo {
 		List<DecSubprograma> ds = p.getDecSubprogramas();
 		dir = anidamiento(ds);
 		d.insertaInfoEnNodo(p, "finDatos", dir);
-		System.out.println("Anidamiento: " + dir);
+//		System.out.println("Anidamiento: " + dir);
 		nivel = 0;
 		asignaEspacio(p);
 	}
@@ -498,7 +563,8 @@ public class GeneraCodigo {
 		if (p.getDecSubprogramas() != null) asignaEspacioSubs(p.getDecSubprogramas());
 	}
 
-	private void asignaEspacio(List<DecTipo> decTipos) {		
+	private void asignaEspacio(List<DecTipo> decTipos) {
+		if (decTipos == null){ return; }		
 		for (DecTipo dec : decTipos){
 			int tam = tamanioVar(dec.getTipo());
 			d.insertaInfoEnNodo(dec.getId(), "tam", tam);

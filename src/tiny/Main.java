@@ -18,20 +18,24 @@ public class Main {
 		AnalizadorLexicoTiny alex = new AnalizadorLexicoTiny(input);
 		AnalizadorSintacticoTiny asint = new AnalizadorSintacticoTiny(alex);		
 		asint.parse();
-		System.out.println("Análisis completado. Se supone que el árbol está construído.");
+		System.out.println(" <-------- Análisis completado --------->");
 		Programa p = AnalizadorSintacticoTiny.programaRaiz;	
 
 		Vinculador vinculador = new Vinculador();
 		Map<Object, Object> vinculos = vinculador.vincula(p);
+		System.out.println(" <-------- Vinculación completada --------->");
 		
 		Chequeo ch = new Chequeo(vinculos);
 		ch.chequea(p);
+		System.out.println(" <-------- Chequeo completado --------->");
 		
 		Decoracion d = new Decoracion();
 		GeneraCodigo gc = new GeneraCodigo(vinculos, d);
 		gc.generaCodigo(p);
+		System.out.println(" <-------- Generación de código completado --------->");
 		
 		EscribeCodigoEnArchivo ea = new EscribeCodigoEnArchivo(gc.getCodigo());
 		ea.escribeCodigo("cod.txt");
+		System.out.println(" <-------- Fin --------->");
 	}
 }

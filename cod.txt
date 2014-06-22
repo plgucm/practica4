@@ -1,0 +1,30 @@
+apila 14
+apila_dir 0
+ir_a 537
+apila_dir 0
+apila 1
+suma
+not
+apila_dir 0
+apila 1
+suma
+not
+ir_f 485
+desapila_ind
+apila_dir 0
+apila 1
+suma
+ir_v 464
+apila_dir 0
+apila 3
+suma
+dup
+apila 0
+suma
+apila 3
+apila_dir 0
+apila 1
+suma
+apila 538
+desapila_ind
+ir_a 459

@@ -47,7 +47,7 @@ public class Vinculador {
 		abreBloque();
 		vinculaTipos(p.getDecTipos());
 		vinculaVariables(p.getDecVariables());
-		vinculaSubprogramas(p.getDecSubprogramas());
+		vinculaDecSubprogramas(p.getDecSubprogramas());
 		vincula(p.getBloque());
 		vinculaTiposDef(p.getDecTipos());
 		vinculaVariablesDef(p.getDecVariables());
@@ -88,21 +88,15 @@ public class Vinculador {
 		return true;
 	}
 	
-	private Object declaracionDe(String id){
-		Map<String, Object> ts = tablaDeSimbolos.peek();
-		if (ts.get(id) == null){
-			// Si no está en el ámbito actual, miro en los ámbitos superiores.
-			ListIterator<Map<String, Object>> it = tablaDeSimbolos.listIterator(tablaDeSimbolos.size()-1);
-			while (it.hasPrevious()){
-				Object e = it.previous().get(id);
-				if (e != null){
-					return e;
-				}
+	private Object declaracionDe(String id){		
+		ListIterator<Map<String, Object>> it = tablaDeSimbolos.listIterator(tablaDeSimbolos.size());
+		while (it.hasPrevious()){
+			Object e = it.previous().get(id);
+			if (e != null){
+				return e;
 			}
-			return null;
 		}
-		
-		return ts.get(id);
+		return null;
 	}
 	
 	private boolean insertaVinculo(Object nodo, Object vinculo){
@@ -380,17 +374,17 @@ public class Vinculador {
 		}	
 	}
 
-	private void vinculaSubprogramas(List<DecSubprograma> decSubprogramas) {
+	private void vinculaDecSubprogramas(List<DecSubprograma> decSubprogramas) {
 		if (decSubprogramas == null) return;
 		for (DecSubprograma ds : decSubprogramas){
 			String id = ds.getIdentificador();
 			
-			if (!insertaID(id, decSubprogramas)){			
+			if (!insertaID(id, ds)){			
 				throw new UnsupportedOperationException("Identificador duplicado. " + id);			
 			}	
-			declaracionDe(id);
 			abreBloque();
-			insertaID(id, decSubprogramas);
+			
+			insertaID(id, ds);
 			List<Parametro> params = ds.getParametros();
 			if (params != null){
 				for (Parametro p : params){
@@ -402,7 +396,7 @@ public class Vinculador {
 			if (p != null){ 
 				vinculaTipos(p.getDecTipos());
 				vinculaVariables(p.getDecVariables());
-				vinculaSubprogramas(p.getDecSubprogramas());		
+				vinculaDecSubprogramas(p.getDecSubprogramas());		
 				vincula(p.getBloque());		
 			}
 			cierraBloque();		
