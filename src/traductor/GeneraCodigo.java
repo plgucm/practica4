@@ -469,8 +469,8 @@ public class GeneraCodigo {
 			bd.addBloque(bloqueActual);
 			bd.addBloque(new BloqueDeCodigo(SUMA));
 			aumentaCI(1);
-			bloqueActual = bd;
-			//				codArray = SUMA;			
+			//				codArray = SUMA;	
+			
 		} else if (tipo == modelo.instrucciones.Designador.Tipo.ID) {
 			if (id.equalsIgnoreCase("null")){ 
 				bd.setCodigo(instrConAlgo(APILA, 0));
@@ -494,7 +494,7 @@ public class GeneraCodigo {
 				}	
 				
 			}
-			bloqueActual = bd;
+
 		} else if (tipo == modelo.instrucciones.Designador.Tipo.STRUCT) {
 			codigo(des);
 			bd.addBloque(bloqueActual);
@@ -503,13 +503,14 @@ public class GeneraCodigo {
 					SUMA
 					));
 			aumentaCI(1);
-			bloqueActual = bd;
+
 		} else if (tipo == modelo.instrucciones.Designador.Tipo.PUNTERO) {
 			codigo(des);
 			bd.addBloque(bloqueActual);
-			bloqueActual = bd;
+		
 		}	
 
+		bloqueActual = bd;
 	}
 
 	private void codigoDecSubprogramas(List<DecSubprograma> list) {
