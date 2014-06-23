@@ -308,7 +308,7 @@ Argumentos ::= PAP PCIERRE
 ListaArgumentos ::= ListaArgumentos : la COMA Exp0 : e
 	{:	
 		List<Expresion> las = new ArrayList<Expresion>();
-		for (Expresion exp : (List<Expresion>)la){ las.add((Expresion)la); }
+		for (Expresion exp : (List<Expresion>)la){ las.add(exp); }
 		las.add((Expresion)e);
 		RESULT = las;
 	:};
@@ -319,7 +319,6 @@ ListaArgumentos ::= Exp0 : e
 		las.add((Expresion)e);
 		RESULT = las;
 	:};
-	
 
 Designador  ::= ID : id
 	{: 

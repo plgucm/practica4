@@ -37,10 +37,10 @@ public class LenguajeP {
 	public static String TOINT = "toint\n";
 	public static String TODOUBLE = "todouble\n";	
 	
-	public static String CLONA = "clona\n";
+	public static String CLONA = "clona ALGO\n";
 	public static String DUP = "dup\n";
-	public static String LIBERA = "libera\n";
-	public static String RESERVA = "reserva\n";
+	public static String LIBERA = "libera ALGO\n";
+	public static String RESERVA = "reserva ALGO\n";
 	
 	public static String MAYOR = "mayor\n";
 	public static String MAYOR_IGUAL = "mayorigual\n";

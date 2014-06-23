@@ -1,6 +1,6 @@
 apila 14
 desapila_dir 0
-ir_a 788
+ir_a 577
 apila_dir 0
 apila 2
 suma
@@ -8,7 +8,7 @@ apila_dir 1
 desapila_ind
 desapila_dir 1
 apila_dir 0
-apila 4
+apila 3
 suma
 desapila_dir 0
 apila_dir 0
@@ -21,13 +21,14 @@ apila_dir 0
 apila 2
 suma
 desapila_dir 0
+apila_dir 2
+apila 2
+suma
 lee
+desapila_ind
 apila_dir 1
 apila 2
 suma
-desapila_ind
-desapila_ind
-apila 2
 apila 2
 suma
 apila 1
@@ -69,29 +70,34 @@ apila_dir 0
 apila 2
 suma
 desapila_dir 0
-reserva
+reserva 1
 desapila_ind
-apila_dir 1
+apila_dir 2
 apila 2
 suma
 desapila_ind
-apila_dir 1
+apila_dir 2
 apila 2
 suma
 apila 0
 suma
-desapila_ind
 apila_dir 1
+apila 1
+suma
+desapila_ind
+apila_dir 2
 apila 2
 suma
 apila 1
 suma
+apila 0
 desapila_ind
-apila_dir 1
+apila_dir 2
 apila 2
 suma
 apila 2
 suma
+apila 0
 apila_dir 0
 apila 2
 resta
@@ -106,47 +112,77 @@ apila 1
 suma
 apila_ind
 ir_ind
+apila_dir 2
+apila 2
+suma
+apila 0
 igual
-ir_f 104
+ir_f 126
 apila_dir 0
 apila 3
 suma
 apila_dir 0
 apila 1
 suma
-apila 104
+apila 120
 desapila_ind
-ir_a 56
+ir_a 61
+apila_dir 1
+apila 1
+suma
+apila_dir 2
+apila 2
+suma
+apila 0
+suma
 menor
-ir_f 119
+ir_f 152
 apila_dir 0
 apila 3
 suma
 dup
 apila 0
 suma
+apila_dir 2
+apila 2
+suma
+apila 1
+suma
 desapila_ind
 apila_dir 0
 apila 1
 suma
-apila 119
+apila 146
 desapila_ind
-ir_a 46
+ir_a 51
+apila_dir 1
+apila 1
+suma
+apila_dir 2
+apila 2
+suma
+apila 0
+suma
 mayor
-ir_f 134
+ir_f 178
 apila_dir 0
 apila 3
 suma
 dup
 apila 0
 suma
+apila_dir 2
+apila 2
+suma
+apila 2
+suma
 desapila_ind
 apila_dir 0
 apila 1
 suma
-apila 134
+apila 172
 desapila_ind
-ir_a 46
+ir_a 51
 apila_dir 0
 apila 2
 resta
@@ -166,6 +202,9 @@ apila_dir 1
 apila 0
 suma
 apila false
+apila_dir 1
+apila 0
+suma
 not
 apila_dir 0
 apila 3
@@ -173,83 +212,112 @@ suma
 dup
 apila 0
 suma
+apila_dir 1
+apila 1
+suma
 desapila_ind
 apila_dir 0
 apila 1
 suma
-apila 165
+apila 211
 desapila_ind
 ir_a 13
+apila_dir 1
+apila 0
+suma
 not
-ir_f 180
+ir_f 238
 apila_dir 0
 apila 3
 suma
 dup
 apila 0
 suma
+apila_dir 1
+apila 2
+suma
 desapila_ind
 apila_dir 0
 apila 1
 suma
-apila 180
+apila 232
 desapila_ind
-ir_a 46
-ir_v 150
+ir_a 51
+ir_v 196
 apila_dir 0
+apila 3
+resta
+desapila_dir 0
+apila_dir 0
+apila 2
+suma
+apila_ind
+desapila_dir 1
+desapila_dir 0
+apila 1
+suma
+apila_ind
+ir_ind
+apila_dir 0
+apila 2
+suma
+apila_dir 1
+desapila_ind
+desapila_dir 1
+apila_dir 0
+apila 2
+suma
+desapila_dir 0
+apila_dir 0
+apila 2
+suma
+apila_dir 0
+desapila_ind
+desapila_dir 0
+apila_dir 0
+apila 2
+suma
+desapila_dir 0
+ir_f 334
+apila_dir 0
+apila 3
+suma
+dup
+apila 0
+suma
+apila_dir 2
+apila 2
+suma
+apila 1
+suma
+clona 1
+apila_dir 0
+apila 1
+suma
+apila 286
+desapila_ind
+ir_a 262
+apila_dir 1
+apila 0
+suma
+apila 10
+menor
+ir_f 317
+desapila_ind
 apila 4
-resta
-desapila_dir 0
-apila_dir 0
-apila 2
-suma
-apila_ind
-desapila_dir 1
-desapila_dir 0
-apila 1
-suma
-apila_ind
-ir_ind
-apila_dir 0
-apila 2
-suma
 apila_dir 1
-desapila_ind
-desapila_dir 1
-apila_dir 0
-apila 3
-suma
-desapila_dir 0
-apila_dir 0
-apila 2
-suma
-apila_dir 0
-desapila_ind
-desapila_dir 0
-apila_dir 0
-apila 2
-suma
-desapila_dir 0
-ir_f 252
-apila_dir 0
-apila 3
-suma
-dup
 apila 0
 suma
-clona
-apila_dir 0
-apila 1
 suma
-apila 230
+apila_dir 2
+apila 2
+suma
+apila 0
+suma
 desapila_ind
-ir_a 204
-apila 10
-menor
-ir_f 239
-desapila_ind
-apila 3
-desapila_ind
+apila_dir 1
+apila 0
+suma
 apila_dir 1
 apila 0
 suma
@@ -261,13 +329,18 @@ suma
 dup
 apila 0
 suma
-clona
+apila_dir 2
+apila 2
+suma
+apila 2
+suma
+clona 1
 apila_dir 0
 apila 1
 suma
-apila 252
+apila 328
 desapila_ind
-ir_a 204
+ir_a 262
 apila_dir 0
 apila 2
 resta
@@ -293,22 +366,32 @@ suma
 dup
 apila 0
 suma
-clona
+apila_dir 1
+apila 2
+suma
+clona 1
 apila_dir 0
 apila 1
 suma
-apila 282
+apila 363
 desapila_ind
-ir_a 204
+ir_a 262
+apila_dir 1
+apila 0
+suma
 apila 10
 menor
-ir_f 289
+ir_f 383
 desapila_ind
-apila 3
+apila 4
+apila_dir 1
+apila 0
+suma
+suma
 apila 1
 neg
 apila_dir 0
-apila 3
+apila 2
 resta
 desapila_dir 0
 apila_dir 0
@@ -341,38 +424,52 @@ apila_dir 0
 apila 2
 suma
 desapila_dir 0
+apila_dir 2
+apila 2
+suma
+apila 0
 distinto
-ir_f 704
+ir_f 461
 apila_dir 0
 apila 3
 suma
 dup
 apila 0
 suma
-clona
-apila_dir 0
-apila 1
-suma
-apila 338
-desapila_ind
-ir_a 312
-apila_dir 0
-apila 3
-suma
-dup
-apila 0
-suma
-clona
-apila_dir 0
-apila 1
-suma
-apila 351
-desapila_ind
-ir_a 312
-apila_dir 1
+apila_dir 2
 apila 2
 suma
-libera
+apila 1
+suma
+clona 1
+apila_dir 0
+apila 1
+suma
+apila 434
+desapila_ind
+ir_a 406
+apila_dir 0
+apila 3
+suma
+dup
+apila 0
+suma
+apila_dir 2
+apila 2
+suma
+apila 2
+suma
+clona 1
+apila_dir 0
+apila 1
+suma
+apila 451
+desapila_ind
+ir_a 406
+apila_dir 2
+apila 2
+suma
+libera 1
 apila_dir 0
 apila 2
 resta
@@ -393,15 +490,21 @@ suma
 dup
 apila 0
 suma
-clona
+apila_dir 1
+apila 2
+suma
+clona 1
 apila_dir 0
 apila 1
 suma
-apila 731
+apila 485
 desapila_ind
-ir_a 312
+ir_a 406
 desapila_ind
+apila_dir 1
 apila 2
+suma
+apila 0
 apila_dir 0
 apila 2
 resta
@@ -423,7 +526,7 @@ apila_dir 1
 desapila_ind
 desapila_dir 1
 apila_dir 0
-apila 4
+apila 3
 suma
 desapila_dir 0
 desapila_ind
@@ -432,30 +535,46 @@ apila 0
 suma
 apila 0
 desapila_ind
+apila_dir 1
+apila 1
+suma
 apila_dir 1
 apila 1
 suma
 not
+apila_dir 1
+apila 2
+suma
+apila_dir 1
+apila 0
+suma
+suma
 escribe
 desapila_ind
 apila_dir 1
 apila 0
 suma
+apila_dir 1
+apila 0
+suma
 apila 1
 suma
 desapila_ind
+apila_dir 1
+apila 1
+suma
 apila_dir 1
 apila 1
 suma
 not
-ir_f 774
+ir_f 563
 desapila_ind
 apila_dir 1
 apila 1
 suma
-ir_v 761
+ir_v 528
 apila_dir 0
-apila 4
+apila 3
 resta
 desapila_dir 0
 apila_dir 0
@@ -474,11 +593,12 @@ suma
 dup
 apila 0
 suma
+apila 14
 desapila_ind
 apila_dir 0
 apila 1
 suma
-apila 802
+apila 586
 desapila_ind
 ir_a 3
 apila_dir 0
@@ -487,36 +607,39 @@ suma
 dup
 apila 0
 suma
-clona
+apila 14
+clona 1
 apila_dir 0
 apila 1
 suma
-apila 815
+apila 600
 desapila_ind
-ir_a 194
+ir_a 252
 apila_dir 0
 apila 3
 suma
 dup
 apila 0
 suma
+apila 14
 desapila_ind
 apila_dir 0
 apila 1
 suma
-apila 828
+apila 614
 desapila_ind
-ir_a 302
+ir_a 396
 apila_dir 0
 apila 3
 suma
 dup
 apila 0
 suma
-clona
+apila 4
+clona 10
 apila_dir 0
 apila 1
 suma
-apila 841
+apila 628
 desapila_ind
-ir_a 746
+ir_a 509
