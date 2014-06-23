@@ -5,7 +5,7 @@ import java.util.Scanner;
 import maquinap.MaquinaP;
 import maquinap.instrucciones.Instruccion;
 import maquinap.valor.Bool;
-import maquinap.valor.Int;
+import maquinap.valor.VInt;
 import maquinap.valor.Valor;
 
 public class Lee extends Instruccion {
@@ -25,7 +25,7 @@ public class Lee extends Instruccion {
 			valueMP = new Bool(new Boolean(false));			
 		} else {
 			
-			valueMP = new Int(Integer.valueOf(value));
+			valueMP = new VInt(Integer.valueOf(value));
 		}
 		maq.getPilaEvaluacion().push(valueMP);
 		maq.aumentarContadorPrograma(1);

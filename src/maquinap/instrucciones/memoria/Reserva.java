@@ -2,7 +2,7 @@ package maquinap.instrucciones.memoria;
 
 import maquinap.MaquinaP;
 import maquinap.instrucciones.Instruccion;
-import maquinap.valor.Int;
+import maquinap.valor.VInt;
 
 public class Reserva extends Instruccion {
 	
@@ -37,7 +37,7 @@ public class Reserva extends Instruccion {
 		if (!reservado){
 			throw new Exception("No hay memoria suficiente para reservar esa cantidad.");
 		} else {
-			maq.getPilaEvaluacion().push(new Int(dir));
+			maq.getPilaEvaluacion().push(new VInt(dir));
 		}
 		
 		maq.aumentarContadorPrograma(1);		

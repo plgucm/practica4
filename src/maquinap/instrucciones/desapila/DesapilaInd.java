@@ -4,7 +4,7 @@ import java.util.Stack;
 
 import maquinap.MaquinaP;
 import maquinap.instrucciones.Instruccion;
-import maquinap.valor.Int;
+import maquinap.valor.VInt;
 import maquinap.valor.Valor;
 
 public class DesapilaInd extends Instruccion {
@@ -20,12 +20,12 @@ public class DesapilaInd extends Instruccion {
 		Valor<?> cima = pila.pop();
 		Valor<?> subCima = pila.pop();
 		
-		if (subCima instanceof Int) {
+		if (subCima instanceof VInt) {
 			if(cima == null) {
-				cima = new Int(0);
+				cima = new VInt(0);
 			}
 			
-			maq.getMemoriaDatos().put(((Int)subCima).getValor(), cima);
+			maq.getMemoriaDatos().put(((VInt)subCima).getValor(), cima);
 			maq.incrementaContadorPrograma();
 			
 		} else

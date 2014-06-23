@@ -4,7 +4,7 @@ import java.util.Stack;
 
 import maquinap.MaquinaP;
 import maquinap.instrucciones.Instruccion;
-import maquinap.valor.Int;
+import maquinap.valor.VInt;
 import maquinap.valor.Valor;
 
 public class ApilaDir extends Instruccion {
@@ -20,7 +20,7 @@ public class ApilaDir extends Instruccion {
 		Valor<?> valor = maq.getMemoriaDatos().get(dir);	
 		
 		if(valor == null){
-			valor = new Int(0);
+			valor = new VInt(0);
 		}
 		Stack<Valor<?>> pe = maq.getPilaEvaluacion();
 		if (pe.size() == pe.capacity()){

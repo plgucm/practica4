@@ -4,7 +4,7 @@ import java.util.Stack;
 
 import maquinap.MaquinaP;
 import maquinap.instrucciones.Instruccion;
-import maquinap.valor.Int;
+import maquinap.valor.VInt;
 import maquinap.valor.Valor;
 
 public class IrInd extends Instruccion {
@@ -19,8 +19,8 @@ public class IrInd extends Instruccion {
 
 		Valor<?> cima = pila.pop();
 		
-		if (cima instanceof Int)
-			maq.setContadorPrograma(((Int) cima).getValor());
+		if (cima instanceof VInt)
+			maq.setContadorPrograma(((VInt) cima).getValor());
 		else
 			throw new UnsupportedOperationException(getClass().getSimpleName()
 					+ " la cima no es un entero, es " + cima.getClass());

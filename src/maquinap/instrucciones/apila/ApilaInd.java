@@ -4,7 +4,7 @@ import java.util.Stack;
 
 import maquinap.MaquinaP;
 import maquinap.instrucciones.Instruccion;
-import maquinap.valor.Int;
+import maquinap.valor.VInt;
 import maquinap.valor.Valor;
 
 public class ApilaInd extends Instruccion {
@@ -19,12 +19,12 @@ public class ApilaInd extends Instruccion {
 
 		Valor<?> cima = pila.pop();
 		
-		if (cima instanceof Int) {
+		if (cima instanceof VInt) {
 			
 			Valor<?> val = maq.getMemoriaDatos().get(cima.getValor());
 
 			if (val == null){
-				val = new Int(0);
+				val = new VInt(0);
 			}
 			pila.push(val);
 			maq.incrementaContadorPrograma();

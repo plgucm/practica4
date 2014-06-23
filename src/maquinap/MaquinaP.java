@@ -20,6 +20,8 @@ import maquinap.instrucciones.aritmeticas.Mult;
 import maquinap.instrucciones.aritmeticas.Neg;
 import maquinap.instrucciones.aritmeticas.Resta;
 import maquinap.instrucciones.aritmeticas.Suma;
+import maquinap.instrucciones.aritmeticas.ToDouble;
+import maquinap.instrucciones.aritmeticas.ToInt;
 import maquinap.instrucciones.comparacion.Dist;
 import maquinap.instrucciones.comparacion.Igual;
 import maquinap.instrucciones.comparacion.Mayor;
@@ -43,7 +45,7 @@ import maquinap.instrucciones.memoria.Espacio;
 import maquinap.instrucciones.memoria.Libera;
 import maquinap.instrucciones.memoria.Reserva;
 import maquinap.valor.Bool;
-import maquinap.valor.Int;
+import maquinap.valor.VInt;
 import maquinap.valor.Valor;
 
 public class MaquinaP {
@@ -93,7 +95,7 @@ public class MaquinaP {
 	// ////////////////
 
 	public static void main(String[] args) {
-		new MaquinaP().ejecuta("ejercicio39.txt");
+		new MaquinaP().ejecuta("traduccionManual.txt");
 	}
 
 	private void ejecuta(String archivoDeEntrada) {
@@ -190,6 +192,10 @@ public class MaquinaP {
 				return new Mod();
 			} else if (inst.equalsIgnoreCase("NEG")) {
 				return new Neg();
+			} else if (inst.equalsIgnoreCase("TODOUBLE")) {
+				return new ToDouble();
+			} else if (inst.equalsIgnoreCase("TOINT")) {
+				return new ToInt();
 			}
 
 			// COMPARACION
@@ -237,7 +243,7 @@ public class MaquinaP {
 					return new Apila(new Bool(true));
 				else if (inst2.equalsIgnoreCase("false"))
 					return new Apila(new Bool(false));
-				return new Apila(new Int(Integer.valueOf(inst2)));
+				return new Apila(new VInt(Integer.valueOf(inst2)));
 			} else if (inst1.equalsIgnoreCase("APILA_DIR")) {
 				return new ApilaDir(Integer.valueOf(inst2));
 			} else if (inst1.equalsIgnoreCase("DESAPILA_DIR")) {

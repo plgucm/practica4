@@ -207,6 +207,10 @@ public class GeneraCodigo {
 	private void codigo(New i) {
 		BloqueDeCodigo bd = new BloqueDeCodigo();
 		Object o = vinculos.get(i.getDesignador());
+		
+		Integer dec = (Integer) d.getDecoracion(o).get("tam");
+		
+		System.out.println(dec); // TODO
 		String codigo = instrConAlgo(RESERVA, ((Integer) d.getDecoracion(o).get("tam")))+
 				DESAPILA_IND;
 		aumentaCI(2);
@@ -559,7 +563,7 @@ public class GeneraCodigo {
 
 	// ASIGNA ESPACIOS
 
-	private void asignaEspacioSubs(List<DecSubprograma> decSubprogramas) {
+	private void asignaEspacioDecSubs(List<DecSubprograma> decSubprogramas) {
 		if (decSubprogramas == null){ return; }
 		for (DecSubprograma ds : decSubprogramas){
 			d.insertaInfoEnNodo(ds, "inicio", getCI());
@@ -605,9 +609,9 @@ public class GeneraCodigo {
 		int nivelCopia = nivel;
 		if (p.getDecTipos() != null) asignaEspacio(p.getDecTipos());
 		if (p.getDecVariables() != null) asignaEspacioVars(p.getDecVariables());
-		d.insertaInfoEnNodo(p, "nivel", nivel);
 		nivel++;
-		if (p.getDecSubprogramas() != null) asignaEspacioSubs(p.getDecSubprogramas());
+		d.insertaInfoEnNodo(p, "nivel", nivel);
+		if (p.getDecSubprogramas() != null) asignaEspacioDecSubs(p.getDecSubprogramas());
 		dir = dirCopia;
 		nivel = nivelCopia;	
 	}
@@ -629,10 +633,10 @@ public class GeneraCodigo {
 
 			if (this.nivel == 0){
 				d.insertaInfoEnNodo(dv, "dir", this.dir);
-				System.out.println("TAM, DIR y NIVEL de " + dv.getIdentificador() + " : " + "("+tam+","+this.dir+","+nivel+")");	
+//				System.out.println("TAM, DIR y NIVEL de " + dv.getIdentificador() + " : " + "("+tam+","+this.dir+","+nivel+")");	
 			} else {
 				d.insertaInfoEnNodo(dv, "dir", dir);	
-				System.out.println("TAM, DIR y NIVEL de " + dv.getIdentificador() + " : " + "("+tam+","+dir+","+nivel+")");				
+//				System.out.println("TAM, DIR y NIVEL de " + dv.getIdentificador() + " : " + "("+tam+","+dir+","+nivel+")");				
 			}
 
 			d.insertaInfoEnNodo(dv, "nivel", nivel);	
@@ -640,7 +644,7 @@ public class GeneraCodigo {
 			dir += tam;				
 			this.dir += tam;
 		}
-		d.insertaInfoEnNodo(decVariables, "tam", this.dir-oldDir-1); // TODO: Ojo con el menos 1
+		d.insertaInfoEnNodo(decVariables, "tam", this.dir-oldDir-1);
 		d.insertaInfoEnNodo(decVariables, "nivel", nivel);
 
 	}
