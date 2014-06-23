@@ -95,7 +95,7 @@ public class MaquinaP {
 	// ////////////////
 
 	public static void main(String[] args) {
-		new MaquinaP().ejecuta("traduccionManual.txt");
+		new MaquinaP().ejecuta(args[0]);
 	}
 
 	private void ejecuta(String archivoDeEntrada) {

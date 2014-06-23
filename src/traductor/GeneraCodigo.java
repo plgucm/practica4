@@ -236,13 +236,6 @@ public class GeneraCodigo {
 			aumentaCI(3);
 
 			codigo(exps.get(j));	
-//			if (bloqueActual.estaVacio()){
-//				
-//				System.out.println(((Designador)((ExpresionDesignador)exps.get(j)).getValor())
-//						.getDesignador().getDesignador().getIdentificador());
-//				throw new UnsupportedOperationException
-//								("La expresion no se ha codificado "+i.getIdentificador()+" arg "+j);
-//			}
 			bd.addBloque(bloqueActual);			
 
 			Parametro p = pars.get(j);
