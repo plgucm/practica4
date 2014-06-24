@@ -1,11 +1,11 @@
 package tiny;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.Map;
 
-import maquinap.MaquinaP;
 import modelo.instrucciones.Programa;
 import traductor.Chequeo;
 import traductor.Decoracion;
@@ -15,11 +15,18 @@ import traductor.Vinculador;
 
 public class Main {
 	
-	static final String nombreArchivoFuente = "input.txt";
+	static final String nombreArchivoFuente = "ejemploCorrecto.txt";
 	static final String nombreArchivoSalida = "output.txt";
 	
 	public static void main(String[] args) throws Exception {
-		Reader input = new InputStreamReader(new FileInputStream(nombreArchivoFuente));
+		
+		File f = new File("");
+		String carpetaCasosDePrueba = 
+					f.getAbsolutePath()+File.separator+"casosdeprueba"+File.separator;
+		String carpetaSalidaCasosDePrueba = 
+					f.getAbsolutePath()+File.separator+"casodepruebagenerado"+File.separator;
+		
+		Reader input = new InputStreamReader(new FileInputStream(carpetaCasosDePrueba+nombreArchivoFuente));
 		AnalizadorLexicoTiny alex = new AnalizadorLexicoTiny(input);
 		AnalizadorSintacticoTiny asint = new AnalizadorSintacticoTiny(alex);		
 		asint.parse();
@@ -40,13 +47,13 @@ public class Main {
 		System.out.println(" <-------- Generación de código completado --------->");
 		
 		EscribeCodigoEnArchivo ea = new EscribeCodigoEnArchivo(gc.getCodigo());
-		ea.escribeCodigo(nombreArchivoSalida);
+		ea.escribeCodigo(carpetaSalidaCasosDePrueba+nombreArchivoSalida);
 		System.out.println(" <-------- Fin de procesamiento de archivo fuente --------->");
 		
 
 		System.out.println(" <-------- Inicio ejecución del programa --------->");
 		
-//		MaquinaP.main(new String[]{nombreArchivoSalida});
+//		MaquinaP.main(new String[]{carpetaSalidaCasosDePrueba+nombreArchivoSalida});
 
 		System.out.println(" <-------- Fin de la ejecución del programa--------->");
 		

@@ -30,7 +30,6 @@ import modelo.instrucciones.Programa;
 import modelo.instrucciones.Read;
 import modelo.instrucciones.TiposInstruccion;
 import modelo.instrucciones.Write;
-import modelo.operadores.Operador;
 import modelo.tipos.Tipo;
 import modelo.tipos.Tipos;
 
@@ -264,9 +263,9 @@ public class Chequeo {
 			if (!p.isPorValor() && e.getTipoExpresion() != TipoExpresion.DESIGNADOR){
 				throw new UnsupportedOperationException("El parámetro i-esimo debe ser un designador.");				
 			} else if (!compatibles(tipoArg, p.getTipo().getTipoConcreto())){
-				throw new UnsupportedOperationException(
-						"Tipos incompatibles en parámetro i-esimo. Esperado:"+p.getTipo().getTipoConcreto()
-						+" Recibido: " + tipoArg);				
+//				throw new UnsupportedOperationException(
+//						"Tipos incompatibles en parámetro i-esimo. Esperado:"+p.getTipo().getTipoConcreto()
+//						+" Recibido: " + tipoArg);				
 			}				
 		}
 		
@@ -315,21 +314,42 @@ public class Chequeo {
 			case ARRAY: {
 				chequea(d);
 				chequea(e);
+				
+				
+				
 				break;
 			}
 			case ID: {
-				if (id.equalsIgnoreCase("null")){ break; }
+				if (id.equalsIgnoreCase("null")){ insertaTipo(designador, null); break; }
 				
+				Object obj = vinculos.get(designador);
 				
+				if (!(obj instanceof DecVariable) && !(obj instanceof Parametro)){
+					throw new UnsupportedOperationException("ID debe ser una variable o un parámetro.");					
+				}
+				
+				if (obj instanceof DecVariable) {
+					DecVariable dv = (DecVariable) obj;
+					insertaTipo(designador, dv.getTipo().getTipoConcreto());					
+				} else if (obj instanceof Parametro) {
+					Parametro p = (Parametro) obj;
+					insertaTipo(designador, p.getTipo().getTipoConcreto());
+				}
 				
 				break;
 			}
 			case STRUCT: {	
 				chequea(d);
+				
+				
+				
 				break;				
 			}
 			case PUNTERO: {
 				chequea(d);
+				
+				
+				
 				break;
 			}
 		default: break;

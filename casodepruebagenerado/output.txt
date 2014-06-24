@@ -278,6 +278,7 @@ apila_dir 0
 apila 2
 suma
 desapila_dir 0
+and
 ir_f 325
 apila_dir 0
 apila 3

@@ -1,7 +1,41 @@
 package traductor;
 
 
-import static traductor.LenguajeP.*;
+import static traductor.LenguajeP.AND;
+import static traductor.LenguajeP.APILA;
+import static traductor.LenguajeP.APILA_DIR;
+import static traductor.LenguajeP.CLONA;
+import static traductor.LenguajeP.DESAPILA_IND;
+import static traductor.LenguajeP.DISTINTO;
+import static traductor.LenguajeP.DIV;
+import static traductor.LenguajeP.DUP;
+import static traductor.LenguajeP.IGUAL;
+import static traductor.LenguajeP.IR_A;
+import static traductor.LenguajeP.IR_F;
+import static traductor.LenguajeP.IR_V;
+import static traductor.LenguajeP.LIBERA;
+import static traductor.LenguajeP.MAYOR;
+import static traductor.LenguajeP.MAYOR_IGUAL;
+import static traductor.LenguajeP.MENOR;
+import static traductor.LenguajeP.MENOR_IGUAL;
+import static traductor.LenguajeP.MOD;
+import static traductor.LenguajeP.MUL;
+import static traductor.LenguajeP.NEG;
+import static traductor.LenguajeP.NOT;
+import static traductor.LenguajeP.OR;
+import static traductor.LenguajeP.PRELLAMADA_FINAL;
+import static traductor.LenguajeP.PRELLAMADA_INICIO;
+import static traductor.LenguajeP.READ;
+import static traductor.LenguajeP.RESERVA;
+import static traductor.LenguajeP.RESTA;
+import static traductor.LenguajeP.SUMA;
+import static traductor.LenguajeP.TODOUBLE;
+import static traductor.LenguajeP.TOINT;
+import static traductor.LenguajeP.WRITE;
+import static traductor.LenguajeP.generaEpilogo;
+import static traductor.LenguajeP.generaInicio;
+import static traductor.LenguajeP.generaPrologo;
+import static traductor.LenguajeP.instrConAlgo;
 
 import java.util.ArrayList;
 import java.util.List;
