@@ -1,6 +1,6 @@
 apila 14
 desapila_dir 0
-ir_a 550
+ir_a 547
 apila_dir 0
 apila 2
 suma
@@ -519,10 +519,7 @@ apila_dir NIVEL_fin
 apila DIR_fin
 suma
 not
-apila_dir NIVEL_i
-apila DIR_i
-suma
-suma
+apila 3
 escribe
 desapila_ind
 apila_dir NIVEL_i
@@ -541,7 +538,7 @@ apila_dir NIVEL_fin
 apila DIR_fin
 suma
 not
-ir_f 536
+ir_f 533
 desapila_ind
 apila_dir NIVEL_fin
 apila DIR_fin
@@ -572,7 +569,7 @@ desapila_ind
 apila_dir 0
 apila 1
 suma
-apila 559
+apila 556
 desapila_ind
 ir_a 3
 apila_dir 0
@@ -586,7 +583,7 @@ clona 1
 apila_dir 0
 apila 1
 suma
-apila 573
+apila 570
 desapila_ind
 ir_a 252
 apila_dir 0
@@ -600,7 +597,7 @@ desapila_ind
 apila_dir 0
 apila 1
 suma
-apila 587
+apila 584
 desapila_ind
 ir_a 384
 apila_dir 0
@@ -614,6 +611,6 @@ clona 10
 apila_dir 0
 apila 1
 suma
-apila 601
+apila 598
 desapila_ind
 ir_a 485

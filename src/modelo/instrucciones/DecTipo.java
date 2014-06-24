@@ -1,6 +1,4 @@
 package modelo.instrucciones;
-import java.util.List;
-
 import modelo.tipos.Tipo;
 
 

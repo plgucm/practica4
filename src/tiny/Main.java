@@ -15,7 +15,12 @@ import traductor.Vinculador;
 
 public class Main {
 	
-	static final String nombreArchivoFuente = "ejemploCorrecto.txt";
+	/**
+	 * Aquí deberá asignar el ejemplo de entrada.
+	 */
+	static final String nombreArchivoFuente = "errorChequeoWrite.txt";
+	
+	
 	static final String nombreArchivoSalida = "output.txt";
 	
 	public static void main(String[] args) throws Exception {

@@ -68,43 +68,29 @@ public class Chequeo {
 		chequeaVars(p.getDecVariables());
 		chequeaSubs(p.getDecSubprogramas());
 		
-		for (DecTipo d : p.getDecTipos()){
-			simplificaDefTipos(d);
+		if (p.getDecTipos() != null){
+			for (DecTipo d : p.getDecTipos()){
+				simplificaDefTipos(d);
+			}
 		}
 		
-		for (DecVariable d : p.getDecVariables()){
-			simplificaDefTipos(d);					
+		if (p.getDecVariables() != null){
+			for (DecVariable d : p.getDecVariables()){
+				simplificaDefTipos(d);					
+			}
 		}
 		
-		for (DecSubprograma d : p.getDecSubprogramas()){
-			simplificaDefTipos(d);			
+		if (p.getDecSubprogramas() != null){
+			for (DecSubprograma d : p.getDecSubprogramas()){
+				simplificaDefTipos(d);			
+			}
 		}
 		
 		chequea(p.getBloque());		
 	}
 
-	private void simplificaDefTipos(DecSubprograma d) {
-		List<Parametro> params = d.getParametros();
-		for (Parametro p : params){
-			simplificaDefTipo(p);
-		}
-		d.getPrograma();
-	}
-
-	private void simplificaDefTipo(Parametro p) {
-		
-		
-	}
-
-	private void simplificaDefTipos(DecVariable d) {
-		
-	}
-
-	private void simplificaDefTipos(DecTipo d) {
-		
-	}
-
 	private void chequeaTipos(List<DecTipo> decTipos) {
+		if (decTipos == null){ return; }
 		for (DecTipo d : decTipos){
 			chequea(d);
 		}		
@@ -115,6 +101,7 @@ public class Chequeo {
 	}
 
 	private void chequeaVars(List<DecVariable> decVariables) {
+		if (decVariables == null){ return; }
 		for (DecVariable d : decVariables){
 			chequea(d);
 		}		
@@ -149,14 +136,27 @@ public class Chequeo {
 	}
 
 	private void chequeaSubs(List<DecSubprograma> decSubprogramas) {
+		if (decSubprogramas == null){ return; }
 		for (DecSubprograma d : decSubprogramas){
 			chequea(d);
 		}		
 	}
 
 	private void chequea(DecSubprograma d) {
-		d.getParametros();
-		d.getPrograma();
+		chequeaParams(d.getParametros());
+		chequea(d.getPrograma());
+	}
+
+	private void chequeaParams(List<Parametro> parametros) {
+		if (parametros == null){ return; }
+		for (Parametro p : parametros){
+			chequea(p);
+		}
+	}
+
+	private void chequea(Parametro p) {
+		
+		
 	}
 
 	private void chequea(Bloque bloque) {
@@ -216,7 +216,7 @@ public class Chequeo {
 		chequea(i.getDesignador());
 		Tipos tipoA = getTipoSimple(i.getDesignador());
 		if (tipoA == null || !esTipoLegible(tipoA)){
-			throw new UnsupportedOperationException("No es posible escribir valores de ese tipo.");			
+			throw new UnsupportedOperationException("No es posible leer valores de ese tipo.");			
 		}
 	}
 
@@ -315,7 +315,8 @@ public class Chequeo {
 				chequea(d);
 				chequea(e);
 				
-				
+
+				insertaTipo(designador, Tipos.ARRAY);
 				
 				break;
 			}
@@ -330,25 +331,31 @@ public class Chequeo {
 				
 				if (obj instanceof DecVariable) {
 					DecVariable dv = (DecVariable) obj;
-					insertaTipo(designador, dv.getTipo().getTipoConcreto());					
+					Tipos tipo = getTipoSimple(dv);
+					insertaTipo(designador, tipo);					
 				} else if (obj instanceof Parametro) {
 					Parametro p = (Parametro) obj;
-					insertaTipo(designador, p.getTipo().getTipoConcreto());
+					Tipos tipo = getTipoSimple(p);
+					insertaTipo(designador, tipo);
 				}
 				
 				break;
 			}
 			case STRUCT: {	
 				chequea(d);
+				Tipos tipoD = getTipoSimple(d);
 				
-				
+				if (tipoD == null){ insertaTipo(designador, tipoD); break; }
+
+				Object obj = vinculos.get(designador);	
+				System.out.println(obj);
 				
 				break;				
 			}
 			case PUNTERO: {
 				chequea(d);
 				
-				
+				insertaTipo(designador, Tipos.POINTER);
 				
 				break;
 			}
@@ -428,6 +435,27 @@ public class Chequeo {
 				insertaTipo(expresion, null);
 			}
 		}
+	}
+	
+	private void simplificaDefTipos(DecSubprograma d) {
+		List<Parametro> params = d.getParametros();
+		for (Parametro p : params){
+			simplificaDefTipo(p);
+		}
+		d.getPrograma();
+	}
+
+	private void simplificaDefTipo(Parametro p) {
+		
+		
+	}
+
+	private void simplificaDefTipos(DecVariable d) {
+		
+	}
+
+	private void simplificaDefTipos(DecTipo d) {
+		
 	}
 
 }
