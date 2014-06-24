@@ -3,9 +3,9 @@ TYPES
   TArbol: pointer TCelda; 
 
   TCelda: struct {
-            valor: int;
+            valor: int; 
             izq: TArbol;
-            der: TArbol
+            der: TArbol   
           };    
   TSecuencia: ARRAY int[10]
 VARIABLES
@@ -18,8 +18,7 @@ SUBPROGRAMS
     valor: int
   SUBPROGRAMS
       SUBPROGRAM LeeValor(& valor: int) {
-          read valor;        
-          arbol->.der = 1;                
+          read valor;                        
           fin = (valor == -1)     
       };
       
@@ -101,7 +100,7 @@ SUBPROGRAMS
    fin = (secuencia[0] == -1);
    DO 
      not fin: {
-        write 3;
+        write secuencia[i];
         i = i+1;
         fin = (i == 10);
         IF not fin: {fin = (secuencia[i]==-1)} ENDIF

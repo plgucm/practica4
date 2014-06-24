@@ -20,7 +20,7 @@ SUBPROGRAMS
   SUBPROGRAMS
       SUBPROGRAM LeeValor(& valor: int) {
           read valor;        
-          arbol->.der = 1;                
+          arbol->.der = valor;                
           fin = (valor == -1)     
       };
       

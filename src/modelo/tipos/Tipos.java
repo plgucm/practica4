@@ -9,6 +9,7 @@ public enum Tipos {
     STRUCT,
     ARRAY,
     POINTER, 
-    IDENT;
+    IDENT, 
+    NULL;
     
 }
