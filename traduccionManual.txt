@@ -1,0 +1,999 @@
+
+// PROGRAMA
+
+
+// Inicialización del puntero de cima de pila de registros de activación a la última celda del 
+// segmento estático (segmento de control + datos globales). X = máximo nivel de 
+// anidamiento + datos globales 
+// APILA(X)
+// DESAPILA_DIR(0)
+// Segmento de control = numero de displays = numero de niveles de anidamiento = 3
+// Datos globales = 10 posiciones [secuencia] + 1 [puntero arbol] = 11
+// X = 14
+
+// Instrucción 0 
+apila 14
+desapila_dir 0
+
+// Salto a la primera instrucción del programa ~> 683
+
+ir_a 683
+
+// { Prologo } 
+// El prólogo, captura los detalles de la activación que son comunes a todas 
+// las llamadas
+// Se antepone a la traducción del cuerpo del procedimiento. 
+// Se  encarga  de  salvar  el  valor  del  correspondiente  display  en  el  registro  de 
+// activación,  de  fijar  el  valor  del  display  actual,  y  de  incrementar  de  forma 
+// adecuada el puntero a la cima de la pila de registros de activación (posición de 
+// memoria 0, en nuestro diseño) 
+
+// Traducción de procedimiento LeeValor(int & valor) (prólogo + cuerpo + epílogo) 
+
+// { Prologo }
+// Nivel de anidamiento N = 2, Y = TD + 2 = 1 + 2 = 3
+// Y = tamaño de los datos del procedimiento + 2 (2 por la información de control: dirección 
+// de retorno, y valor de antiguo display)
+// N = 2
+// Y = 3
+
+// Instrucción 3
+apila_dir 0			// Salvar el valor del antiguo display (N es el nivel del procedimiento) 
+apila 2
+suma 
+apila_dir 2			// N
+desapila_ind
+desapila_dir 2			// N. Fijar el valor del nuevo display 
+apila_dir 0			// Fijar  de  manera  apropiada  el  puntero  a  la  cima  de  la  pila  de  registros  de activación (pos. 0)
+apila 3				// Y
+suma
+desapila_dir 0
+
+// { Cuerpo }
+
+// Instrucción 13
+apila_dir 2			// read valor;
+apila 0
+suma
+apila_ind
+lee
+desapila_ind
+apila_dir 1			// fin = (valor == -1)
+apila 1
+suma
+apila_dir 2
+apila 0
+suma
+apila_ind
+apila_ind
+apila -1
+igual
+desapila_ind
+
+// { Epílogo } N = 2, Y = 3
+
+// Instrucción 30
+apila_dir 0			// Recupera  el  antiguo  valor  del  puntero  a  la  cima  de  la  pila  de  registros  de activación
+apila 3				// Y
+resta
+desapila_dir 0
+apila_dir 0 			// Recupera el antiguo valor del display
+apila 2
+suma 
+apila_ind
+desapila_dir 2			// N
+apila_dir 0			// Recupera dirección de retorno
+apila 1
+suma
+apila_ind
+ir_ind				// Salta a la dirección de la cima de la pila y lo desapila
+
+// /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// Traducción de procedimiento AlmacenaValor() (prólogo + cuerpo + epílogo) 
+
+// { Prologo } N = 3, Y = 2
+
+// Instrucción 44 ~> AlmacenaValor()
+apila_dir 0			// Salvar el valor del antiguo display (N es el nivel del procedimiento) 
+apila 2
+suma 
+apila_dir 3			// N
+desapila_ind
+desapila_dir 3			// N. Fijar el valor del nuevo display 
+apila_dir 0			// Fijar  de  manera  apropiada  el  puntero  a  la  cima  de  la  pila  de  registros  de activación (pos. 0)
+apila 2				// Y
+suma
+desapila_dir 0
+
+// { Cuerpo }
+
+// Instrucción 54
+apila_dir 2			// new arbol;
+apila 0			
+suma
+apila_ind
+reserva 3
+desapila_ind
+apila_dir 2			// arbol->.valor = valor;
+apila 0
+suma
+apila_ind
+apila_ind
+apila 0
+suma 
+apila_dir 1
+apila 2
+suma
+// Instrucción 70
+apila_ind
+desapila_ind
+apila_dir 2			// arbol->.izq = null;
+apila 0
+suma
+apila_ind
+apila_ind
+apila 1
+suma
+apila 0				// null = 0
+desapila_ind
+apila_dir 2			// arbol->der = null;
+apila 0
+suma
+apila_ind
+apila_ind
+apila 2
+suma
+apila 0				// null = 0
+desapila_ind
+
+// { Epílogo } N = 3, Y = 2
+
+// Instrucción 90
+apila_dir 0			// Recupera  el  antiguo  valor  del  puntero  a  la  cima  de  la  pila  de  registros  de activación
+apila 2				// Y
+resta
+desapila_dir 0
+apila_dir 0 			// Recupera el antiguo valor del display
+apila 2
+suma 
+apila_ind
+desapila_dir 3			// N
+apila_dir 0			// Recupera dirección de retorno
+apila 1
+suma
+apila_ind
+ir_ind				// Salta a la dirección de la cima de la pila y lo desapila
+
+// /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// Traducción de procedimiento GuardaValor(TArbol & arbol) (prólogo + cuerpo + epílogo) 
+
+// { Prologo } N = 2, Y = 3
+
+// Instrucción 104
+apila_dir 0			// Salvar el valor del antiguo display (N es el nivel del procedimiento) 
+apila 2
+suma 
+apila_dir 2			// N
+desapila_ind
+desapila_dir 2			// N. Fijar el valor del nuevo display 
+apila_dir 0			// Fijar  de  manera  apropiada  el  puntero  a  la  cima  de  la  pila  de  registros  de activación (pos. 0)
+apila 3				// Y
+suma
+desapila_dir 0
+
+// { Cuerpo }
+
+// Instrucción 114
+apila_dir 2			// if arbol == null then
+apila 0			
+suma
+apila_ind
+apila_ind
+apila 0
+igual
+ir_f 132			// ir_f al primér ELSE_IF dirección 132
+
+// Prellamada activación AlmacenaValor();
+
+// Instrucción 122
+apila_dir 0			// Calcular  la  dirección  de  inicio  del segmento de datos del nuevo registro de activación
+apila 3
+suma				
+// Como esta función no tiene parámetros, no hay que generar el codigo de paso de parámetros
+apila_dir 0			// Por último es necesario apilar la dirección de retorno, es este caso 131
+apila 1
+suma 
+apila 131			// 131 es la dirección de retorno de la llamada a AlmacenaValor(); y nos vamos al final de los if-elseif-elseif 
+desapila_ind
+ir_a 44
+ir_a 202			// 202 ~> Ir al final de los if-elseif-elseif
+
+// Instrucción 132
+apila_dir 1			// else if valor < arbol->.valor then
+apila 2
+suma 
+apila_ind
+apila_dir 2
+apila 0
+suma 
+apila_ind
+apila_ind
+apila 0
+suma
+apila_ind
+menor
+ir_f 167			// ir_f al último ELSE_IF dirección 167
+
+// Prellamada activación GuardaValor(arbol->.izq);
+
+// Instrucción 146
+apila_dir 0			// Calcular  la  dirección  de  inicio  del segmento de datos del nuevo registro de activación
+apila 3
+suma
+dup				// El paso del parámetro árbol->.izq
+apila 0
+suma
+apila_dir 2			// Código para evaluar arbol->.izq
+apila 0
+suma
+apila_ind
+apila_ind
+apila 1
+suma
+desapila_ind			// DESAPILA_IND porque  el parámetro formal es por variable luego el parámetro real es un designador				
+apila_dir 0			// Por último es necesario apilar la dirección de retorno, es este caso 131
+apila 1
+suma 
+apila 166			// 166 es la dirección de retorno de la llamada a GuardaValor(arbol->.izq); y nos vamos al final de los if-elseif-elseif 
+desapila_ind
+ir_a 104			
+ir_a 202			// 202 ~> Ir al final de los if-elseif-elseif
+
+//Instruccion 167
+apila_dir 1			// else if valor > arbol->.valor then
+apila 2
+suma 
+apila_ind
+apila_dir 2
+apila 0
+suma 
+apila_ind
+apila_ind
+apila 0
+suma
+apila_ind
+mayor
+ir_f 202			// ir_f al del if-elseif-elseif 202
+
+// Prellamada activación GuardaValor(arbol->.der);
+
+// Instrucción 181
+apila_dir 0			// Calcular  la  dirección  de  inicio  del segmento de datos del nuevo registro de activación
+apila 3
+suma
+dup				// El paso del parámetro árbol->.der
+apila 0
+suma
+apila_dir 2			// Código para evaluar arbol->.der
+apila 0
+suma
+apila_ind
+apila_ind
+
+// Instrucción 192
+apila 2
+suma
+desapila_ind			// DESAPILA_IND porque  el parámetro formal es por variable luego el parámetro real es un designador				
+apila_dir 0			// Por último es necesario apilar la dirección de retorno, es este caso 201
+apila 1
+suma 
+apila 201			// 201 es la dirección de retorno de la llamada a GuardaValor(arbol->.izq); y nos vamos al final de los if-elseif-elseif 
+desapila_ind
+ir_a 104			
+ir_a 202			// 202 ~> Ir al final de los if-elseif-elseif
+
+// { Epílogo } N = 2, Y = 3
+
+// Instruccion 202
+apila_dir 0			// Recupera  el  antiguo  valor  del  puntero  a  la  cima  de  la  pila  de  registros  de activación
+apila 3				// Y
+resta
+desapila_dir 0
+apila_dir 0 			// Recupera el antiguo valor del display
+apila 2
+suma 
+apila_ind
+desapila_dir 2			// N
+apila_dir 0			// Recupera dirección de retorno
+apila 1
+suma
+apila_ind
+ir_ind				// Salta a la dirección de la cima de la pila y lo desapila
+
+// /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// Traducción de procedimiento LeeValores(TArbol & arbol) (prólogo + cuerpo + epílogo) 
+
+// { Prólogo } N = 1, Y = 5
+
+// Instrucción 216
+apila_dir 0			// Salvar el valor del antiguo display (N es el nivel del procedimiento) 
+apila 2
+suma 
+apila_dir 1			// N
+desapila_ind
+desapila_dir 1			// N. Fijar el valor del nuevo display 
+apila_dir 0			// Fijar  de  manera  apropiada  el  puntero  a  la  cima  de  la  pila  de  registros  de activación (pos. 0)
+apila 5				// Y
+suma
+desapila_dir 0
+
+// { Cuerpo }
+
+// Instrucción 226
+apila_dir 1			// fin = false
+apila 1
+suma
+apila false
+desapila_ind
+
+// Prellamada activación LeeValor(valor);
+
+// Instrucción 231
+apila_dir 0			// Calcular  la  dirección  de  inicio  del segmento de datos del nuevo registro de activación
+apila 3
+suma
+dup				// El paso del parámetro valor
+apila 0
+suma
+apila_dir 1			// Código para evaluar arbol->.der
+apila 2
+suma
+desapila_ind			// DESAPILA_IND porque  el parámetro formal es por variable				
+apila_dir 0			// Por último es necesario apilar la dirección de retorno, es este caso 247
+apila 1
+suma 
+apila 247			// 247 es la dirección de retorno de la llamada a LeeValor(valor); 
+desapila_ind
+ir_a 3
+
+// Instrucción 247			
+apila_dir 1			// if not fin then
+apila 1
+suma
+apila_ind
+not
+ir_f 271			// Si no se cumple el if, lo saltamos
+
+// Prellamada activación GuardaValor(arbol);
+
+// Instrucción 253
+apila_dir 0			// Calcular  la  dirección  de  inicio  del segmento de datos del nuevo registro de activación
+apila 3
+suma
+dup				// El paso del parámetro valor
+apila 0
+suma
+apila_dir 1			// Código para evaluar arbol
+apila 0
+suma
+apila_ind
+desapila_ind			// DESAPILA_IND porque  el parámetro formal es por variable				
+apila_dir 0			// Por último es necesario apilar la dirección de retorno, es este caso 270
+apila 1
+suma 
+apila 270			// 270 es la dirección de retorno de la llamada a GuardaValor(arbol);
+desapila_ind
+ir_a 104
+ir_a 271
+
+// Instrucción 271			
+apila_dir 1			// while not fin
+apila 1
+suma
+apila_ind
+not
+ir_v 231			// Si se cumple el while, volvemos a entrar en el bucle
+
+// { Epílogo } N = 1, Y = 5
+
+// Instruccion 277
+apila_dir 0			// Recupera  el  antiguo  valor  del  puntero  a  la  cima  de  la  pila  de  registros  de activación
+apila 5				// Y
+resta
+desapila_dir 0
+apila_dir 0 			// Recupera el antiguo valor del display
+apila 2
+suma 
+apila_ind
+desapila_dir 1			// N
+apila_dir 0			// Recupera dirección de retorno
+apila 1
+suma
+apila_ind
+ir_ind				// Salta a la dirección de la cima de la pila y lo desapila
+
+// /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// Traducción de procedimiento AlmacenaEnSecuencia(TArbol arbol) (prólogo + cuerpo + epílogo) 
+
+// { Prólogo } N = 2, Y = 3
+
+// Instrucción 291
+apila_dir 0			// Salvar el valor del antiguo display (N es el nivel del procedimiento) 
+apila 2
+suma 
+apila_dir 2			// N
+desapila_ind
+desapila_dir 2			// N. Fijar el valor del nuevo display 
+apila_dir 0			// Fijar  de  manera  apropiada  el  puntero  a  la  cima  de  la  pila  de  registros  de activación (pos. 0)
+apila 3				// Y
+suma
+desapila_dir 0
+
+// { Cuerpo }
+
+// Instrucción 301
+apila_dir 1			// if (numElem < 10) and (arbol != null) then { 
+apila 1				// desplazamiento desde el parámetro de la función AlmacenaEnSecuencia(TArbol) hasta var numElem
+suma
+apila_ind			// Tengo el valor (si fuera un puntero tendría que repetir esta instrucción)
+apila 10
+menor
+apila_dir 2
+apila 0
+suma
+apila_ind
+apila 0
+distinto
+and
+ir_f 385			// } , 385
+
+// Prellamada activación AlmacenaEnSecuencia(arbol->.izq); 
+
+// Instrucción 315
+apila_dir 0			// Calcular  la  dirección  de  inicio  del segmento de datos del nuevo registro de activación
+apila 3
+suma
+dup				// El paso del parámetro árbol->.izq
+apila 0
+suma
+apila_dir 2			// Código para evaluar arbol->.izq
+apila 0
+suma
+apila_ind			// dir. memoria arbol.
+apila 1
+suma				// dir. memoria izq.
+clona 1				// clonamos el valor de la dirección de memoria donde está izq.
+apila_dir 0			// Por último es necesario apilar la dirección de retorno, en este caso 334
+apila 1
+suma 
+apila 334			// 334 es la dirección de retorno de la llamada a AlmacenaEnSecuencia(arbol->.izq)
+desapila_ind
+ir_a 291			
+
+// Instruccion 334
+apila_dir 1			// if numElem < 10 then
+apila 1
+suma
+apila_ind
+apila 10
+menor
+ir_f 365			// Final if anidado, 365
+
+// Instrucción 341
+apila 4				// 4 porque 0, 1, 2 y 3 están ocupados por el segmento de control
+apila_dir 1			// secuencia[numElem] = arbol->.valor	
+apila 1
+suma
+apila_ind
+suma
+apila_dir 2
+apila 0
+suma
+apila_ind
+apila 0
+suma
+apila_ind
+desapila_ind
+apila_dir 1			// numElem = numElem + 1
+apila 1
+suma
+apila_dir 1			
+apila 1
+suma
+apila_ind
+apila 1
+suma 
+desapila_ind
+ir_a 366			// Vamos al final del if anidado, aunque sea la siguiente instrucción
+
+// Prellamada activación AlmacenaEnSecuencia(arbol->.der); 
+
+//Instrucción 366
+apila_dir 0			// Calcular  la  dirección  de  inicio  del segmento de datos del nuevo registro de activación
+apila 3
+suma
+dup				// El paso del parámetro árbol->.der
+apila 0
+suma
+apila_dir 2			// Código para evaluar arbol->.izq
+apila 0
+suma
+apila_ind			// dir. memoria arbol.
+apila 2
+suma				// dir. memoria der.
+clona 1				// clonamos el valor de la dirección de memoria donde está izq.
+apila_dir 0			// Por último es necesario apilar la dirección de retorno, en este caso 385
+apila 1
+suma 
+apila 385			// 385 es la dirección de retorno de la llamada a AlmacenaEnSecuencia(arbol->.der)
+desapila_ind
+ir_a 291
+ir_a 386			// Vamos al final del if, aunque sea la siguiente instrucción
+
+// { Epilogo } N = 2, Y = 3
+
+//Instrucción 386
+apila_dir 0			// Recupera  el  antiguo  valor  del  puntero  a  la  cima  de  la  pila  de  registros  de activación
+apila 3				// Y
+resta
+desapila_dir 0
+apila_dir 0 			// Recupera el antiguo valor del display
+apila 2
+suma 
+apila_ind
+desapila_dir 2			// N
+apila_dir 0			// Recupera dirección de retorno
+apila 1
+suma
+apila_ind
+ir_ind				// Salta a la dirección de la cima de la pila y lo desapila
+
+// /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// Traducción de procedimiento ConstruyeSecOrdenada(TArbol arbol) (prólogo + cuerpo + epílogo) 
+
+// { Prólogo } N = 1, Y = 4
+
+// Instrucción 400
+apila_dir 0			// Salvar el valor del antiguo display (N es el nivel del procedimiento) 
+apila 2
+suma 
+apila_dir 1			// N
+desapila_ind
+desapila_dir 1			// N. Fijar el valor del nuevo display 
+apila_dir 0			// Fijar  de  manera  apropiada  el  puntero  a  la  cima  de  la  pila  de  registros  de activación (pos. 0)
+apila 4				// Y
+suma
+desapila_dir 0
+
+// { Cuerpo }
+
+// Instrucción 410
+apila_dir 1			// numElem = 0
+apila 1				
+suma
+apila 0
+desapila_ind
+
+// Prellamada activación AlmacenaEnSecuencia(arbol); 
+
+// Instrucción 415
+apila_dir 0			// Calcular  la  dirección  de  inicio  del segmento de datos del nuevo registro de activación
+apila 3
+suma
+dup				// El paso del parámetro árbol
+apila 0
+suma
+apila_dir 1			// Código para evaluar arbol
+apila 0
+suma				// dir. memoria arbol.
+clona 1				// clonamos el valor de la dirección de memoria donde está árbol.
+apila_dir 0			// Por último es necesario apilar la dirección de retorno, en este caso 431
+apila 1
+suma 
+apila 431			// 431 es la dirección de retorno de la llamada a AlmacenaEnSecuencia(arbol)
+desapila_ind
+ir_a 291			// Inicio Prólogo AlmacenaEnSecuencia(arbol);
+
+// Instruccion 431
+apila_dir 1			// if numElem < 10 then
+apila 1
+suma
+apila_ind
+apila 10
+menor
+ir_f 446			// Final if, 446
+
+// Instrucción 438
+apila 4				// 4 porque 0, 1, 2 y 3 están ocupados por el segmento de control
+apila_dir 1			// secuencia[numElem] = -1	
+apila 1
+suma
+apila_ind
+suma
+apila -1
+desapila_ind
+ir_a 447			// Nos vamos al final del if, aunque sea la siguiente instrucción.
+
+// { Epilogo } N = 1, Y = 4
+
+//Instrucción 447
+apila_dir 0			// Recupera  el  antiguo  valor  del  puntero  a  la  cima  de  la  pila  de  registros  de activación
+apila 4				// Y
+resta
+desapila_dir 0
+apila_dir 0 			// Recupera el antiguo valor del display
+apila 2
+suma 
+apila_ind
+desapila_dir 1			// N
+apila_dir 0			// Recupera dirección de retorno
+apila 1
+suma
+apila_ind
+ir_ind				// Salta a la dirección de la cima de la pila y lo desapila
+
+// /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// Traducción de procedimiento Libera(TArbol arbol) (prólogo + cuerpo + epílogo) 
+
+// { Prólogo } N = 2, Y = 3
+
+// Instrucción 461
+apila_dir 0			// Salvar el valor del antiguo display (N es el nivel del procedimiento) 
+apila 2
+suma 
+apila_dir 2			// N
+desapila_ind
+desapila_dir 2			// N. Fijar el valor del nuevo display 
+apila_dir 0			// Fijar  de  manera  apropiada  el  puntero  a  la  cima  de  la  pila  de  registros  de activación (pos. 0)
+apila 3				// Y
+suma
+desapila_dir 0
+
+// { Cuerpo }
+
+// Instrucción 471
+apila_dir 2			// if arbol != null
+apila 0				
+suma
+apila_ind
+apila 0
+distinto
+ir_f 521			// En caso de ser falso, ir al final del if, 521
+
+// Prellamada activación Libera(arbol->.izq); 
+
+// Instrucción 478
+apila_dir 0			// Calcular  la  dirección  de  inicio  del segmento de datos del nuevo registro de activación
+apila 3
+suma
+dup				// El paso del parámetro árbol->.izq
+apila 0
+suma
+apila_dir 2			// Código para evaluar arbol
+apila 0
+suma				// dir. memoria arbol.
+apila_ind
+apila 1
+suma				// dir. memoria arbol->.izq
+clona 1				// clonamos el valor de la dirección de memoria donde está árbol.
+apila_dir 0			// Por último es necesario apilar la dirección de retorno, en este caso 497
+apila 1
+suma 
+apila 497			// 497 es la dirección de retorno de la llamada a Libera(arbol->.izq);
+desapila_ind
+ir_a 461			// Inicio Prólogo Libera(arbol->.izq);
+
+// Prellamada activación Libera(arbol->.der);
+
+// Instruccion 497
+apila_dir 0			// Calcular  la  dirección  de  inicio  del segmento de datos del nuevo registro de activación
+apila 3
+suma
+dup				// El paso del parámetro árbol->.der
+apila 0
+suma
+apila_dir 2			// Código para evaluar arbol
+apila 0
+suma				// dir. memoria arbol.
+apila_ind
+apila 2
+suma				// dir. memoria arbol->.der
+clona 1				// clonamos el valor de la dirección de memoria donde está árbol.
+apila_dir 0			// Por último es necesario apilar la dirección de retorno, en este caso 516
+apila 1
+suma 
+apila 516			// 516 es la dirección de retorno de la llamada a Libera(arbol->.der);
+desapila_ind
+ir_a 461			// Inicio Prólogo Libera(arbol->.der);
+
+// Instrucción 
+apila_dir 2			// delete arbol;
+apila 0
+suma
+apila_ind
+libera 3
+ir_a 522			// Nos vamos al final del if, aunque sea la siguiente instrucción
+
+// { Epilogo } N = 2, Y = 3
+
+//Instrucción 522
+apila_dir 0			// Recupera  el  antiguo  valor  del  puntero  a  la  cima  de  la  pila  de  registros  de activación
+apila 3				// Y
+resta
+desapila_dir 0
+apila_dir 0 			// Recupera el antiguo valor del display
+apila 2
+suma 
+apila_ind
+desapila_dir 2			// N
+apila_dir 0			// Recupera dirección de retorno
+apila 1
+suma
+apila_ind
+ir_ind				// Salta a la dirección de la cima de la pila y lo desapila
+
+// /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// Traducción de procedimiento LiberaArbol(TArbol & arbol) (prólogo + cuerpo + epílogo) 
+
+// { Prólogo } N = 1, Y = 3
+
+// Instrucción 536
+apila_dir 0			// Salvar el valor del antiguo display (N es el nivel del procedimiento) 
+apila 2
+suma 
+apila_dir 1			// N
+desapila_ind
+desapila_dir 1			// N. Fijar el valor del nuevo display 
+apila_dir 0			// Fijar  de  manera  apropiada  el  puntero  a  la  cima  de  la  pila  de  registros  de activación (pos. 0)
+apila 3				// Y
+suma
+desapila_dir 0
+
+// { Cuerpo }
+
+// Prellamada activación Libera(arbol); 
+
+// Instrucción 546
+apila_dir 0			// Calcular  la  dirección  de  inicio  del segmento de datos del nuevo registro de activación
+apila 3
+suma
+dup				// El paso del parámetro árbol
+apila 0
+suma
+apila_dir 1			// Código para evaluar arbol
+apila 0
+suma				// dir. memoria arbol.
+apila_ind
+clona 1				// Porque el parámetro formal es por valor y el real es un designador
+apila_dir 0			// Por último es necesario apilar la dirección de retorno, en este caso 563
+apila 1
+suma 
+apila 563			// 563 es la dirección de retorno de la llamada a Libera(arbol);
+desapila_ind
+ir_a 461			// Inicio Prólogo Libera(arbol);
+
+// Instrucción 563
+apila_dir 1			// arbol = null;
+apila 0
+suma
+apila_ind
+apila 0				// 0 = null
+desapila_ind
+
+// { Epilogo } N = 1, Y = 3
+
+//Instrucción 569
+apila_dir 0			// Recupera  el  antiguo  valor  del  puntero  a  la  cima  de  la  pila  de  registros  de activación
+apila 3				// Y
+resta
+desapila_dir 0
+apila_dir 0 			// Recupera el antiguo valor del display
+apila 2
+suma 
+apila_ind
+desapila_dir 1			// N
+apila_dir 0			// Recupera dirección de retorno
+apila 1
+suma
+apila_ind
+ir_ind				// Salta a la dirección de la cima de la pila y lo desapila
+
+// /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// Traducción de procedimiento MuestraSecuencia(TSecuencia secuencia) (prólogo + cuerpo + epílogo) 
+
+// { Prólogo } N = 1, Y = 14
+
+// Instrucción 583
+apila_dir 0			// Salvar el valor del antiguo display (N es el nivel del procedimiento) 
+apila 2
+suma 
+apila_dir 1			// N
+desapila_ind
+desapila_dir 1			// N. Fijar el valor del nuevo display 
+apila_dir 0			// Fijar  de  manera  apropiada  el  puntero  a  la  cima  de  la  pila  de  registros  de activación (pos. 0)
+apila 14			// Y
+suma
+desapila_dir 0
+
+// { Cuerpo }
+
+// Instrucción 593
+apila_dir 1			// i = 0;
+apila 10
+suma
+apila 0
+desapila_ind
+apila_dir 1			// fin = (secuencia[0] == -1);
+apila 11
+suma
+apila_dir 1
+apila 0
+suma
+apila 0
+suma
+apila_ind
+apila -1
+igual
+desapila_ind
+apila_dir 1			// while not fin then
+apila 11
+suma
+apila_ind
+not
+ir_f 669			// 669 es la primera instrucción después del while
+apila_dir 1			// write secuencia[i];
+apila 0
+suma
+apila_dir 1
+apila 10
+suma
+apila_ind
+suma
+apila_ind
+escribe
+apila_dir 1			// i = i + 1:
+apila 10
+suma
+apila_dir 1
+apila 10
+suma
+apila_ind
+apila 1
+suma
+desapila_ind
+apila_dir 1			// fin = (i == 10)
+apila 11
+suma
+apila_dir 1
+apila 10
+suma
+apila_ind
+apila 10
+igual
+desapila_ind
+apila_dir 1			// if not fin then
+apila 11
+suma
+apila_ind
+not
+ir_f 668			// 668 es la dir. de la instrucción de vuelta al bucle
+apila_dir 1			// fin = (secuencia[i] = -1);
+apila 11
+suma
+apila_dir 1
+apila 0
+suma
+apila_dir 1
+apila 10
+suma
+apila_ind
+suma
+apila_ind
+apila -1
+igual
+desapila_ind
+ir_a 668			// ir al final del if, aunque sea la siguiente instrucción.
+ir_a 610			// 610 es la dirección de la instrucción del comienzo del bucle.
+
+// { Epilogo } N = 1, Y = 14
+
+//Instrucción 669
+apila_dir 0			// Recupera  el  antiguo  valor  del  puntero  a  la  cima  de  la  pila  de  registros  de activación
+apila 14				// Y
+resta
+desapila_dir 0
+apila_dir 0 			// Recupera el antiguo valor del display
+apila 2
+suma 
+apila_ind
+desapila_dir 1			// N
+apila_dir 0			// Recupera dirección de retorno
+apila 1
+suma
+apila_ind
+ir_ind				// Salta a la dirección de la cima de la pila y lo desapila
+
+// /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// Traducción del programa pricipal (cuerpo)
+
+// Prellamada activación LeeValores(arbol); 
+
+// Instrucción 683
+apila_dir 0			// Calcular  la  dirección  de  inicio  del segmento de datos del nuevo registro de activación
+apila 3
+suma
+dup				// El paso del parámetro árbol
+apila 0
+suma
+apila 14			// Código para evaluar arbol, 0-13 ocupados por 1 (puntero cima pial reg. act.) + 3 (displays o niveles) + 10 (datos globales ocupados por TSecuencia)
+desapila_ind			// DESAPILA_IND porque el parámetro formal es por variable luego el real es un designador
+apila_dir 0			// Por último es necesario apilar la dirección de retorno, en este caso 697
+apila 1
+suma 
+apila 697			// 697 es la dirección de retorno de la llamada a LeeValores(arbol);
+desapila_ind
+ir_a 216			// Inicio Prólogo LeeValores(arbol);
+
+// Prellamada activación ConstruyeSecOrdenada(arbol); 
+
+// Instrucción 697
+apila_dir 0			// Calcular  la  dirección  de  inicio  del segmento de datos del nuevo registro de activación
+apila 3
+suma
+dup				// El paso del parámetro árbol
+apila 0
+suma
+apila 14			// Código para evaluar arbol, 0-13 ocupados por 1 (puntero cima pial reg. act.) + 3 (displays o niveles) + 10 (datos globales ocupados por TSecuencia)
+clona 1				// CLONA porque el parámetro formal es por valor y el real es un designador
+apila_dir 0			// Por último es necesario apilar la dirección de retorno, en este caso 711
+apila 1
+suma 
+apila 711			// 711 es la dirección de retorno de la llamada a ConstruyeSecOrdenada(arbol);
+desapila_ind
+ir_a 400			// Inicio Prólogo ConstruyeSecOrdenada(arbol);
+
+// Prellamada activación LiberaArbol(arbol); 
+
+// Instrucción 711
+apila_dir 0			// Calcular  la  dirección  de  inicio  del segmento de datos del nuevo registro de activación
+apila 3
+suma
+dup				// El paso del parámetro árbol
+apila 0
+suma
+apila 14			// Código para evaluar arbol, 0-13 ocupados por 1 (puntero cima pial reg. act.) + 3 (displays o niveles) + 10 (datos globales ocupados por TSecuencia)
+desapila_ind			// El  parámetro  formal  es  por  variable luego el real es un designador
+apila_dir 0			// Por último es necesario apilar la dirección de retorno, en este caso 725
+apila 1
+suma 
+apila 725			// 725 es la dirección de retorno de la llamada a LiberaArbol(arbol);
+desapila_ind
+ir_a 536			// Inicio Prólogo LiberaArbol(arbol);
+
+// Prellamada activación MuestraSecuencia(secuencia); 
+
+// Instrucción 725
+apila_dir 0			// Calcular  la  dirección  de  inicio  del segmento de datos del nuevo registro de activación
+apila 3
+suma
+dup				// El paso del parámetro secuencia
+apila 0
+suma
+apila 4				// Código para evaluar secuencia, 0-3 ocupados por 1 (puntero cima pial reg. act.) + 3 (displays o niveles)
+clona 10			// CLONA pues el parámetro formal es por valor
+apila_dir 0			// Por último es necesario apilar la dirección de retorno, en este caso 739
+apila 1
+suma 
+apila 739			// 739 es la dirección de retorno de la llamada a MuestraSecuencia(secuencia);
+desapila_ind
+ir_a 583			// Inicio Prólogo MuestraSecuencia(secuencia);
+

@@ -1,0 +1,612 @@
+apila 14
+desapila_dir 0
+ir_a 544
+apila_dir 0
+apila 2
+suma
+apila_dir 1
+desapila_ind
+desapila_dir 1
+apila_dir 0
+apila 3
+suma
+desapila_dir 0
+apila_dir 0
+apila 2
+suma
+apila_dir 0
+desapila_ind
+desapila_dir 0
+apila_dir 0
+apila 2
+suma
+desapila_dir 0
+apila_dir NIVEL_valor
+apila DIR_valor
+suma
+lee
+desapila_ind
+apila_dir NIVEL_fin
+apila DIR_fin
+suma
+apila_dir 0
+apila 2
+resta
+desapila_dir 0
+apila_dir 0
+apila 2
+suma
+apila_ind
+desapila_dir 0
+desapila_dir 0
+apila 1
+suma
+apila_ind
+ir_ind
+apila_dir 0
+apila 2
+suma
+apila_dir 0
+desapila_ind
+desapila_dir 0
+apila_dir 0
+apila 2
+suma
+desapila_dir 0
+apila_dir 0
+apila 2
+suma
+apila_dir 0
+desapila_ind
+desapila_dir 0
+apila_dir 0
+apila 2
+suma
+desapila_dir 0
+reserva 1
+desapila_ind
+apila_dir NIVEL_arbol
+apila DIR_arbol
+suma
+desapila_ind
+apila_dir NIVEL_arbol
+apila DIR_arbol
+suma
+apila 0
+suma
+apila_dir NIVEL_valor
+apila DIR_valor
+suma
+desapila_ind
+apila_dir NIVEL_arbol
+apila DIR_arbol
+suma
+apila 1
+suma
+apila 0
+desapila_ind
+apila_dir NIVEL_arbol
+apila DIR_arbol
+suma
+apila 2
+suma
+apila 0
+apila_dir 0
+apila 2
+resta
+desapila_dir 0
+apila_dir 0
+apila 2
+suma
+apila_ind
+desapila_dir 0
+desapila_dir 0
+apila 1
+suma
+apila_ind
+ir_ind
+apila_dir NIVEL_arbol
+apila DIR_arbol
+suma
+apila 0
+igual
+ir_f 120
+apila_dir 0
+apila 3
+suma
+apila_dir 0
+apila 1
+suma
+apila 114
+desapila_ind
+ir_a 55
+apila_dir NIVEL_valor
+apila DIR_valor
+suma
+apila_dir NIVEL_arbol
+apila DIR_arbol
+suma
+apila 0
+suma
+menor
+ir_f 146
+apila_dir 0
+apila 3
+suma
+dup
+apila 0
+suma
+apila_dir NIVEL_arbol
+apila DIR_arbol
+suma
+apila 1
+suma
+desapila_ind
+apila_dir 0
+apila 1
+suma
+apila 140
+desapila_ind
+ir_a 45
+apila_dir NIVEL_valor
+apila DIR_valor
+suma
+apila_dir NIVEL_arbol
+apila DIR_arbol
+suma
+apila 0
+suma
+mayor
+ir_f 172
+apila_dir 0
+apila 3
+suma
+dup
+apila 0
+suma
+apila_dir NIVEL_arbol
+apila DIR_arbol
+suma
+apila 2
+suma
+desapila_ind
+apila_dir 0
+apila 1
+suma
+apila 166
+desapila_ind
+ir_a 45
+apila_dir 0
+apila 2
+resta
+desapila_dir 0
+apila_dir 0
+apila 2
+suma
+apila_ind
+desapila_dir 0
+desapila_dir 0
+apila 1
+suma
+apila_ind
+ir_ind
+desapila_ind
+apila_dir NIVEL_fin
+apila DIR_fin
+suma
+apila false
+apila_dir NIVEL_fin
+apila DIR_fin
+suma
+not
+apila_dir 0
+apila 3
+suma
+dup
+apila 0
+suma
+apila_dir NIVEL_valor
+apila DIR_valor
+suma
+desapila_ind
+apila_dir 0
+apila 1
+suma
+apila 205
+desapila_ind
+ir_a 13
+apila_dir NIVEL_fin
+apila DIR_fin
+suma
+not
+ir_f 232
+apila_dir 0
+apila 3
+suma
+dup
+apila 0
+suma
+apila_dir NIVEL_arbol
+apila DIR_arbol
+suma
+desapila_ind
+apila_dir 0
+apila 1
+suma
+apila 226
+desapila_ind
+ir_a 45
+ir_v 190
+apila_dir 0
+apila 3
+resta
+desapila_dir 0
+apila_dir 0
+apila 2
+suma
+apila_ind
+desapila_dir 1
+desapila_dir 0
+apila 1
+suma
+apila_ind
+ir_ind
+apila_dir 0
+apila 2
+suma
+apila_dir 1
+desapila_ind
+desapila_dir 1
+apila_dir 0
+apila 2
+suma
+desapila_dir 0
+apila_dir 0
+apila 2
+suma
+apila_dir 0
+desapila_ind
+desapila_dir 0
+apila_dir 0
+apila 2
+suma
+desapila_dir 0
+and
+ir_f 319
+apila_dir 0
+apila 3
+suma
+dup
+apila 0
+suma
+apila 1
+suma
+clona 1
+apila_dir 0
+apila 1
+suma
+apila 277
+desapila_ind
+ir_a 256
+apila_dir NIVEL_numElem
+apila DIR_numElem
+suma
+apila 10
+menor
+ir_f 305
+desapila_ind
+apila DIR_secuencia
+apila_dir NIVEL_numElem
+apila DIR_numElem
+suma
+suma
+apila 0
+suma
+desapila_ind
+apila_dir NIVEL_numElem
+apila DIR_numElem
+suma
+apila_dir NIVEL_numElem
+apila DIR_numElem
+suma
+apila 1
+suma
+apila_dir 0
+apila 3
+suma
+dup
+apila 0
+suma
+apila 2
+suma
+clona 1
+apila_dir 0
+apila 1
+suma
+apila 313
+desapila_ind
+ir_a 256
+apila_dir 0
+apila 2
+resta
+desapila_dir 0
+apila_dir 0
+apila 2
+suma
+apila_ind
+desapila_dir 0
+desapila_dir 0
+apila 1
+suma
+apila_ind
+ir_ind
+desapila_ind
+apila_dir NIVEL_numElem
+apila DIR_numElem
+suma
+apila 0
+apila_dir 0
+apila 3
+suma
+dup
+apila 0
+suma
+clona 1
+apila_dir 0
+apila 1
+suma
+apila 345
+desapila_ind
+ir_a 256
+apila_dir NIVEL_numElem
+apila DIR_numElem
+suma
+apila 10
+menor
+ir_f 365
+desapila_ind
+apila DIR_secuencia
+apila_dir NIVEL_numElem
+apila DIR_numElem
+suma
+suma
+apila 1
+neg
+apila_dir 0
+apila 2
+resta
+desapila_dir 0
+apila_dir 0
+apila 2
+suma
+apila_ind
+desapila_dir 1
+desapila_dir 0
+apila 1
+suma
+apila_ind
+ir_ind
+apila_dir 0
+apila 2
+suma
+apila_dir 0
+desapila_ind
+desapila_dir 0
+apila_dir 0
+apila 2
+suma
+desapila_dir 0
+apila_dir 0
+apila 2
+suma
+apila_dir 0
+desapila_ind
+desapila_dir 0
+apila_dir 0
+apila 2
+suma
+desapila_dir 0
+apila 0
+distinto
+ir_f 431
+apila_dir 0
+apila 3
+suma
+dup
+apila 0
+suma
+apila 1
+suma
+clona 1
+apila_dir 0
+apila 1
+suma
+apila 410
+desapila_ind
+ir_a 388
+apila_dir 0
+apila 3
+suma
+dup
+apila 0
+suma
+apila 2
+suma
+clona 1
+apila_dir 0
+apila 1
+suma
+apila 424
+desapila_ind
+ir_a 388
+libera 1
+apila_dir 0
+apila 2
+resta
+desapila_dir 0
+apila_dir 0
+apila 2
+suma
+apila_ind
+desapila_dir 0
+desapila_dir 0
+apila 1
+suma
+apila_ind
+ir_ind
+apila_dir 0
+apila 3
+suma
+dup
+apila 0
+suma
+apila_dir NIVEL_arbol
+apila DIR_arbol
+suma
+clona 1
+apila_dir 0
+apila 1
+suma
+apila 455
+desapila_ind
+ir_a 388
+desapila_ind
+apila_dir NIVEL_arbol
+apila DIR_arbol
+suma
+apila 0
+apila_dir 0
+apila 2
+resta
+desapila_dir 0
+apila_dir 0
+apila 2
+suma
+apila_ind
+desapila_dir 0
+desapila_dir 0
+apila 1
+suma
+apila_ind
+ir_ind
+apila_dir 0
+apila 2
+suma
+apila_dir 1
+desapila_ind
+desapila_dir 1
+apila_dir 0
+apila 3
+suma
+desapila_dir 0
+desapila_ind
+apila_dir NIVEL_i
+apila DIR_i
+suma
+apila 0
+desapila_ind
+apila_dir NIVEL_fin
+apila DIR_fin
+suma
+apila_dir NIVEL_fin
+apila DIR_fin
+suma
+not
+apila_dir NIVEL_i
+apila DIR_i
+suma
+suma
+escribe
+desapila_ind
+apila_dir NIVEL_i
+apila DIR_i
+suma
+apila_dir NIVEL_i
+apila DIR_i
+suma
+apila 1
+suma
+desapila_ind
+apila_dir NIVEL_fin
+apila DIR_fin
+suma
+apila_dir NIVEL_fin
+apila DIR_fin
+suma
+not
+ir_f 530
+desapila_ind
+apila_dir NIVEL_fin
+apila DIR_fin
+suma
+ir_v 498
+apila_dir 0
+apila 3
+resta
+desapila_dir 0
+apila_dir 0
+apila 2
+suma
+apila_ind
+desapila_dir 1
+desapila_dir 0
+apila 1
+suma
+apila_ind
+ir_ind
+apila_dir 0
+apila 3
+suma
+dup
+apila 0
+suma
+apila DIR_arbol
+desapila_ind
+apila_dir 0
+apila 1
+suma
+apila 553
+desapila_ind
+ir_a 3
+apila_dir 0
+apila 3
+suma
+dup
+apila 0
+suma
+apila DIR_arbol
+clona 1
+apila_dir 0
+apila 1
+suma
+apila 567
+desapila_ind
+ir_a 246
+apila_dir 0
+apila 3
+suma
+dup
+apila 0
+suma
+apila DIR_arbol
+desapila_ind
+apila_dir 0
+apila 1
+suma
+apila 581
+desapila_ind
+ir_a 378
+apila_dir 0
+apila 3
+suma
+dup
+apila 0
+suma
+apila DIR_secuencia
+clona 10
+apila_dir 0
+apila 1
+suma
+apila 595
+desapila_ind
+ir_a 479
