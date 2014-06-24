@@ -29,6 +29,7 @@ import modelo.instrucciones.Read;
 import modelo.instrucciones.Write;
 import modelo.operadores.OpBinario;
 import modelo.operadores.OpUnario;
+import modelo.operadores.TipoOperador;
 import modelo.tipos.Tipo;
 import modelo.tipos.TipoArray;
 import modelo.tipos.TipoBool;
@@ -269,87 +270,87 @@ public class Constructoras implements IConstructoras {
 
 	@Override
 	public OpBinario creaOperadorIgual() {
-		return new OpBinario("=");
+		return new OpBinario(TipoOperador.IGUAL);
 	}
 
 	@Override
 	public OpBinario creaOperadorDistinto() {
-		return new OpBinario("!=");
+		return new OpBinario(TipoOperador.DISTINTO);
 	}
 
 	@Override
 	public OpBinario creaOperadorMenor() {
-		return new OpBinario("<");
+		return new OpBinario(TipoOperador.MENOR);
 	}
 
 	@Override
 	public OpBinario creaOperadorMayor() {
-		return new OpBinario(">");
+		return new OpBinario(TipoOperador.MAYOR);
 	}
 
 	@Override
 	public OpBinario creaOperadorMenorIgual() {
-		return new OpBinario("<=");
+		return new OpBinario(TipoOperador.MAYOROIGUAL);
 	}
 
 	@Override
 	public OpBinario creaOperadorMayorIgual() {
-		return new OpBinario(">=");
+		return new OpBinario(TipoOperador.MAYOROIGUAL);
 	}
 
 	@Override
 	public OpBinario creaOperadorMultiplicacion() {
-		return new OpBinario("*");
+		return new OpBinario(TipoOperador.POR);
 	}
 
 	@Override
 	public OpBinario creaOperadorDivision() {
-		return new OpBinario("/");
+		return new OpBinario(TipoOperador.DIV);
 	}
 
 	@Override
 	public OpBinario creaOperadorModulo() {
-		return new OpBinario("%");
+		return new OpBinario(TipoOperador.MOD);
 	}
 
 	@Override
 	public OpBinario creaOperadorAnd() {
-		return new OpBinario("&");
+		return new OpBinario(TipoOperador.AND);
 	}
 
 	@Override
 	public OpBinario creaOperadorMas() {
-		return new OpBinario("+");
+		return new OpBinario(TipoOperador.MAS);
 	}
 
 	@Override
 	public OpBinario creaOperadorMenos() {
-		return new OpBinario("-");
+		return new OpBinario(TipoOperador.MENOS);
 	}
 
 	@Override
 	public OpBinario creaOperadorOr() {
-		return new OpBinario("or");
+		return new OpBinario(TipoOperador.OR);
 	}
 
 	@Override
 	public OpUnario creaOperadorMenosUnario() {
-		return new OpUnario("-");
+		return new OpUnario(TipoOperador.MENOS);
 	}
 
 	@Override
 	public OpUnario creaOperadorNot() {
-		return new OpUnario("not");
+		return new OpUnario(TipoOperador.NOT);
 	}
 
 	@Override
 	public OpUnario creaOperadorToInt() {
-		return new OpUnario("toint");
+		return new OpUnario(TipoOperador.TOINT);
 	}
 
 	@Override
 	public OpUnario creaOperadorToDouble() {
-		return new OpUnario("todouble");
+		return new OpUnario(TipoOperador.TODOUBLE);
 	}
 
 	@Override

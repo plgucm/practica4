@@ -30,6 +30,7 @@ import modelo.instrucciones.Programa;
 import modelo.instrucciones.Read;
 import modelo.instrucciones.TiposInstruccion;
 import modelo.instrucciones.Write;
+import modelo.operadores.Operador;
 import modelo.tipos.Tipo;
 import modelo.tipos.Tipos;
 
@@ -237,15 +238,54 @@ public class Chequeo {
 	}
 
 	private void chequea(Llamada i) {
+		DecSubprograma obj = (DecSubprograma) vinculos.get(i);
+		
+		DecSubprograma ds;
+		if (obj instanceof DecSubprograma) {
+			ds = (DecSubprograma) obj;			
+		} else {
+			throw new UnsupportedOperationException("Se está invocando a un objeto que no es un procedimiento.");			
+		}		
+		
+		List<Expresion> argumentos = i.getParams();
+		List<Parametro> parametros = ds.getParametros();
+		
+		int args = argumentos.size();
+		int paramsDS = parametros.size();
+		if (args != paramsDS){
+			throw new UnsupportedOperationException("Discordancia en número de parámetros.");				
+		}
+		
+		for (int j = 0; j < args; j++){
+			Expresion e = argumentos.get(j);
+			chequea(e);
+			Parametro p = parametros.get(j);
+			Tipos tipoArg = getTipoSimple(e);			
+			if (!p.isPorValor() && e.getTipoExpresion() != TipoExpresion.DESIGNADOR){
+				throw new UnsupportedOperationException("El parámetro i-esimo debe ser un designador.");				
+			} else if (!compatibles(tipoArg, p.getTipo().getTipoConcreto())){
+				throw new UnsupportedOperationException(
+						"Tipos incompatibles en parámetro i-esimo. Esperado:"+p.getTipo().getTipoConcreto()
+						+" Recibido: " + tipoArg);				
+			}				
+		}
 		
 	}
 
 	private void chequea(Condicional i) {
-		
+		chequeaCasos(i.getCasos());
+		Tipos tipoA = getTipoSimple(i.getCasos());
+		if (tipoA == null || Tipos.BOOL != tipoA){
+			throw new UnsupportedOperationException("No es de tipo booleano la condición.");			
+		}
 	}
 
 	private void chequea(Bucle i) {
-		
+		chequeaCasos(i.getCasos());
+		Tipos tipoA = getTipoSimple(i.getCasos());
+		if (tipoA == null || Tipos.BOOL != tipoA){
+			throw new UnsupportedOperationException("No es de tipo booleano la condición.");			
+		}
 	}
 
 	private void chequea(Asignacion i) {
@@ -280,11 +320,7 @@ public class Chequeo {
 			case ID: {
 				if (id.equalsIgnoreCase("null")){ break; }
 				
-//				Object vinculo = declaracionDe(id);
-//				if (vinculo == null){
-//					throw new UnsupportedOperationException("Identificador no declarado. " + id);			
-//				}		
-//				insertaVinculo(designador, vinculo);
+				
 				
 				break;
 			}
@@ -327,23 +363,51 @@ public class Chequeo {
 	}
 	
 	
-	private void chequea(ExpresionInteger expresion) { }
+	private void chequea(ExpresionInteger expresion) {
+		insertaTipo(expresion, Tipos.INT);
+	}
 
-	private void chequea(ExpresionDouble expresion) { }
+	private void chequea(ExpresionDouble expresion) {
+		insertaTipo(expresion, Tipos.DOUBLE);
+	}
 
-	private void chequea(ExpresionBoolean expresion) { }
+	private void chequea(ExpresionBoolean expresion) { 
+		insertaTipo(expresion, Tipos.BOOL);
+	}
 	
 	private void chequea(ExpresionDesignador expresion) {
 		chequea(expresion.getValor());
+		Tipos tipo = getTipoSimple(expresion.getValor());
+		insertaTipo(expresion, tipo);
 	}
 
 	private void chequea(ExpresionUnaria expresion) {
 		chequea(expresion.getExp());
+		Tipos tipo = getTipoSimple(expresion.getExp());
+		insertaTipo(expresion, tipo);		
 	}
 
 	private void chequea(ExpresionBinaria expresion) {
-		chequea(expresion.getExp0());
-		chequea(expresion.getExp1());	
+		Expresion exp0 = expresion.getExp0();
+		Expresion exp1 = expresion.getExp1();
+		
+		chequea(exp0);
+		chequea(exp1);	
+		Tipos tipoA = getTipoSimple(exp0);
+		Tipos tipoB = getTipoSimple(exp1);
+		if (tipoA == null && tipoB == null){
+			insertaTipo(expresion, null);
+		} else {
+			if (expresion.getOpBinario().esAritmetico()){
+				insertaTipo(expresion, getTipoSimple(exp0));				
+			} else if (expresion.getOpBinario().esLogico()){
+				insertaTipo(expresion, Tipos.BOOL);	
+			} else if (expresion.getOpBinario().esComparacion()){
+				insertaTipo(expresion, Tipos.BOOL);					
+			} else {
+				insertaTipo(expresion, null);
+			}
+		}
 	}
 
 }

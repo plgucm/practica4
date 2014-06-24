@@ -35,6 +35,7 @@ import modelo.instrucciones.TiposInstruccion;
 import modelo.instrucciones.Write;
 import modelo.operadores.OpBinario;
 import modelo.operadores.OpUnario;
+import modelo.operadores.TipoOperador;
 import modelo.tipos.Tipo;
 import modelo.tipos.TipoArray;
 import modelo.tipos.TipoID;
@@ -376,33 +377,33 @@ public class GeneraCodigo {
 		codigo(expresion.getExp1());
 		bd.addBloque(bloqueActual);
 		OpBinario tipo = expresion.getOpBinario();
-		String tipoOp = tipo.getTipo();
+		TipoOperador tipoOp = tipo.getTipo();
 
-		if (tipoOp.equalsIgnoreCase("+")){
+		if (tipoOp == TipoOperador.MAS){
 			bd.addBloque(new BloqueDeCodigo(SUMA));
-		} else if (tipoOp.equalsIgnoreCase("-")){
+		} else if (tipoOp == TipoOperador.MENOS){
 			bd.addBloque(new BloqueDeCodigo(RESTA ));
-		} else if (tipoOp.equalsIgnoreCase("*")){
+		} else if (tipoOp == TipoOperador.POR){
 			bd.addBloque(new BloqueDeCodigo(MUL ));
-		} else if (tipoOp.equalsIgnoreCase("/")){
+		} else if (tipoOp == TipoOperador.DIV){
 			bd.addBloque(new BloqueDeCodigo(DIV ));
-		} else if (tipoOp.equalsIgnoreCase("%")){
+		} else if (tipoOp == TipoOperador.MOD){
 			bd.addBloque(new BloqueDeCodigo(MOD ));
-		} else if (tipoOp.equalsIgnoreCase("and")){
+		} else if (tipoOp == TipoOperador.AND){
 			bd.addBloque(new BloqueDeCodigo(AND ));
-		} else if (tipoOp.equalsIgnoreCase("or")){
+		} else if (tipoOp == TipoOperador.OR){
 			bd.addBloque(new BloqueDeCodigo(OR ));
-		} else if (tipoOp.equalsIgnoreCase(">")){
+		} else if (tipoOp == TipoOperador.MAYOR){
 			bd.addBloque(new BloqueDeCodigo(MAYOR ));
-		} else if (tipoOp.equalsIgnoreCase("<")){
+		} else if (tipoOp == TipoOperador.MENOR){
 			bd.addBloque(new BloqueDeCodigo(MENOR ));
-		} else if (tipoOp.equalsIgnoreCase(">=")){
+		} else if (tipoOp == TipoOperador.MAYOROIGUAL){
 			bd.addBloque(new BloqueDeCodigo(MAYOR_IGUAL ));
-		} else if (tipoOp.equalsIgnoreCase("<=")){
+		} else if (tipoOp == TipoOperador.MENOROIGUAL){
 			bd.addBloque(new BloqueDeCodigo(MENOR_IGUAL ));
-		} else if (tipoOp.equalsIgnoreCase("=")){
+		} else if (tipoOp == TipoOperador.IGUAL){
 			bd.addBloque(new BloqueDeCodigo(IGUAL ));
-		} else if (tipoOp.equalsIgnoreCase("!=")){
+		} else if (tipoOp == TipoOperador.DISTINTO){
 			bd.addBloque(new BloqueDeCodigo(DISTINTO ));
 		} 		
 
@@ -416,14 +417,14 @@ public class GeneraCodigo {
 		codigo(expresion.getExp());
 		bd.addBloque(bloqueActual);
 		OpUnario tipo = expresion.getOpUnario();
-		String tipoOp = tipo.getTipo();
-		if (tipoOp.equalsIgnoreCase("not")){
+		TipoOperador tipoOp = tipo.getTipo();
+		if (tipoOp == TipoOperador.NOT){
 			bd.addBloque(new BloqueDeCodigo(NOT ));
-		} else if (tipoOp.equalsIgnoreCase("-")){
+		} else if (tipoOp == TipoOperador.MENOS){
 			bd.addBloque(new BloqueDeCodigo(NEG ));
-		} else if (tipoOp.equalsIgnoreCase("toint")){
+		} else if (tipoOp == TipoOperador.TOINT){
 			bd.addBloque(new BloqueDeCodigo(TOINT ));
-		} else if (tipoOp.equalsIgnoreCase("todouble")){
+		} else if (tipoOp == TipoOperador.TODOUBLE){
 			bd.addBloque(new BloqueDeCodigo(TODOUBLE ));
 		}
 		aumentaCI(1);

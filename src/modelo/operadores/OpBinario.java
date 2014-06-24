@@ -4,7 +4,8 @@ package modelo.operadores;
 
 public class OpBinario extends Operador {
 
-	public OpBinario(String tipo) {
+	public OpBinario(TipoOperador tipo) {
 		super(tipo);
 	}
+
 }
