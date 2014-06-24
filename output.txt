@@ -1,6 +1,6 @@
 apila 14
 desapila_dir 0
-ir_a 577
+ir_a 550
 apila_dir 0
 apila 2
 suma
@@ -21,20 +21,20 @@ apila_dir 0
 apila 2
 suma
 desapila_dir 0
-apila_dir 2
-apila 2
+apila_dir NIVEL_valor
+apila DIR_valor
 suma
 lee
 desapila_ind
-apila_dir 1
-apila 2
+apila_dir NIVEL_arbol
+apila DIR_arbol
 suma
 apila 2
 suma
 apila 1
 desapila_ind
-apila_dir 1
-apila 0
+apila_dir NIVEL_fin
+apila DIR_fin
 suma
 apila_dir 0
 apila 2
@@ -72,28 +72,28 @@ suma
 desapila_dir 0
 reserva 1
 desapila_ind
-apila_dir 2
-apila 2
+apila_dir NIVEL_arbol
+apila DIR_arbol
 suma
 desapila_ind
-apila_dir 2
-apila 2
+apila_dir NIVEL_arbol
+apila DIR_arbol
 suma
 apila 0
 suma
-apila_dir 1
-apila 1
+apila_dir NIVEL_valor
+apila DIR_valor
 suma
 desapila_ind
-apila_dir 2
-apila 2
+apila_dir NIVEL_arbol
+apila DIR_arbol
 suma
 apila 1
 suma
 apila 0
 desapila_ind
-apila_dir 2
-apila 2
+apila_dir NIVEL_arbol
+apila DIR_arbol
 suma
 apila 2
 suma
@@ -112,8 +112,8 @@ apila 1
 suma
 apila_ind
 ir_ind
-apila_dir 2
-apila 2
+apila_dir NIVEL_arbol
+apila DIR_arbol
 suma
 apila 0
 igual
@@ -127,11 +127,11 @@ suma
 apila 120
 desapila_ind
 ir_a 61
-apila_dir 1
-apila 1
+apila_dir NIVEL_valor
+apila DIR_valor
 suma
-apila_dir 2
-apila 2
+apila_dir NIVEL_arbol
+apila DIR_arbol
 suma
 apila 0
 suma
@@ -143,8 +143,8 @@ suma
 dup
 apila 0
 suma
-apila_dir 2
-apila 2
+apila_dir NIVEL_arbol
+apila DIR_arbol
 suma
 apila 1
 suma
@@ -155,11 +155,11 @@ suma
 apila 146
 desapila_ind
 ir_a 51
-apila_dir 1
-apila 1
+apila_dir NIVEL_valor
+apila DIR_valor
 suma
-apila_dir 2
-apila 2
+apila_dir NIVEL_arbol
+apila DIR_arbol
 suma
 apila 0
 suma
@@ -171,8 +171,8 @@ suma
 dup
 apila 0
 suma
-apila_dir 2
-apila 2
+apila_dir NIVEL_arbol
+apila DIR_arbol
 suma
 apila 2
 suma
@@ -198,12 +198,12 @@ suma
 apila_ind
 ir_ind
 desapila_ind
-apila_dir 1
-apila 0
+apila_dir NIVEL_fin
+apila DIR_fin
 suma
 apila false
-apila_dir 1
-apila 0
+apila_dir NIVEL_fin
+apila DIR_fin
 suma
 not
 apila_dir 0
@@ -212,8 +212,8 @@ suma
 dup
 apila 0
 suma
-apila_dir 1
-apila 1
+apila_dir NIVEL_valor
+apila DIR_valor
 suma
 desapila_ind
 apila_dir 0
@@ -222,8 +222,8 @@ suma
 apila 211
 desapila_ind
 ir_a 13
-apila_dir 1
-apila 0
+apila_dir NIVEL_fin
+apila DIR_fin
 suma
 not
 ir_f 238
@@ -233,8 +233,8 @@ suma
 dup
 apila 0
 suma
-apila_dir 1
-apila 2
+apila_dir NIVEL_arbol
+apila DIR_arbol
 suma
 desapila_ind
 apila_dir 0
@@ -278,15 +278,12 @@ apila_dir 0
 apila 2
 suma
 desapila_dir 0
-ir_f 334
+ir_f 325
 apila_dir 0
 apila 3
 suma
 dup
 apila 0
-suma
-apila_dir 2
-apila 2
 suma
 apila 1
 suma
@@ -294,32 +291,29 @@ clona 1
 apila_dir 0
 apila 1
 suma
-apila 286
+apila 283
 desapila_ind
 ir_a 262
-apila_dir 1
-apila 0
+apila_dir NIVEL_numElem
+apila DIR_numElem
 suma
 apila 10
 menor
-ir_f 317
+ir_f 311
 desapila_ind
-apila 4
-apila_dir 1
-apila 0
+apila DIR_secuencia
+apila_dir NIVEL_numElem
+apila DIR_numElem
 suma
-suma
-apila_dir 2
-apila 2
 suma
 apila 0
 suma
 desapila_ind
-apila_dir 1
-apila 0
+apila_dir NIVEL_numElem
+apila DIR_numElem
 suma
-apila_dir 1
-apila 0
+apila_dir NIVEL_numElem
+apila DIR_numElem
 suma
 apila 1
 suma
@@ -329,16 +323,13 @@ suma
 dup
 apila 0
 suma
-apila_dir 2
-apila 2
-suma
 apila 2
 suma
 clona 1
 apila_dir 0
 apila 1
 suma
-apila 328
+apila 319
 desapila_ind
 ir_a 262
 apila_dir 0
@@ -356,8 +347,8 @@ suma
 apila_ind
 ir_ind
 desapila_ind
-apila_dir 1
-apila 0
+apila_dir NIVEL_numElem
+apila DIR_numElem
 suma
 apila 0
 apila_dir 0
@@ -366,26 +357,23 @@ suma
 dup
 apila 0
 suma
-apila_dir 1
-apila 2
-suma
 clona 1
 apila_dir 0
 apila 1
 suma
-apila 363
+apila 351
 desapila_ind
 ir_a 262
-apila_dir 1
-apila 0
+apila_dir NIVEL_numElem
+apila DIR_numElem
 suma
 apila 10
 menor
-ir_f 383
+ir_f 371
 desapila_ind
-apila 4
-apila_dir 1
-apila 0
+apila DIR_secuencia
+apila_dir NIVEL_numElem
+apila DIR_numElem
 suma
 suma
 apila 1
@@ -424,20 +412,14 @@ apila_dir 0
 apila 2
 suma
 desapila_dir 0
-apila_dir 2
-apila 2
-suma
 apila 0
 distinto
-ir_f 461
+ir_f 437
 apila_dir 0
 apila 3
 suma
 dup
 apila 0
-suma
-apila_dir 2
-apila 2
 suma
 apila 1
 suma
@@ -445,17 +427,14 @@ clona 1
 apila_dir 0
 apila 1
 suma
-apila 434
+apila 416
 desapila_ind
-ir_a 406
+ir_a 394
 apila_dir 0
 apila 3
 suma
 dup
 apila 0
-suma
-apila_dir 2
-apila 2
 suma
 apila 2
 suma
@@ -463,12 +442,9 @@ clona 1
 apila_dir 0
 apila 1
 suma
-apila 451
+apila 430
 desapila_ind
-ir_a 406
-apila_dir 2
-apila 2
-suma
+ir_a 394
 libera 1
 apila_dir 0
 apila 2
@@ -490,19 +466,19 @@ suma
 dup
 apila 0
 suma
-apila_dir 1
-apila 2
+apila_dir NIVEL_arbol
+apila DIR_arbol
 suma
 clona 1
 apila_dir 0
 apila 1
 suma
-apila 485
+apila 461
 desapila_ind
-ir_a 406
+ir_a 394
 desapila_ind
-apila_dir 1
-apila 2
+apila_dir NIVEL_arbol
+apila DIR_arbol
 suma
 apila 0
 apila_dir 0
@@ -530,49 +506,46 @@ apila 3
 suma
 desapila_dir 0
 desapila_ind
-apila_dir 1
-apila 0
+apila_dir NIVEL_i
+apila DIR_i
 suma
 apila 0
 desapila_ind
-apila_dir 1
-apila 1
+apila_dir NIVEL_fin
+apila DIR_fin
 suma
-apila_dir 1
-apila 1
+apila_dir NIVEL_fin
+apila DIR_fin
 suma
 not
-apila_dir 1
-apila 2
-suma
-apila_dir 1
-apila 0
+apila_dir NIVEL_i
+apila DIR_i
 suma
 suma
 escribe
 desapila_ind
-apila_dir 1
-apila 0
+apila_dir NIVEL_i
+apila DIR_i
 suma
-apila_dir 1
-apila 0
+apila_dir NIVEL_i
+apila DIR_i
 suma
 apila 1
 suma
 desapila_ind
-apila_dir 1
-apila 1
+apila_dir NIVEL_fin
+apila DIR_fin
 suma
-apila_dir 1
-apila 1
+apila_dir NIVEL_fin
+apila DIR_fin
 suma
 not
-ir_f 563
+ir_f 536
 desapila_ind
-apila_dir 1
-apila 1
+apila_dir NIVEL_fin
+apila DIR_fin
 suma
-ir_v 528
+ir_v 504
 apila_dir 0
 apila 3
 resta
@@ -593,12 +566,12 @@ suma
 dup
 apila 0
 suma
-apila 14
+apila DIR_arbol
 desapila_ind
 apila_dir 0
 apila 1
 suma
-apila 586
+apila 559
 desapila_ind
 ir_a 3
 apila_dir 0
@@ -607,12 +580,12 @@ suma
 dup
 apila 0
 suma
-apila 14
+apila DIR_arbol
 clona 1
 apila_dir 0
 apila 1
 suma
-apila 600
+apila 573
 desapila_ind
 ir_a 252
 apila_dir 0
@@ -621,25 +594,25 @@ suma
 dup
 apila 0
 suma
-apila 14
+apila DIR_arbol
 desapila_ind
 apila_dir 0
 apila 1
 suma
-apila 614
+apila 587
 desapila_ind
-ir_a 396
+ir_a 384
 apila_dir 0
 apila 3
 suma
 dup
 apila 0
 suma
-apila 4
+apila DIR_secuencia
 clona 10
 apila_dir 0
 apila 1
 suma
-apila 628
+apila 601
 desapila_ind
-ir_a 509
+ir_a 485

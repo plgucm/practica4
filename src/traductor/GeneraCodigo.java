@@ -207,12 +207,20 @@ public class GeneraCodigo {
 	private void codigo(New i) {
 		BloqueDeCodigo bd = new BloqueDeCodigo();
 		Object o = vinculos.get(i.getDesignador());
+		Integer dec = 1;
 		
-		Integer dec = (Integer) d.getDecoracion(o).get("tam");
+//		if (o instanceof Parametro) {
+//			Parametro p = (Parametro) o;
+//			if (!p.isPorValor()) {
+//				dec = tamanioVar(p.getTipo());
+//			} 
+//			System.out.println(p.getIdentificador());
+//		} else {
+			dec = (Integer) d.getDecoracion(o).get("tam");
+//		}
 		
-		System.out.println(dec); // TODO
-		String codigo = instrConAlgo(RESERVA, ((Integer) d.getDecoracion(o).get("tam")))+
-				DESAPILA_IND;
+//		System.out.println(dec);
+		String codigo = instrConAlgo(RESERVA, dec)+DESAPILA_IND;
 		aumentaCI(2);
 		bd.addBloque(new BloqueDeCodigo(codigo));
 		codigo(i.getDesignador());
@@ -476,22 +484,57 @@ public class GeneraCodigo {
 				bd.setCodigo(instrConAlgo(APILA, 0));
 				aumentaCI(1);
 
-			} else {					
+			} else {			
+				
+				// TODO
+				
 				Object obj = vinculos.get(designador);
 				Map<String, Object> m = this.d.getDecoracion(obj);
 
-				int dir = (int) m.get("dir");
-				int niv = (int) m.get("nivel");
-
-				if (niv == 0){
-					bd.setCodigo(instrConAlgo(APILA, dir));
-					aumentaCI(1);
-				} else {						
-					bd.setCodigo(instrConAlgo(APILA_DIR, niv) +
-								instrConAlgo(APILA, dir) +
-								SUMA);
-					aumentaCI(3);
-				}	
+//				System.out.println(obj);
+							
+				if (obj instanceof Parametro){
+					// es un parámetro
+					Parametro p = (Parametro) obj;
+					if (p.isPorValor()){
+						
+						
+					} else {
+						Map<String, Object> m2 = this.d.getDecoracion(p);
+						int dir = (int) m2.get("dir");
+						int niv = (int) m2.get("nivel");
+						
+						if (niv == 0){
+							bd.setCodigo(instrConAlgo(APILA, "DIR_"+p.getIdentificador()));
+							aumentaCI(1);
+						} else {						
+							bd.setCodigo(instrConAlgo(APILA_DIR, "NIVEL_"+p.getIdentificador()) +
+										instrConAlgo(APILA, "DIR_"+p.getIdentificador()) +
+										SUMA);
+							aumentaCI(3);
+						}	
+						
+						
+					}
+					
+					
+				} else {
+					// es una variable
+					DecVariable dv = (DecVariable) obj;
+					
+					int dir = (int) m.get("dir");
+					int niv = (int) m.get("nivel");
+					
+					if (niv == 0){
+						bd.setCodigo(instrConAlgo(APILA, "DIR_"+dv.getIdentificador()));
+						aumentaCI(1);
+					} else {						
+						bd.setCodigo(instrConAlgo(APILA_DIR, "NIVEL_"+dv.getIdentificador()) +
+									instrConAlgo(APILA, "DIR_"+dv.getIdentificador()) +
+									SUMA);
+						aumentaCI(3);
+					}	
+				}
 				
 			}
 
@@ -571,7 +614,7 @@ public class GeneraCodigo {
 		}
 
 		List<Parametro> params = ds.getParametros();
-		int dir = 2;
+		int dir = 0;
 		if (params != null){
 			for (Parametro p : params){
 				int tam = 1;
@@ -627,7 +670,8 @@ public class GeneraCodigo {
 
 			if (this.nivel == 0){
 				d.insertaInfoEnNodo(dv, "dir", this.dir);
-//				System.out.println("TAM, DIR y NIVEL de " + dv.getIdentificador() + " : " + "("+tam+","+this.dir+","+nivel+")");	
+//				System.out.println("TAM, DIR y NIVEL de " +
+//				dv.getIdentificador() + " : " + "("+tam+","+this.dir+","+nivel+")");	
 			} else {
 				d.insertaInfoEnNodo(dv, "dir", dir);	
 //				System.out.println("TAM, DIR y NIVEL de " + dv.getIdentificador() + " : " + "("+tam+","+dir+","+nivel+")");				
