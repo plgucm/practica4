@@ -78,11 +78,11 @@ public class Vinculador {
 		tablaDeSimbolos.pop();
 	}
 	
-	private void debugTS(String from){
-		System.out.println("--- Debug llamado desde " + from);
-		System.out.println("Nivel: " + (tablaDeSimbolos.size()-1));
-		System.out.println("Ã�mbito: " + tablaDeSimbolos.peek());
-	}
+//	private void debugTS(String from){
+//		System.out.println("--- Debug llamado desde " + from);
+//		System.out.println("Nivel: " + (tablaDeSimbolos.size()-1));
+//		System.out.println("Ã�mbito: " + tablaDeSimbolos.peek());
+//	}
 
 	private boolean insertaID(String id, Object declaracion){
 //		debugTS("insertaID");
@@ -120,60 +120,53 @@ public class Vinculador {
 		}		
 	}
 
-
 	private void vinculaDecSubprogramasDef(List<DecSubprograma> decSubprogramas) {
 		if (decSubprogramas == null) return;
 		for (DecSubprograma dt : decSubprogramas){
-			vinculaDef(dt.getParametros());
+			vinculaDef(dt);
 		}	
 	}
-	
-//	private void vinculaDef(Bloque bloque) {
-//		List<Instruccion> insts = bloque.getInstrucciones();
-//		for (Instruccion i : insts){
-//			vinculaDef(i);
-//		}
-//	}
 
-//	private void vinculaDef(Instruccion i) {
-//		if (i == null) return;
-//		TiposInstruccion tipo = i.getTipoInstruccion();
-//		switch(tipo){
-//			case ASIG: {				
-//				vinculaDef((Asignacion) i);
-//			};  break;
-//			case BLOQUE: {			
-//				vinculaDef((Bloque) i);
-//			}; break;
-//			case BUCLE: {
-//				vinculaDef((Bucle) i);
-//			}; break;
-//			case CASOS: {
-//				vinculaDefCasos((List<Caso>) i);
-//			}; break;
-//			case DELETE: {
-//				vinculaDef((Delete) i);
-//			}; break;
-//			case IF: {
-//				vinculaDef((Condicional) i);
-//			}; break;
-//			case LLAMADA: {
-//				vinculaDef((Llamada) i);
-//			}; break;
-//			case NEW: {
-//				vinculaDef((New) i);
-//			}; break;
-//			case READ: {
-//				vinculaDef((Read) i);
-//			}; break;
-//			case WRITE: {
-//				vinculaDef((Write) i);
-//			}; break;
-//			default: break;
-//		}		
-//		
-//	}
-//	
+	@SuppressWarnings("unchecked")
+	private void vinculaDef(Instruccion i) {
+		if (i == null) return;
+		TiposInstruccion tipo = i.getTipoInstruccion();
+		switch(tipo){
+			case ASIG: {				
+				vinculaDef((Asignacion) i);
+			};  break;
+			case BLOQUE: {			
+				vinculaDef((Bloque) i);
+			}; break;
+			case BUCLE: {
+				vinculaDef((Bucle) i);
+			}; break;
+			case CASOS: {
+				vinculaDefCasos((List<Caso>) i);
+			}; break;
+			case DELETE: {
+				vinculaDef((Delete) i);
+			}; break;
+			case IF: {
+				vinculaDef((Condicional) i);
+			}; break;
+			case LLAMADA: {
+				vinculaDef((Llamada) i);
+			}; break;
+			case NEW: {
+				vinculaDef((New) i);
+			}; break;
+			case READ: {
+				vinculaDef((Read) i);
+			}; break;
+			case WRITE: {
+				vinculaDef((Write) i);
+			}; break;
+			default: break;
+		}		
+		
+	}
+	
 	private void vinculaDef(Expresion expresion) {
 		if (expresion == null) return;
 		TipoExpresion te = expresion.getTipoExpresion();
@@ -200,131 +193,123 @@ public class Vinculador {
 		}		
 	}
 
-//	private void vinculaDef(Designador designador) {
-//		if (designador == null) return;
-//		
-//		Expresion e = designador.getExpresion();
-//		Designador d = designador.getDesignador();
-//		String id = designador.getIdentificador();
-//		
-//		switch(designador.getTipo()){
-//			case ARRAY: {
-//				vinculaDef(d);
-//				vinculaDef(e);
-//				break;
-//			}
-//			case ID: {
-//				if (id.equalsIgnoreCase("null")){ break; }
-//				
-//				Object vinculo = declaracionDe(id);
-//				if (vinculo == null){
-//					throw new UnsupportedOperationException("Identificador no declarado. " + id);			
-//				}		
-//				insertaVinculo(designador, vinculo);
-//				
-//				break;
-//			}
-//			case STRUCT: {	
-//				vinculaDef(d);
-//				break;				
-//			}
-//			case PUNTERO: {				
-//				vinculaDef(d);
-//				break;
-//			}
-//		default: break;
-//		}
-//	}
+	private void vinculaDef(Designador designador) {
+		if (designador == null) return;
+		
+		Expresion e = designador.getExpresion();
+		Designador d = designador.getDesignador();
+		String id = designador.getIdentificador();
+		
+		switch(designador.getTipo()){
+			case ARRAY: {
+				vinculaDef(d);
+				vinculaDef(e);
+				break;
+			}
+			case ID: {
+				if (id.equalsIgnoreCase("null")){ break; }
+				
+				Object vinculo = declaracionDe(id);
+				if (vinculo == null){
+					throw new UnsupportedOperationException("Identificador no declarado. " + id);			
+				}		
+				insertaVinculo(designador, vinculo);
+				
+				break;
+			}
+			case STRUCT: {	
+				vinculaDef(d);
+				break;				
+			}
+			case PUNTERO: {				
+				vinculaDef(d);
+				break;
+			}
+		default: break;
+		}
+	}
 
-//	private void vinculaDef(ExpresionUnaria expresion) {
-//		vinculaDef(expresion.getExp());		
-//	}
-//
-//	private void vinculaDef(ExpresionInteger expresion) { }
-//
-//	private void vinculaDef(ExpresionDouble expresion) { }
-//
-//	private void vinculaDef(ExpresionDesignador expresion) {
-//		vinculaDef(expresion.getValor());		
-//	}
-//
-//	private void vinculaDef(ExpresionBoolean expresion) { }
-//
-//	private void vinculaDef(ExpresionBinaria expresion) {
-//		vinculaDef(expresion.getExp0());
-//		vinculaDef(expresion.getExp1());
-//	}
-//
-//	private void vinculaDef(Write i) {
-//		vinculaDef(i.getExpresion());		
-//	}
-//
-//	private void vinculaDef(Read i) {
-//		vinculaDef(i.getDesignador());		
-//	}
-//
-//	private void vinculaDef(New i) {
-//		vinculaDef(i.getDesignador());		
-//	}
-//
-//	private void vinculaDef(Llamada i) {
-//		vinculaDefParams(i.getParams());		
-//	}
+	private void vinculaDef(ExpresionUnaria expresion) {
+		vinculaDef(expresion.getExp());		
+	}
 
-//	private void vinculaDefParams(List<Expresion> params) {
-//		for (Expresion e : params){
-//			vinculaDef(e);
-//		}		
-//	}
+	private void vinculaDef(ExpresionInteger expresion) { }
 
-//	private void vinculaDef(Condicional i) {
-//		vinculaDefCasos(i.getCasos());		
-//	}
-//
-//	private void vinculaDefCasos(List<Caso> casos) {
-//		for (Caso c : casos){
-//			vinculaDef(c);
-//		}		
-//	}
-//
-//	private void vinculaDef(Delete i) {
-//		vinculaDef(i.getDesignador());		
-//	}
-//
-//	private void vinculaDef(Bucle i) {
-//		vinculaDefCasos(i.getCasos());		
-//	}
-//
-//	private void vinculaDef(Asignacion i) {
-//		vinculaDef(i.getExpresion());
-//		vinculaDef(i.getDesignador());
-//	}
-//
-//	private void vinculaSubprogramasDef(List<DecSubprograma> decSubprogramas) {
-//		for (DecSubprograma ds : decSubprogramas){
-//			vinculaDef(ds);
-//		}		
-//	}
+	private void vinculaDef(ExpresionDouble expresion) { }
 
-//	private void vinculaDef(DecSubprograma ds) {
-//		vinculaDef(ds.getParametros());
-//		vinculaDef(ds.getPrograma());
-//		
-//	}
-//
+	private void vinculaDef(ExpresionDesignador expresion) {
+		vinculaDef(expresion.getValor());		
+	}
+
+	private void vinculaDef(ExpresionBoolean expresion) { }
+
+	private void vinculaDef(ExpresionBinaria expresion) {
+		vinculaDef(expresion.getExp0());
+		vinculaDef(expresion.getExp1());
+	}
+
+	private void vinculaDef(Write i) {
+		vinculaDef(i.getExpresion());		
+	}
+
+	private void vinculaDef(Read i) {
+		vinculaDef(i.getDesignador());		
+	}
+
+	private void vinculaDef(New i) {
+		vinculaDef(i.getDesignador());		
+	}
+
+	private void vinculaDef(Llamada i) {
+		vinculaDefParams(i.getParams());		
+	}
+
+	private void vinculaDefParams(List<Expresion> params) {
+		for (Expresion e : params){
+			vinculaDef(e);
+		}		
+	}
+
+	private void vinculaDef(Condicional i) {
+		vinculaDefCasos(i.getCasos());		
+	}
+
+	private void vinculaDefCasos(List<Caso> casos) {
+		for (Caso c : casos){
+			vinculaDef(c);
+		}		
+	}
+
+	private void vinculaDef(Delete i) {
+		vinculaDef(i.getDesignador());		
+	}
+
+	private void vinculaDef(Bucle i) {
+		vinculaDefCasos(i.getCasos());		
+	}
+
+	private void vinculaDef(Asignacion i) {
+		vinculaDef(i.getExpresion());
+		vinculaDef(i.getDesignador());
+	}
+
+	private void vinculaDef(DecSubprograma ds) {
+		vinculaDef(ds.getParametros());
+		vinculaDef(ds.getPrograma());		
+	}
+
 	private void vinculaDef(List<Parametro> parametros) {
+		if (parametros == null){ return; }
 		for (Parametro p : parametros){
 			vinculaTipoDef(p.getTipo());
 		}		
 	}
 	
-//
-//	private void vinculaDef(Programa programa) {
-//		vinculaTiposDef(programa.getDecTipos());
-//		vinculaVariablesDef(programa.getDecVariables());
-//		programa.getDecSubprogramas();
-//		programa.getBloque();		
-//	}
+	private void vinculaDef(Programa programa) {
+		vinculaTiposDef(programa.getDecTipos());
+		vinculaVariablesDef(programa.getDecVariables());
+		vinculaDecSubprogramasDef(programa.getDecSubprogramas());
+	}
 
 	private void vinculaVariablesDef(List<DecVariable> decVariables) {
 		if (decVariables == null){ return; }
