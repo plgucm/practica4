@@ -31,6 +31,10 @@ import modelo.instrucciones.Read;
 import modelo.instrucciones.TiposInstruccion;
 import modelo.instrucciones.Write;
 import modelo.tipos.Tipo;
+import modelo.tipos.TipoArray;
+import modelo.tipos.TipoID;
+import modelo.tipos.TipoPuntero;
+import modelo.tipos.TipoStruct;
 import modelo.tipos.Tipos;
 
 public class Chequeo {
@@ -43,11 +47,15 @@ public class Chequeo {
 		this.tiposSimples = new HashMap<Object, Tipos>();
 	}
 	
+	/*************************************************************************************
+	 **** FUNCIONES GENERALES
+	 *************************************************************************************/
+	
 	public Tipos getTipoSimple(Object object){
 		return tiposSimples.get(object);
 	}
 	
-	public void insertaTipo(Object obj, Tipos tipo){
+	public void insertaTipoSimple(Object obj, Tipos tipo){
 		this.tiposSimples.put(obj, tipo);
 	}
 	
@@ -56,74 +64,177 @@ public class Chequeo {
 	}
 	
 	private boolean esTipoPresentable(Tipos tipoA) {
-		return tipoA != Tipos.ARRAY || tipoA != Tipos.POINTER || tipoA != Tipos.STRUCT;
+		return tipoA != Tipos.ARRAY && tipoA != Tipos.POINTER && tipoA != Tipos.STRUCT;
 	}
 
 	private boolean esTipoLegible(Tipos tipoA) {
-		return tipoA == Tipos.IDENT || tipoA == Tipos.INT || tipoA == Tipos.BOOL || tipoA == Tipos.DOUBLE ||
-			   tipoA == Tipos.POINTER;
+		return tipoA == Tipos.IDENT || tipoA == Tipos.INT || tipoA == Tipos.BOOL || tipoA == Tipos.DOUBLE;
 	}
 
 	public void chequea(Programa p) {
-		chequeaTipos(p.getDecTipos());
-		chequeaVars(p.getDecVariables());
-		chequeaSubs(p.getDecSubprogramas());
-		
-		if (p.getDecTipos() != null){
-			for (DecTipo d : p.getDecTipos()){
-				simplificaDefTipos(d);
-			}
-		}
-		
-		if (p.getDecVariables() != null){
-			for (DecVariable d : p.getDecVariables()){
-				simplificaDefTipos(d);					
-			}
-		}
-		
-		if (p.getDecSubprogramas() != null){
-			for (DecSubprograma d : p.getDecSubprogramas()){
-				simplificaDefTipos(d);			
-			}
-		}
+		chequeaDecTipos(p.getDecTipos());
+		chequeaDecVars(p.getDecVariables());
+		chequeaDecSubs(p.getDecSubprogramas());		
+
+		simplificaDefTipos(p.getDecTipos());
+		simplificaDefVars(p.getDecVariables());
+		simplificaDefSubs(p.getDecSubprogramas());
 		
 		chequea(p.getBloque());		
 	}
+	
+	/*************************************************************************************
+	 **** SIMPLIFICA TIPOS
+	 *************************************************************************************/
 
-	private void chequeaTipos(List<DecTipo> decTipos) {
-		if (decTipos == null){ return; }
-		for (DecTipo d : decTipos){
-			chequea(d);
-		}		
+	private void simplificaDefSubs(List<DecSubprograma> decSubprogramas) {
+		if (decSubprogramas == null){ return; }
+		for (DecSubprograma d : decSubprogramas){
+			simplificaDefTipos(d);			
+		}				
 	}
 
-	private void chequea(DecTipo d) {
-		insertaTipo(d, d.getTipo().getTipoConcreto());
-	}
-
-	private void chequeaVars(List<DecVariable> decVariables) {
+	private void simplificaDefVars(List<DecVariable> decVariables) {
 		if (decVariables == null){ return; }
 		for (DecVariable d : decVariables){
-			chequea(d);
+			simplificaDefTipos(d);					
 		}		
 	}
 
-	private void chequea(DecVariable d) {
-		insertaTipo(d, d.getTipo().getTipoConcreto());	
-	}		
+	private void simplificaDefTipos(List<DecTipo> decTipos) {
+		if (decTipos == null){ return; }
+		for (DecTipo d : decTipos){
+			simplificaDefTipos(d);
+		}	
+	}
+	
+	private void simplificaDefTipos(DecSubprograma d) {
+		List<Parametro> params = d.getParametros();
+		if (params == null){ return; }
+		for (Parametro p : params){
+			simplificaDefTipo(p);
+		}
+		d.getPrograma();
+	}
 
-	private void chequeaSubs(List<DecSubprograma> decSubprogramas) {
+	private void simplificaDefTipo(Parametro p) {		
+		tipoSimplificado(p.getTipo());
+	}
+
+	private void simplificaDefTipos(DecVariable d) {
+		tipoSimplificado(d.getTipo());
+	}
+
+	private void simplificaDefTipos(DecTipo d) {
+		tipoSimplificado(d.getTipo());
+	}
+	
+	private Tipos tipoSimplificado(Tipo tipo) {
+		switch (tipo.getTipoConcreto()) {
+		case ARRAY:
+			TipoArray ta = (TipoArray) tipo;
+			Tipos tSimplArr = tipoSimplificado(ta.getTipoInterno());
+			insertaTipoSimple(tipo, tSimplArr);			
+			return Tipos.ARRAY;
+		case IDENT:
+			TipoID tid = (TipoID) tipo;		
+			Object obj = vinculos.get(tipo);
+			Tipos tSimplID = null;
+			if (obj instanceof Tipo){
+				tSimplID = tipoSimplificado((Tipo)obj);	
+				insertaTipoSimple(tipo, tSimplID);
+			}			
+			return Tipos.IDENT;
+		case STRUCT:
+			TipoStruct ts = (TipoStruct) tipo;
+			List<DecTipo> dts = ts.getTipos();
+			for (DecTipo dt : dts){
+				Tipos tSimplStr = tipoSimplificado(dt.getTipo());
+				insertaTipoSimple(dt.getTipo(), tSimplStr);
+			}
+			return Tipos.STRUCT;
+		case POINTER:
+			TipoPuntero tp = (TipoPuntero) tipo;
+			Tipos tSimplPointer = tipoSimplificado(tp.getTipoPuntero());
+			insertaTipoSimple(tipo, tSimplPointer);			
+			return Tipos.POINTER;
+		case BOOL:
+			return Tipos.BOOL;
+		case INT: 
+			return Tipos.INT;
+		case DOUBLE:
+			return Tipos.DOUBLE;
+		case NULL:
+			return Tipos.NULL;
+		default:
+			break;
+		}
+		return null;
+	}	
+	
+	
+	
+
+	/*************************************************************************************
+	 **** CHEQUEO DECLARACIONES
+	 *************************************************************************************/
+
+	private void chequeaDecTipos(List<DecTipo> decTipos) {
+		if (decTipos == null){ return; }
+		for (DecTipo d : decTipos){
+			chequea(d.getTipo());
+		}		
+	}
+
+	private void chequea(Tipo tipo) {
+		switch (tipo.getTipoConcreto()) {
+		case ARRAY:
+			TipoArray ta = (TipoArray) tipo;
+			chequea(ta.getTipoInterno());
+			break;
+		case IDENT:
+//			TipoID tid = (TipoID) tipo;
+			Object obj = vinculos.get(tipo);
+			if (obj == null){ break; }
+			if (!(obj instanceof DecTipo)){
+				throw new UnsupportedOperationException("El identificador debería ser uno de tipo.");
+			}	
+			break;		
+		case STRUCT:
+			TipoStruct ts = (TipoStruct) tipo;
+			List<DecTipo> dts = ts.getTipos();
+			for (DecTipo dt : dts){
+				chequea(dt.getTipo());
+			}
+			break;
+		case POINTER:
+			TipoPuntero tp = (TipoPuntero) tipo;
+			chequea(tp.getTipoPuntero());
+			break;
+		default:
+			break;
+		}		
+	}
+
+	private void chequeaDecVars(List<DecVariable> decVariables) {
+		if (decVariables == null){ return; }
+		for (DecVariable d : decVariables){
+			chequea(d.getTipo());
+		}		
+	}
+
+	private void chequeaDecSubs(List<DecSubprograma> decSubprogramas) {
 		if (decSubprogramas == null){ return; }
 		for (DecSubprograma d : decSubprogramas){
 			chequea(d);
 		}		
 	}
-
+	
 	private void chequea(DecSubprograma d) {
 		chequeaParams(d.getParametros());
 		chequea(d.getPrograma());
 	}
-
+	
 	private void chequeaParams(List<Parametro> parametros) {
 		if (parametros == null){ return; }
 		for (Parametro p : parametros){
@@ -132,8 +243,15 @@ public class Chequeo {
 	}
 
 	private void chequea(Parametro p) {
-		insertaTipo(p, p.getTipo().getTipoConcreto());	
+//		insertaTipo(p, p.getTipo().getTipoConcreto());	
+		chequea(p.getTipo());	
+		
 	}
+	
+	
+	/*************************************************************************************
+	 **** CHEQUEO BLOQUE
+	 *************************************************************************************/
 
 	private void chequea(Bloque bloque) {
 		for (Instruccion i : bloque.getInstrucciones()){
@@ -192,8 +310,8 @@ public class Chequeo {
 		chequea(i.getDesignador());
 		Tipos tipoA = getTipoSimple(i.getDesignador());
 		if (tipoA == null || !esTipoLegible(tipoA)){
-			System.out.println(tipoA);
-			throw new UnsupportedOperationException("No es posible leer valores de ese tipo.");			
+			throw new UnsupportedOperationException("No es posible leer valores de ese tipo."
+													+ " Tipo:" + tipoA);			
 		}
 	}
 
@@ -209,7 +327,7 @@ public class Chequeo {
 		chequea(i.getDesignador());
 		Tipos tipoA = getTipoSimple(i.getDesignador());
 		if (tipoA == null || Tipos.POINTER != tipoA){
-//			throw new UnsupportedOperationException("No es de tipo pointer."+ " Tipo:"+tipoA);			
+			throw new UnsupportedOperationException("No es de tipo pointer."+ " Tipo:"+tipoA);			
 		}
 	}
 
@@ -247,9 +365,9 @@ public class Chequeo {
 			if (!p.isPorValor() && e.getTipoExpresion() != TipoExpresion.DESIGNADOR){
 				throw new UnsupportedOperationException("El parámetro i-esimo debe ser un designador.");				
 			} else if (!compatibles(tipoArg, p.getTipo().getTipoConcreto())){
-//				throw new UnsupportedOperationException(
-//						"Tipos incompatibles en parámetro i-esimo. Esperado:"+p.getTipo().getTipoConcreto()
-//						+" Recibido: " + tipoArg);				
+				throw new UnsupportedOperationException(
+						"Tipos incompatibles en parámetro i-esimo. Esperado:"+p.getTipo().getTipoConcreto()
+						+" Recibido: " + tipoArg);				
 			}				
 		}
 		
@@ -277,8 +395,8 @@ public class Chequeo {
 		Tipos tipoA = getTipoSimple(i.getDesignador());
 		Tipos tipoB = getTipoSimple(i.getExpresion());
 		if (tipoA == null || tipoB == null || !compatibles(tipoA, tipoB)){
-//			throw new UnsupportedOperationException("Incompatibilidad de tipos en asignación. "
-//					+ "TipoA: " + tipoA + " TipoB: " + tipoB);
+			throw new UnsupportedOperationException("Incompatibilidad de tipos en asignación. "
+					+ "TipoA: " + tipoA + " TipoB: " + tipoB);
 		}
 	}
 
@@ -286,7 +404,7 @@ public class Chequeo {
 		for (Caso c : i){
 			chequea(c);
 		}		
-		insertaTipo(i, Tipos.BOOL);
+		insertaTipoSimple(i, Tipos.BOOL);
 	}
 	
 	private void chequea(Caso c){
@@ -303,17 +421,29 @@ public class Chequeo {
 		
 		switch(designador.getTipo()){
 			case ARRAY: {
+				
 				chequea(d);
 				chequea(e);
 				
-				Tipos tipo = getTipoSimple(d);
-				insertaTipo(designador, tipo);
+				Tipos tipoDes = getTipoSimple(d);
+				Tipos tipoExp = getTipoSimple(e);
+				
+				if (d == null || e == null){
+					insertaTipoSimple(designador, null);
+				} else if (tipoDes != Tipos.ARRAY){
+					throw new UnsupportedOperationException("El designador debería ser de tipo array.");
+				} else if (tipoExp != Tipos.INT){
+					throw new UnsupportedOperationException("El índice debería ser de tipo entero.");					
+				} else {
+					insertaTipoSimple(designador, tipoDes);					
+				}				
 								
 				break;
 			}
 			case ID: {
+				
 				if (id.equalsIgnoreCase("null")){ 
-					insertaTipo(designador, Tipos.NULL); 
+					insertaTipoSimple(designador, Tipos.NULL); 
 					break; 
 				}
 				
@@ -323,22 +453,10 @@ public class Chequeo {
 					throw new UnsupportedOperationException("ID debe ser una variable o un parámetro.");					
 				}
 				
-				if (obj instanceof DecVariable) {
-					DecVariable dv = (DecVariable) obj;
-					Tipos tipo = getTipoSimple(dv);
-					insertaTipo(designador, tipo);			
-//					System.out.println(dv);
-				} else if (obj instanceof Parametro) {
-					Parametro p = (Parametro) obj;
-					Tipos tipo = getTipoSimple(p);
-					if (p.isPorValor()){
-						insertaTipo(designador, tipo);				
-					} else {
-						insertaTipo(designador, Tipos.POINTER);			
-					}
-					
-//					System.out.println(p);
-				}
+				Tipos tipo = getTipoSimple(obj);	
+				
+				System.out.println("tipo en id: " + tipo);
+				insertaTipoSimple(designador, tipo);			
 				
 				break;
 			}
@@ -346,22 +464,32 @@ public class Chequeo {
 				chequea(d);
 				Tipos tipoD = getTipoSimple(d);
 				
-				if (tipoD == null){ insertaTipo(designador, null); break; }
+				if (tipoD == null){ insertaTipoSimple(designador, null); break; }
 
-				Object obj = vinculos.get(designador);
-				
-//				System.out.println(obj);
-				
-				insertaTipo(designador, tipoD);
+				if (tipoD == Tipos.STRUCT){
+					Object c = vinculos.get(d);
+					if (c != null){						
+						Tipos tipoCampo = getTipoSimple(c);
+						insertaTipoSimple(designador, tipoCampo);
+					} else {
+						throw new UnsupportedOperationException("Campo inexistente.");
+					}
+					
+				} else {
+					throw new UnsupportedOperationException("El designador debería ser de tipo registro.");
+				}				
 				
 				break;				
 			}
 			case PUNTERO: {
 				chequea(d);
 				
-				Tipos tipo = getTipoSimple(d);				
-				insertaTipo(designador, tipo);
-				
+				Tipos tipo = getTipoSimple(d);	
+				if (tipo != Tipos.POINTER){
+					throw new UnsupportedOperationException("El designador debería ser de tipo puntero.");
+				} else {
+					insertaTipoSimple(designador, tipo);
+				}
 				
 				break;
 			}
@@ -397,28 +525,28 @@ public class Chequeo {
 	
 	
 	private void chequea(ExpresionInteger expresion) {
-		insertaTipo(expresion, Tipos.INT);
+		insertaTipoSimple(expresion, Tipos.INT);
 	}
 
 	private void chequea(ExpresionDouble expresion) {
-		insertaTipo(expresion, Tipos.DOUBLE);
+		insertaTipoSimple(expresion, Tipos.DOUBLE);
 	}
 
 	private void chequea(ExpresionBoolean expresion) { 
-		insertaTipo(expresion, Tipos.BOOL);
+		insertaTipoSimple(expresion, Tipos.BOOL);
 	}
 	
 	private void chequea(ExpresionDesignador expresion) {
 		chequea(expresion.getValor());
 //		System.out.println("chequea ExpresionDesignador: "+expresion.getValor());
 		Tipos tipo = getTipoSimple(expresion.getValor());
-		insertaTipo(expresion, tipo);
+		insertaTipoSimple(expresion, tipo);
 	}
 
 	private void chequea(ExpresionUnaria expresion) {
 		chequea(expresion.getExp());
 		Tipos tipo = getTipoSimple(expresion.getExp());
-		insertaTipo(expresion, tipo);		
+		insertaTipoSimple(expresion, tipo);		
 	}
 
 	private void chequea(ExpresionBinaria expresion) {
@@ -430,39 +558,18 @@ public class Chequeo {
 		Tipos tipoA = getTipoSimple(exp0);
 		Tipos tipoB = getTipoSimple(exp1);
 		if (tipoA == null && tipoB == null){
-			insertaTipo(expresion, null);
+			insertaTipoSimple(expresion, null);
 		} else {
 			if (expresion.getOpBinario().esAritmetico()){
-				insertaTipo(expresion, getTipoSimple(exp0));				
+				insertaTipoSimple(expresion, getTipoSimple(exp0));				
 			} else if (expresion.getOpBinario().esLogico()){
-				insertaTipo(expresion, Tipos.BOOL);	
+				insertaTipoSimple(expresion, Tipos.BOOL);	
 			} else if (expresion.getOpBinario().esComparacion()){
-				insertaTipo(expresion, Tipos.BOOL);					
+				insertaTipoSimple(expresion, Tipos.BOOL);					
 			} else {
-				insertaTipo(expresion, Tipos.NULL);
+				insertaTipoSimple(expresion, Tipos.NULL);
 			}
 		}
-	}
-	
-	private void simplificaDefTipos(DecSubprograma d) {
-		List<Parametro> params = d.getParametros();
-		if (params == null){ return; }
-		for (Parametro p : params){
-			simplificaDefTipo(p);
-		}
-		d.getPrograma();
-	}
-
-	private void simplificaDefTipo(Parametro p) {		
-		
-	}
-
-	private void simplificaDefTipos(DecVariable d) {
-		
-	}
-
-	private void simplificaDefTipos(DecTipo d) {
-		
 	}
 
 }
