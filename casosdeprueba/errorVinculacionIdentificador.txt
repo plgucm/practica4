@@ -7,7 +7,9 @@ TYPES
             izq: TArbol;
             der: TArbol
           };    
+          
   TSecuencia: ARRAY int[10]
+	
 VARIABLES
   secuencia: TSecuencia;
   arbol: TArbol
@@ -18,7 +20,7 @@ SUBPROGRAMS
     valor: int
   SUBPROGRAMS
       SUBPROGRAM LeeValor(& valor: int) {
-          read valor;        
+          read valor;   
           arbol->.der = valor;                
           fin = (valor == -1)     
       };

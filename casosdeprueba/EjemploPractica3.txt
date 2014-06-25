@@ -6,7 +6,8 @@ TYPES
             valor: int; 
             izq: TArbol;
             der: TArbol   
-          };    
+          }; 
+            
   TSecuencia: ARRAY int[10]
 VARIABLES
   secuencia: TSecuencia;
