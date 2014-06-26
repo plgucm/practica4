@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.jws.soap.SOAPBinding.ParameterStyle;
+
 import modelo.expresiones.Expresion;
 import modelo.expresiones.ExpresionBinaria;
 import modelo.expresiones.ExpresionBoolean;
@@ -68,7 +70,7 @@ public class Chequeo {
 	}
 
 	private boolean esTipoLegible(Tipos tipoA) {
-		return tipoA == Tipos.IDENT || tipoA == Tipos.INT || tipoA == Tipos.BOOL || tipoA == Tipos.DOUBLE;
+		return tipoA == Tipos.IDENT || tipoA == Tipos.POINTER;
 	}
 
 	public void chequea(Programa p) {
@@ -118,15 +120,15 @@ public class Chequeo {
 	}
 
 	private void simplificaDefTipo(Parametro p) {		
-		tipoSimplificado(p.getTipo());
+		insertaTipoSimple(p, tipoSimplificado(p.getTipo()));
 	}
 
 	private void simplificaDefTipos(DecVariable d) {
-		tipoSimplificado(d.getTipo());
+		insertaTipoSimple(d, tipoSimplificado(d.getTipo()));
 	}
 
 	private void simplificaDefTipos(DecTipo d) {
-		tipoSimplificado(d.getTipo());
+		insertaTipoSimple(d, tipoSimplificado(d.getTipo()));
 	}
 	
 	private Tipos tipoSimplificado(Tipo tipo) {
@@ -143,7 +145,7 @@ public class Chequeo {
 			if (obj instanceof Tipo){
 				tSimplID = tipoSimplificado((Tipo)obj);	
 				insertaTipoSimple(tipo, tSimplID);
-			}			
+			}
 			return Tipos.IDENT;
 		case STRUCT:
 			TipoStruct ts = (TipoStruct) tipo;
@@ -167,9 +169,8 @@ public class Chequeo {
 		case NULL:
 			return Tipos.NULL;
 		default:
-			break;
+			return null;
 		}
-		return null;
 	}	
 	
 	
@@ -238,14 +239,8 @@ public class Chequeo {
 	private void chequeaParams(List<Parametro> parametros) {
 		if (parametros == null){ return; }
 		for (Parametro p : parametros){
-			chequea(p);
+			chequea(p.getTipo());
 		}
-	}
-
-	private void chequea(Parametro p) {
-//		insertaTipo(p, p.getTipo().getTipoConcreto());	
-		chequea(p.getTipo());	
-		
 	}
 	
 	
@@ -311,7 +306,8 @@ public class Chequeo {
 		Tipos tipoA = getTipoSimple(i.getDesignador());
 		if (tipoA == null || !esTipoLegible(tipoA)){
 			throw new UnsupportedOperationException("No es posible leer valores de ese tipo."
-													+ " Tipo:" + tipoA);			
+													+ " Tipo:" + tipoA +
+													" de " + i.getDesignador().getIdentificador());			
 		}
 	}
 
@@ -391,9 +387,9 @@ public class Chequeo {
 
 	private void chequea(Asignacion i) {
 		chequea(i.getExpresion());
+		Tipos tipoB = getTipoSimple(i.getExpresion());
 		chequea(i.getDesignador());
 		Tipos tipoA = getTipoSimple(i.getDesignador());
-		Tipos tipoB = getTipoSimple(i.getExpresion());
 		if (tipoA == null || tipoB == null || !compatibles(tipoA, tipoB)){
 			throw new UnsupportedOperationException("Incompatibilidad de tipos en asignación. "
 					+ "TipoA: " + tipoA + " TipoB: " + tipoB);
@@ -447,16 +443,26 @@ public class Chequeo {
 					break; 
 				}
 				
-				Object obj = vinculos.get(designador);
+				Object obj = vinculos.get(designador);				
 				
 				if (!(obj instanceof DecVariable) && !(obj instanceof Parametro)){
 					throw new UnsupportedOperationException("ID debe ser una variable o un parámetro.");					
 				}
 				
-				Tipos tipo = getTipoSimple(obj);	
+				Tipos tipoConcreto = null;
+				if (obj instanceof DecVariable){
+					tipoConcreto = ((DecVariable) obj).getTipo().getTipoConcreto();
+				} else {
+					Parametro p = ((Parametro) obj);
+					if (p.isPorValor()) {
+						tipoConcreto = ((Parametro) obj).getTipo().getTipoConcreto();						
+					} else {
+						tipoConcreto = Tipos.POINTER;
+					}
+					
+				}	
 				
-				System.out.println("tipo en id: " + tipo);
-				insertaTipoSimple(designador, tipo);			
+				insertaTipoSimple(designador, tipoConcreto);			
 				
 				break;
 			}
@@ -464,13 +470,23 @@ public class Chequeo {
 				chequea(d);
 				Tipos tipoD = getTipoSimple(d);
 				
-				if (tipoD == null){ insertaTipoSimple(designador, null); break; }
+				if (tipoD == null){
+					insertaTipoSimple(designador, null); 
+					break; 
+				}
 
-				if (tipoD == Tipos.STRUCT){
-					Object c = vinculos.get(d);
-					if (c != null){						
-						Tipos tipoCampo = getTipoSimple(c);
-						insertaTipoSimple(designador, tipoCampo);
+				if (tipoD == Tipos.POINTER || tipoD == Tipos.IDENT){
+				
+					Object c = vinculos.get(d.getDesignador());
+					if (c != null){			
+						Tipos tipoSimple = null;
+						if (c instanceof Parametro){
+							Parametro p = (Parametro) c;
+//							tipoSimple = ;
+							System.out.println(getTipoSimple(p));				
+						} 
+						
+						insertaTipoSimple(designador, tipoSimple);
 					} else {
 						throw new UnsupportedOperationException("Campo inexistente.");
 					}
@@ -486,7 +502,8 @@ public class Chequeo {
 				
 				Tipos tipo = getTipoSimple(d);	
 				if (tipo != Tipos.POINTER){
-					throw new UnsupportedOperationException("El designador debería ser de tipo puntero.");
+					throw new UnsupportedOperationException("El designador debería ser de tipo puntero."+
+							"\nEl tipo era: " + tipo);
 				} else {
 					insertaTipoSimple(designador, tipo);
 				}

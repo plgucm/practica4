@@ -399,6 +399,7 @@ public class Vinculador {
 					if (!insertaID(p.getIdentificador(), p)){
 						throw new UnsupportedOperationException("Parámetro duplicado. " + id);							
 					}
+//					vinculaTipo(p.getTipo()); // XXX: En el pdf no sale, pero parece ser necesario.
 				}				
 			}
 			
