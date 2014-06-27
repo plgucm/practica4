@@ -573,7 +573,7 @@ public class GeneraCodigo {
 				
 			}
 
-		} else if (tipo == modelo.instrucciones.Designador.Tipo.STRUCT) {
+		} else if (tipo == modelo.instrucciones.Designador.Tipo.CAMPO_DE_STRUCT) {
 			codigo(des);
 			bd.addBloque(bloqueActual);
 			bd.addBloque(new BloqueDeCodigo(

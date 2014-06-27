@@ -36,13 +36,15 @@ public class Main {
 		AnalizadorSintacticoTiny asint = new AnalizadorSintacticoTiny(alex);		
 		asint.parse();
 		System.out.println(" <-------- Análisis completado --------->");
+		
 		Programa p = AnalizadorSintacticoTiny.programaRaiz;	
+		Map<Object, Integer> numLineas = AnalizadorSintacticoTiny.cons.getNumeroLinea();
 
 		Vinculador vinculador = new Vinculador();
 		Map<Object, Object> vinculos = vinculador.vincula(p);
 		System.out.println(" <-------- Vinculación completada --------->");
 		
-		Chequeo ch = new Chequeo(vinculos);
+		Chequeo ch = new Chequeo(numLineas, vinculos);
 		ch.chequea(p);
 		System.out.println(" <-------- Chequeo completado --------->");
 		

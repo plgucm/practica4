@@ -4,8 +4,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.jws.soap.SOAPBinding.ParameterStyle;
-
 import modelo.expresiones.Expresion;
 import modelo.expresiones.ExpresionBinaria;
 import modelo.expresiones.ExpresionBoolean;
@@ -43,16 +41,23 @@ public class Chequeo {
 
 	private Map<Object, Object> vinculos;
 	private Map<Object, Tipos> tiposSimples;
+	private Map<Object, Integer> numLineas;
 
-	public Chequeo(Map<Object, Object> vinculos) {
+	public Chequeo(Map<Object, Integer> numLineas, Map<Object, Object> vinculos) {
 		this.vinculos = vinculos;		
+		this.numLineas = numLineas;
 		this.tiposSimples = new HashMap<Object, Tipos>();
 	}
 	
 	/*************************************************************************************
 	 **** FUNCIONES GENERALES
 	 *************************************************************************************/
-	
+
+
+	private String lineaError(Object nodo) {
+		return "Error en línea " + numLineas.get(nodo) + ": ";
+	}
+		
 	public Tipos getTipoSimple(Object object){
 		return tiposSimples.get(object);
 	}
@@ -75,13 +80,11 @@ public class Chequeo {
 
 	public void chequea(Programa p) {
 		chequeaDecTipos(p.getDecTipos());
-		chequeaDecVars(p.getDecVariables());
-		chequeaDecSubs(p.getDecSubprogramas());		
-
 		simplificaDefTipos(p.getDecTipos());
+		chequeaDecVars(p.getDecVariables());
 		simplificaDefVars(p.getDecVariables());
+		chequeaDecSubs(p.getDecSubprogramas());	
 		simplificaDefSubs(p.getDecSubprogramas());
-		
 		chequea(p.getBloque());		
 	}
 	
@@ -116,7 +119,12 @@ public class Chequeo {
 		for (Parametro p : params){
 			simplificaDefTipo(p);
 		}
-		d.getPrograma();
+		Programa p = d.getPrograma();
+		if (p != null){
+			simplificaDefTipos(p.getDecTipos());
+			simplificaDefVars(p.getDecVariables());
+			simplificaDefSubs(p.getDecSubprogramas());
+		}
 	}
 
 	private void simplificaDefTipo(Parametro p) {		
@@ -139,7 +147,6 @@ public class Chequeo {
 			insertaTipoSimple(tipo, tSimplArr);			
 			return Tipos.ARRAY;
 		case IDENT:
-			TipoID tid = (TipoID) tipo;		
 			Object obj = vinculos.get(tipo);
 			Tipos tSimplID = null;
 			if (obj instanceof Tipo){
@@ -390,9 +397,10 @@ public class Chequeo {
 		Tipos tipoB = getTipoSimple(i.getExpresion());
 		chequea(i.getDesignador());
 		Tipos tipoA = getTipoSimple(i.getDesignador());
+		
 		if (tipoA == null || tipoB == null || !compatibles(tipoA, tipoB)){
-			throw new UnsupportedOperationException("Incompatibilidad de tipos en asignación. "
-					+ "TipoA: " + tipoA + " TipoB: " + tipoB);
+			throw new UnsupportedOperationException(lineaError(i)+"Incompatibilidad de tipos en asignación. "
+					+ "TipoA: " + tipoA + " TipoB: " + tipoB+ " " + i.getDesignador().getIdentificador());
 		}
 	}
 
@@ -400,7 +408,6 @@ public class Chequeo {
 		for (Caso c : i){
 			chequea(c);
 		}		
-		insertaTipoSimple(i, Tipos.BOOL);
 	}
 	
 	private void chequea(Caso c){
@@ -414,6 +421,8 @@ public class Chequeo {
 		Expresion e = designador.getExpresion();
 		Designador d = designador.getDesignador();
 		String id = designador.getIdentificador();
+		
+//		System.out.println("CD de id:" + id + ", des: " + d + ", exp: " + e + " tipoSimple: " + getTipoSimple(d));	
 		
 		switch(designador.getTipo()){
 			case ARRAY: {
@@ -432,7 +441,8 @@ public class Chequeo {
 					throw new UnsupportedOperationException("El índice debería ser de tipo entero.");					
 				} else {
 					insertaTipoSimple(designador, tipoDes);					
-				}				
+				}		
+				
 								
 				break;
 			}
@@ -455,36 +465,42 @@ public class Chequeo {
 				} else {
 					Parametro p = ((Parametro) obj);
 					if (p.isPorValor()) {
-						tipoConcreto = ((Parametro) obj).getTipo().getTipoConcreto();						
+						tipoConcreto = p.getTipo().getTipoConcreto();						
 					} else {
 						tipoConcreto = Tipos.POINTER;
-					}
-					
+					}					
 				}	
+				
 				
 				insertaTipoSimple(designador, tipoConcreto);			
 				
 				break;
 			}
-			case STRUCT: {	
+			case CAMPO_DE_STRUCT: {	
 				chequea(d);
-				Tipos tipoD = getTipoSimple(d);
+				
+				Tipos tipoD = getTipoSimple(d);				
+				
+				System.out.println("el campo " + id + " del struct " + d.getDesignador().getIdentificador() +
+									" es de tipo " + tipoD);
+				
 				
 				if (tipoD == null){
-					insertaTipoSimple(designador, null); 
+					insertaTipoSimple(designador, Tipos.NULL); 
 					break; 
 				}
 
-				if (tipoD == Tipos.POINTER || tipoD == Tipos.IDENT){
+				if (tipoD == Tipos.STRUCT){
 				
 					Object c = vinculos.get(d.getDesignador());
 					if (c != null){			
 						Tipos tipoSimple = null;
 						if (c instanceof Parametro){
 							Parametro p = (Parametro) c;
-//							tipoSimple = ;
+							tipoSimple = getTipoSimple(p.getTipo());
 							System.out.println(getTipoSimple(p));				
 						} 
+						
 						
 						insertaTipoSimple(designador, tipoSimple);
 					} else {
@@ -492,7 +508,8 @@ public class Chequeo {
 					}
 					
 				} else {
-					throw new UnsupportedOperationException("El designador debería ser de tipo registro.");
+					throw new UnsupportedOperationException(lineaError(designador)+
+							"El designador debería ser de tipo registro."+tipoD);
 				}				
 				
 				break;				
@@ -502,7 +519,8 @@ public class Chequeo {
 				
 				Tipos tipo = getTipoSimple(d);	
 				if (tipo != Tipos.POINTER){
-					throw new UnsupportedOperationException("El designador debería ser de tipo puntero."+
+					throw new UnsupportedOperationException(lineaError(designador)+
+							"El designador debería ser de tipo puntero."+
 							"\nEl tipo era: " + tipo);
 				} else {
 					insertaTipoSimple(designador, tipo);

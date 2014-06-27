@@ -1,6 +1,7 @@
 package modelo.constructoras;
 
 import java.util.List;
+import java.util.Map;
 
 import modelo.expresiones.Expresion;
 import modelo.instrucciones.Bloque;
@@ -17,6 +18,9 @@ import modelo.operadores.OpUnario;
 import modelo.tipos.Tipo;
 
 public interface IConstructoras {
+	
+	public void ponNumeroLinea(Object obj, Integer numLinea);
+	public Map<Object, Integer> getNumeroLinea();
 	
     Programa creaPrograma(List<DecTipo> dts, List<DecVariable> dvs, List<DecSubprograma> dss, Bloque b);
     
@@ -92,5 +96,6 @@ public interface IConstructoras {
     OpUnario creaOperadorNot();
     OpUnario creaOperadorToInt();
     OpUnario creaOperadorToDouble();
+
 
 }

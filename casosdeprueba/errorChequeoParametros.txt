@@ -18,8 +18,7 @@ SUBPROGRAMS
     valor: int
   SUBPROGRAMS
       SUBPROGRAM LeeValor(& valor: int) {
-          read valor;        
-          arbol->.der = 1;                
+          read valor;                      
           fin = (valor == -1)     
       };
       

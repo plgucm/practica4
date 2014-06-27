@@ -20,7 +20,11 @@ public class DecTipo {
 	public Tipo getTipo() {
 		return tipo;
 	}
-	    
+	  
+	@Override
+	public String toString() {
+		return id + " : " + tipo.getTipoConcreto();
+	}
     
 
 }

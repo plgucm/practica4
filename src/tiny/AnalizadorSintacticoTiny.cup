@@ -16,11 +16,12 @@ parser code {:
      errores.errorSintactico((UnidadLexica)unidadLexica);
    }
    static Programa programaRaiz;
-   static Constructoras cons;
+   static IConstructoras cons;
+   static AnalizadorLexicoTiny alex;
 :};
 init with {: 
    errores = new GestionErroresTiny();
-   AnalizadorLexicoTiny alex = (AnalizadorLexicoTiny)getScanner();
+   alex = (AnalizadorLexicoTiny) getScanner();
    alex.fijaGestionErrores(errores);
    cons = new Constructoras();
 :};
@@ -41,20 +42,29 @@ Programa ::= PROGRAM SeccionTipos : st SeccionVariables : sv SeccionSubprogramas
 	{: 
 	RESULT = AnalizadorSintacticoTiny.programaRaiz = AnalizadorSintacticoTiny.cons
 					.creaPrograma((List<DecTipo>)st, (List<DecVariable>)sv, (List<DecSubprograma>)ss, (Bloque)ib); 
+	AnalizadorSintacticoTiny.
+	cons.ponNumeroLinea(AnalizadorSintacticoTiny.programaRaiz, AnalizadorSintacticoTiny.alex.fila());	
 	:};
 	
 SeccionTipos ::= TYPES DecTipos : dt
-	{: RESULT = dt; :};
+	{: RESULT = dt; 
+	AnalizadorSintacticoTiny.
+	cons.ponNumeroLinea(dt, AnalizadorSintacticoTiny.alex.fila());
+	:};
 SeccionTipos ::= 
 	{: RESULT = null; :};
 
 SeccionVariables ::= VARIABLES DecVariables : dv
-	{: RESULT = dv; :};
+	{: RESULT = dv;
+	AnalizadorSintacticoTiny.
+	cons.ponNumeroLinea(dv, AnalizadorSintacticoTiny.alex.fila()); :};
 SeccionVariables ::= 
 	{: RESULT = null; :};
 
 SeccionSubprogramas ::= SUBPROGRAMS DecSubprogramas : ds
-	{: RESULT = ds; :};	
+	{: RESULT = ds;
+	AnalizadorSintacticoTiny.
+	cons.ponNumeroLinea(ds, AnalizadorSintacticoTiny.alex.fila()); :};	
 SeccionSubprogramas ::= 
 	{: RESULT = null; :};
 
@@ -62,71 +72,99 @@ DecTipos ::= DecTipos : dts PYCOMA DecTipo : dt
 	{: 
 		List<DecTipo> dtsReal = (List<DecTipo>) dts;
 		DecTipo dtReal = (DecTipo) dt;
+	AnalizadorSintacticoTiny.
+	cons.ponNumeroLinea(dt, AnalizadorSintacticoTiny.alex.fila());
 		RESULT = AnalizadorSintacticoTiny.cons.uneListaDecTipos(dtsReal, dtReal); 
 	:};
 DecTipos ::= DecTipo : dt 
 	{: 
 		DecTipo dtReal = (DecTipo) dt;
+	AnalizadorSintacticoTiny.
+	cons.ponNumeroLinea(dt, AnalizadorSintacticoTiny.alex.fila());
 		RESULT = AnalizadorSintacticoTiny.cons.creaListaDecTipos(dtReal); 
 	:};	
 DecTipo ::= ID : id DOSPUNTOS Tipo : tipo
 	{: 
 		RESULT = AnalizadorSintacticoTiny.cons.creaDecTipo(id, (Tipo) tipo);
+	AnalizadorSintacticoTiny.cons.ponNumeroLinea(RESULT, AnalizadorSintacticoTiny.alex.fila()); 
 	:};	
 
 Tipo ::= INT 
-	{: RESULT = AnalizadorSintacticoTiny.cons.creaInt(); :};
+	{: 
+		RESULT = AnalizadorSintacticoTiny.cons.creaInt(); 
+		AnalizadorSintacticoTiny.cons.ponNumeroLinea(RESULT, AnalizadorSintacticoTiny.alex.fila());
+	:};
 Tipo ::= DOUBLE 
-	{: RESULT = AnalizadorSintacticoTiny.cons.creaDouble(); :};
+	{: 
+		RESULT = AnalizadorSintacticoTiny.cons.creaDouble(); 
+		AnalizadorSintacticoTiny.cons.ponNumeroLinea(RESULT, AnalizadorSintacticoTiny.alex.fila());	
+	:};
 Tipo ::= BOOLEAN 
-	{: RESULT = AnalizadorSintacticoTiny.cons.creaBool(); :};
+	{: 
+		RESULT = AnalizadorSintacticoTiny.cons.creaBool(); 
+		AnalizadorSintacticoTiny.cons.ponNumeroLinea(RESULT, AnalizadorSintacticoTiny.alex.fila());
+	:};
 Tipo ::= ID : id
-	{: RESULT = AnalizadorSintacticoTiny.cons.creaID(id); :};
+	{: 
+		RESULT = AnalizadorSintacticoTiny.cons.creaID(id);
+		AnalizadorSintacticoTiny.cons.ponNumeroLinea(RESULT, AnalizadorSintacticoTiny.alex.fila());
+	:};
 Tipo ::= ARRAY Tipo : tipo CAP NUMERO_NATURAL : cap CCIERRE 
 	{: 
 		RESULT = AnalizadorSintacticoTiny.cons.creaArray((Tipo) tipo, Integer.valueOf((String)cap)); 
+		AnalizadorSintacticoTiny.cons.ponNumeroLinea(RESULT, AnalizadorSintacticoTiny.alex.fila());
 	:}; 
 Tipo ::= STRUCT LLAVEAP Campos : campos LLAVECIERRE 
 	{: 			
 		List<DecTipo> camposReal = (List<DecTipo>) campos;
 		RESULT = AnalizadorSintacticoTiny.cons.creaStruct(camposReal); 
+		AnalizadorSintacticoTiny.cons.ponNumeroLinea(RESULT, AnalizadorSintacticoTiny.alex.fila());
 	:};
 Tipo ::= POINTER Tipo : tipo
-	{: 	RESULT = AnalizadorSintacticoTiny.cons.creaPuntero((Tipo) tipo); :};
+	{: 	
+		RESULT = AnalizadorSintacticoTiny.cons.creaPuntero((Tipo) tipo); 
+		AnalizadorSintacticoTiny.cons.ponNumeroLinea(RESULT, AnalizadorSintacticoTiny.alex.fila());
+	:};
 
 Campos ::= Campos : cpos PYCOMA Campo : c
 	{: 
 		List<DecTipo> nuevosCampos = (List<DecTipo>) cpos; 
 		DecTipo camposReal = (DecTipo) c;
 		RESULT = AnalizadorSintacticoTiny.cons.uneListaDecTipos(nuevosCampos, camposReal); 
+		AnalizadorSintacticoTiny.cons.ponNumeroLinea(RESULT, AnalizadorSintacticoTiny.alex.fila());
 	:};
 	
 Campos ::= Campo : c 
 	{: 	
 		RESULT = AnalizadorSintacticoTiny.cons.creaListaDecTipos((DecTipo) c); 
+		AnalizadorSintacticoTiny.cons.ponNumeroLinea(RESULT, AnalizadorSintacticoTiny.alex.fila());
 	:};
 
 Campo   ::= ID : id DOSPUNTOS Tipo : tipo
 	{: 
 		RESULT = AnalizadorSintacticoTiny.cons.creaDecTipo(id, (Tipo) tipo); 
+		AnalizadorSintacticoTiny.cons.ponNumeroLinea(RESULT, AnalizadorSintacticoTiny.alex.fila());
 	:};
 
 DecVariables ::= DecVariables : dvs PYCOMA DecVariable : dv
 	{:
 		 List<DecVariable> dvsReal = (List<DecVariable>) dvs;
 		 DecVariable dvReal = (DecVariable) dv;
+		 AnalizadorSintacticoTiny.cons.ponNumeroLinea(dv, AnalizadorSintacticoTiny.alex.fila());
 		 RESULT = AnalizadorSintacticoTiny.cons.uneListaDecVariables(dvsReal, dvReal); 
 	:};
 	
 DecVariables ::= DecVariable : dv
 	{:
 		 DecVariable dvReal = (DecVariable) dv;
+		 AnalizadorSintacticoTiny.cons.ponNumeroLinea(dv, AnalizadorSintacticoTiny.alex.fila());
 		 RESULT = AnalizadorSintacticoTiny.cons.creaListaDecVariables(dvReal); 
 	:};
 	
 DecVariable ::= ID : id DOSPUNTOS Tipo : tipo
 	{:		
 		 RESULT = AnalizadorSintacticoTiny.cons.creaDecVariable(id, (Tipo)tipo); 
+		 AnalizadorSintacticoTiny.cons.ponNumeroLinea(RESULT, AnalizadorSintacticoTiny.alex.fila());
 	:};
 	
 DecSubprogramas ::= DecSubprogramas : dss PYCOMA DecSubprograma : ds
@@ -134,12 +172,14 @@ DecSubprogramas ::= DecSubprogramas : dss PYCOMA DecSubprograma : ds
 		 List<DecSubprograma> dssReal = (List<DecSubprograma>) dss;
 		 DecSubprograma dsReal = (DecSubprograma) ds;
 		 RESULT = AnalizadorSintacticoTiny.cons.uneListaDecSubprogramas(dssReal, dsReal); 
+		 AnalizadorSintacticoTiny.cons.ponNumeroLinea(RESULT, AnalizadorSintacticoTiny.alex.fila());
 	:};
 	
 DecSubprogramas ::= DecSubprograma : ds
 	{:		
 		 DecSubprograma dsReal = (DecSubprograma) ds;
-		 RESULT = AnalizadorSintacticoTiny.cons.creaListaDecSubprogramas(dsReal);  
+		 RESULT = AnalizadorSintacticoTiny.cons.creaListaDecSubprogramas(dsReal); 
+		 AnalizadorSintacticoTiny.cons.ponNumeroLinea(RESULT, AnalizadorSintacticoTiny.alex.fila()); 
 	:};
 	
 DecSubprograma ::= SUBPROGRAM ID : id Parametros : params
@@ -148,11 +188,13 @@ DecSubprograma ::= SUBPROGRAM ID : id Parametros : params
 		 RESULT = AnalizadorSintacticoTiny.cons.creaDecSubprograma(id, ((List<Parametro>) params), 
 					AnalizadorSintacticoTiny.cons.creaPrograma((List<DecTipo>)tipos, 
 					(List<DecVariable>)vars, (List<DecSubprograma>)ss, (Bloque)bloque)); 
+		AnalizadorSintacticoTiny.cons.ponNumeroLinea(RESULT, AnalizadorSintacticoTiny.alex.fila());
 	:};
 	
 Parametros ::= PAP ListaParametros : lp PCIERRE  
 	{:
 		RESULT = lp;
+		AnalizadorSintacticoTiny.cons.ponNumeroLinea(RESULT, AnalizadorSintacticoTiny.alex.fila());
 	:};	
 
 Parametros ::= PAP PCIERRE
@@ -165,59 +207,72 @@ ListaParametros ::= ListaParametros : lp COMA Parametro : p
 		List<Parametro> pars = (ArrayList<Parametro>) lp;
 		Parametro par = (Parametro) p;
 		RESULT = AnalizadorSintacticoTiny.cons.uneListaParametros(pars, par);
+		AnalizadorSintacticoTiny.cons.ponNumeroLinea(RESULT, AnalizadorSintacticoTiny.alex.fila());
 	:};
 
 ListaParametros ::= Parametro : p
 	{:
 		Parametro par = (Parametro) p;
 		RESULT = AnalizadorSintacticoTiny.cons.creaListaParametros(par);
+		AnalizadorSintacticoTiny.cons.ponNumeroLinea(RESULT, AnalizadorSintacticoTiny.alex.fila());
 	:};
 	
 Parametro ::= ID : id DOSPUNTOS Tipo : tipo
 	{:
 		RESULT = AnalizadorSintacticoTiny.cons.creaParametroValor(id, (Tipo) tipo);
+		AnalizadorSintacticoTiny.cons.ponNumeroLinea(RESULT, AnalizadorSintacticoTiny.alex.fila());
 	:};
 
 Parametro ::= AMP ID : id DOSPUNTOS Tipo : tipo
 	{:
 		RESULT = AnalizadorSintacticoTiny.cons.creaParametroVariable(id, (Tipo) tipo);
+		AnalizadorSintacticoTiny.cons.ponNumeroLinea(RESULT, AnalizadorSintacticoTiny.alex.fila());
 	:};
 	
 Instruccion ::= IAsig : ins 
 	{: 
 		RESULT = ins; 	
+		AnalizadorSintacticoTiny.cons.ponNumeroLinea(RESULT, AnalizadorSintacticoTiny.alex.fila());
 	:};
 Instruccion ::= IBloque : ins 
 	{: 
 		RESULT = ins; 	
+		AnalizadorSintacticoTiny.cons.ponNumeroLinea(RESULT, AnalizadorSintacticoTiny.alex.fila());
 	:};
 Instruccion ::= ICond : ins 
 	{: 
 		RESULT = ins; 	
+		AnalizadorSintacticoTiny.cons.ponNumeroLinea(RESULT, AnalizadorSintacticoTiny.alex.fila());
 	:};
 Instruccion ::= IBucle : ins 
 	{: 
 		RESULT = ins; 	
+		AnalizadorSintacticoTiny.cons.ponNumeroLinea(RESULT, AnalizadorSintacticoTiny.alex.fila());
 	:};
 Instruccion ::= ILlamada : ins 
 	{: 
 		RESULT = ins; 	
+		AnalizadorSintacticoTiny.cons.ponNumeroLinea(RESULT, AnalizadorSintacticoTiny.alex.fila());
 	:};
 Instruccion ::= IRead : ins 
 	{: 
 		RESULT = ins; 	
+		AnalizadorSintacticoTiny.cons.ponNumeroLinea(RESULT, AnalizadorSintacticoTiny.alex.fila());
 	:};
 Instruccion ::= IWrite : ins 
 	{: 
 		RESULT = ins; 	
+		AnalizadorSintacticoTiny.cons.ponNumeroLinea(RESULT, AnalizadorSintacticoTiny.alex.fila());
 	:};
 Instruccion ::= INew : ins 
 	{: 
 		RESULT = ins; 	
+		AnalizadorSintacticoTiny.cons.ponNumeroLinea(RESULT, AnalizadorSintacticoTiny.alex.fila());
 	:};
 Instruccion ::= IDelete : ins 
 	{: 
-		RESULT = ins; 	
+		RESULT = ins; 
+		AnalizadorSintacticoTiny.cons.ponNumeroLinea(RESULT, AnalizadorSintacticoTiny.alex.fila());	
 	:};	
                 
 IAsig ::= Designador : ds ASIG Exp0 : e
@@ -240,6 +295,7 @@ Instrucciones ::= Instrucciones : inst PYCOMA Instruccion : i
 		List<Instruccion> list = (List<Instruccion>) inst;
 		list.add((Instruccion)i);
 		RESULT = list;	
+		AnalizadorSintacticoTiny.cons.ponNumeroLinea(RESULT, AnalizadorSintacticoTiny.alex.fila());
 	:};
 
 Instrucciones ::= Instruccion : i
@@ -247,6 +303,7 @@ Instrucciones ::= Instruccion : i
 		List<Instruccion> list = new ArrayList<Instruccion>();
 		list.add((Instruccion)i);
 		RESULT = list;
+		AnalizadorSintacticoTiny.cons.ponNumeroLinea(RESULT, AnalizadorSintacticoTiny.alex.fila());
 	:};
 	
 ICond ::= IF Casos : c ENDIF
@@ -256,22 +313,26 @@ ICond ::= IF Casos : c ENDIF
 	
 Casos ::= Casos : cs CAP CCIERRE Caso : ca
 	{:
-		RESULT = AnalizadorSintacticoTiny.cons.uneListaCasos((List<Caso>) cs, (Caso) ca);			
+		RESULT = AnalizadorSintacticoTiny.cons.uneListaCasos((List<Caso>) cs, (Caso) ca);		
+		AnalizadorSintacticoTiny.cons.ponNumeroLinea(RESULT, AnalizadorSintacticoTiny.alex.fila());	
 	:};
 
 Casos ::= Caso : c
 	{:
-		RESULT = AnalizadorSintacticoTiny.cons.creaListaCasos((Caso) c);			
+		RESULT = AnalizadorSintacticoTiny.cons.creaListaCasos((Caso) c);		
+		AnalizadorSintacticoTiny.cons.ponNumeroLinea(RESULT, AnalizadorSintacticoTiny.alex.fila());	
 	:};
 	
 Caso  ::= Exp0 : e DOSPUNTOS IBloque : b
 	{:
 		RESULT = AnalizadorSintacticoTiny.cons.creaCaso((Expresion) e, (Bloque) b);			
+		AnalizadorSintacticoTiny.cons.ponNumeroLinea(RESULT, AnalizadorSintacticoTiny.alex.fila());
 	:};
 	
 IBucle ::= DO Casos : c ENDDO
 	{:
-		RESULT = AnalizadorSintacticoTiny.cons.creaBucle((List<Caso>) c);		
+		RESULT = AnalizadorSintacticoTiny.cons.creaBucle((List<Caso>) c);	
+		AnalizadorSintacticoTiny.cons.ponNumeroLinea(RESULT, AnalizadorSintacticoTiny.alex.fila());	
 	:};
 	
 ILlamada  ::= ID : id Argumentos : args
@@ -281,23 +342,33 @@ ILlamada  ::= ID : id Argumentos : args
 		} else {		
 			RESULT = AnalizadorSintacticoTiny.cons.creaLlamada(id);
 		}
+		AnalizadorSintacticoTiny.cons.ponNumeroLinea(RESULT, AnalizadorSintacticoTiny.alex.fila());
 	:};
 	
 IRead ::= READ Designador: d
-	{: RESULT = AnalizadorSintacticoTiny.cons.creaRead((Designador) d); :};
+	{:
+		RESULT = AnalizadorSintacticoTiny.cons.creaRead((Designador) d); 
+	:};
 	
 IWrite ::= WRITE Exp0 : e
-	{: RESULT = AnalizadorSintacticoTiny.cons.creaWrite((Expresion) e); :};
+	{: 
+		RESULT = AnalizadorSintacticoTiny.cons.creaWrite((Expresion) e); 
+	:};
 	
 INew ::= NEW Designador : d
-	{: RESULT = AnalizadorSintacticoTiny.cons.creaNew((Designador) d); :};
+	{:
+	 	RESULT = AnalizadorSintacticoTiny.cons.creaNew((Designador) d); 
+	 :};
 	
 IDelete ::= DELETE Designador : d
-	{: RESULT = AnalizadorSintacticoTiny.cons.creaDelete((Designador) d); :};
+	{: 
+		RESULT = AnalizadorSintacticoTiny.cons.creaDelete((Designador) d); 
+	:};
 	
 Argumentos ::= PAP ListaArgumentos : la PCIERRE 
 	{:
 		RESULT = la;
+		AnalizadorSintacticoTiny.cons.ponNumeroLinea(RESULT, AnalizadorSintacticoTiny.alex.fila());
 	:};
 
 Argumentos ::= PAP PCIERRE
@@ -311,6 +382,7 @@ ListaArgumentos ::= ListaArgumentos : la COMA Exp0 : e
 		for (Expresion exp : (List<Expresion>)la){ las.add(exp); }
 		las.add((Expresion)e);
 		RESULT = las;
+		AnalizadorSintacticoTiny.cons.ponNumeroLinea(RESULT, AnalizadorSintacticoTiny.alex.fila());
 	:};
 
 ListaArgumentos ::= Exp0 : e
@@ -318,101 +390,137 @@ ListaArgumentos ::= Exp0 : e
 		List<Expresion> las = new ArrayList<Expresion>();
 		las.add((Expresion)e);
 		RESULT = las;
+		AnalizadorSintacticoTiny.cons.ponNumeroLinea(RESULT, AnalizadorSintacticoTiny.alex.fila());
 	:};
 
 Designador  ::= ID : id
 	{: 
 		RESULT = AnalizadorSintacticoTiny.cons.creaDesignadorId(id); 
+		AnalizadorSintacticoTiny.cons.ponNumeroLinea(RESULT, AnalizadorSintacticoTiny.alex.fila());
 	:};
 Designador  ::= Designador : d CAP Exp0 : e CCIERRE
 	{: 
 		RESULT = AnalizadorSintacticoTiny.cons.creaDesignadorArray((Designador)d, (Expresion)e); 
+		AnalizadorSintacticoTiny.cons.ponNumeroLinea(RESULT, AnalizadorSintacticoTiny.alex.fila());
 	:};
 Designador  ::= Designador : d PUNTO ID : id
-	{: 
+	{: 	
 		RESULT = AnalizadorSintacticoTiny.cons.creaDesignadorStruct((Designador)d, id); 
+		AnalizadorSintacticoTiny.cons.ponNumeroLinea(RESULT, AnalizadorSintacticoTiny.alex.fila());
 	:};
 Designador  ::= Designador : d FLECHA
 	{: 
 		RESULT = AnalizadorSintacticoTiny.cons.creaDesignadorPuntero((Designador)d); 
+		AnalizadorSintacticoTiny.cons.ponNumeroLinea(RESULT, AnalizadorSintacticoTiny.alex.fila());
 	:};
 
 Exp0 ::= Exp1 : e0 OpComp : op Exp1 : e1 
 	{: RESULT = AnalizadorSintacticoTiny.cons.creaExpresionBinaria((Expresion) e0,
 																   (OpBinario) op,
-																   (Expresion) e1); :};
+																   (Expresion) e1);
+																   
+	 AnalizadorSintacticoTiny.cons.ponNumeroLinea(RESULT, AnalizadorSintacticoTiny.alex.fila());
+																    :};
 Exp0 ::= Exp1 : e
-	{: RESULT = e; :};
+	{: RESULT = e; 
+		 AnalizadorSintacticoTiny.cons.ponNumeroLinea(RESULT, AnalizadorSintacticoTiny.alex.fila());
+	:};
 Exp1 ::= Exp1 : e0 OpAditivo : op Exp2 : e1
 	{: RESULT = AnalizadorSintacticoTiny.cons.creaExpresionBinaria((Expresion) e0,
 																   (OpBinario) op,
-																   (Expresion) e1); :};
+																   (Expresion) e1); 
+		 AnalizadorSintacticoTiny.cons.ponNumeroLinea(RESULT, AnalizadorSintacticoTiny.alex.fila());															   
+	
+																   :};
 Exp1 ::= Exp2 : e
-	{: RESULT = e; :};
+	{: 
+	RESULT = e; 
+		 AnalizadorSintacticoTiny.cons.ponNumeroLinea(RESULT, AnalizadorSintacticoTiny.alex.fila());
+	
+	:};
 Exp2 ::= Exp2 : e0 OpMultiplicativo : op Exp3 : e1
 	{: RESULT = AnalizadorSintacticoTiny.cons.creaExpresionBinaria((Expresion) e0,
 																   (OpBinario) op,
-																   (Expresion) e1); :};
+																   (Expresion) e1); 
+ AnalizadorSintacticoTiny.cons.ponNumeroLinea(RESULT, AnalizadorSintacticoTiny.alex.fila());
+																   :};
 Exp2 ::= Exp3 : e
-	{: RESULT = e; :};
+	{: 
+		RESULT = e; 
+		 AnalizadorSintacticoTiny.cons.ponNumeroLinea(RESULT, AnalizadorSintacticoTiny.alex.fila());
+	:};
 Exp3 ::= OpUnario : op Exp3 : e0
 	{: RESULT = AnalizadorSintacticoTiny.cons.creaExpresionUnaria((OpUnario) op,
-																   (Expresion) e0); :};
+																   (Expresion) e0); 
+		AnalizadorSintacticoTiny.cons.ponNumeroLinea(RESULT, AnalizadorSintacticoTiny.alex.fila());
+																   :};
 Exp3 ::= Exp4 : e
-	{: RESULT = e; :};
+	{: 
+	 	RESULT = e; 
+		 AnalizadorSintacticoTiny.cons.ponNumeroLinea(RESULT, AnalizadorSintacticoTiny.alex.fila());
+	:};
 
 Exp4 ::= TRUE 
-	{: RESULT = AnalizadorSintacticoTiny.cons.creaExpresionBoolean(true); :};
+	{: RESULT = AnalizadorSintacticoTiny.cons.creaExpresionBoolean(true);
+		 AnalizadorSintacticoTiny.cons.ponNumeroLinea(RESULT, AnalizadorSintacticoTiny.alex.fila()); :};
 Exp4 ::= FALSE
-	{: RESULT = AnalizadorSintacticoTiny.cons.creaExpresionBoolean(false); :};
+	{: RESULT = AnalizadorSintacticoTiny.cons.creaExpresionBoolean(false);
+		 AnalizadorSintacticoTiny.cons.ponNumeroLinea(RESULT, AnalizadorSintacticoTiny.alex.fila()); :};
 Exp4 ::= NUMERO_NATURAL : v
-	{: RESULT = AnalizadorSintacticoTiny.cons.creaExpresionInteger(Integer.valueOf((String)v)); :};
+	{: RESULT = AnalizadorSintacticoTiny.cons.creaExpresionInteger(Integer.valueOf((String)v));
+		 AnalizadorSintacticoTiny.cons.ponNumeroLinea(RESULT, AnalizadorSintacticoTiny.alex.fila()); :};
 Exp4 ::= NUMERO_REAL : v
-	{: RESULT = AnalizadorSintacticoTiny.cons.creaExpresionDouble(Double.valueOf((String)v)); :};
+	{: RESULT = AnalizadorSintacticoTiny.cons.creaExpresionDouble(Double.valueOf((String)v));
+		 AnalizadorSintacticoTiny.cons.ponNumeroLinea(RESULT, AnalizadorSintacticoTiny.alex.fila()); :};
 Exp4 ::= Designador : d
-	{: RESULT = AnalizadorSintacticoTiny.cons.creaExpresionDesignador((Designador)d); :};
-Exp4 ::= PAP Exp0 PCIERRE;
-
+	{: RESULT = AnalizadorSintacticoTiny.cons.creaExpresionDesignador((Designador)d);
+		 AnalizadorSintacticoTiny.cons.ponNumeroLinea(RESULT, AnalizadorSintacticoTiny.alex.fila()); :};
+Exp4 ::= PAP Exp0 : e PCIERRE
+ 	{: 
+ 		RESULT = e;
+ 		AnalizadorSintacticoTiny.cons.ponNumeroLinea(RESULT, AnalizadorSintacticoTiny.alex.fila()); 	
+ 	:};
 
 
 OpComp ::= IGUAL  
-	{: RESULT = AnalizadorSintacticoTiny.cons.creaOperadorIgual(); :};
+	{: RESULT = AnalizadorSintacticoTiny.cons.creaOperadorIgual();
+		 AnalizadorSintacticoTiny.cons.ponNumeroLinea(RESULT, AnalizadorSintacticoTiny.alex.fila());  AnalizadorSintacticoTiny.cons.ponNumeroLinea(RESULT, AnalizadorSintacticoTiny.alex.fila()); :};
 OpComp ::= DISTINTO 
-	{: RESULT = AnalizadorSintacticoTiny.cons.creaOperadorDistinto(); :};
+	{: RESULT = AnalizadorSintacticoTiny.cons.creaOperadorDistinto();  AnalizadorSintacticoTiny.cons.ponNumeroLinea(RESULT, AnalizadorSintacticoTiny.alex.fila()); :};
 OpComp ::= MAYOR  
-	{: RESULT = AnalizadorSintacticoTiny.cons.creaOperadorMayor(); :};
+	{: RESULT = AnalizadorSintacticoTiny.cons.creaOperadorMayor();  AnalizadorSintacticoTiny.cons.ponNumeroLinea(RESULT, AnalizadorSintacticoTiny.alex.fila()); :};
 OpComp ::= MAYOROIGUAL  
-	{: RESULT = AnalizadorSintacticoTiny.cons.creaOperadorMayorIgual(); :};
+	{: RESULT = AnalizadorSintacticoTiny.cons.creaOperadorMayorIgual();  AnalizadorSintacticoTiny.cons.ponNumeroLinea(RESULT, AnalizadorSintacticoTiny.alex.fila()); :};
 OpComp ::= MENOR  
-	{: RESULT = AnalizadorSintacticoTiny.cons.creaOperadorMenor(); :};
+	{: RESULT = AnalizadorSintacticoTiny.cons.creaOperadorMenor();  AnalizadorSintacticoTiny.cons.ponNumeroLinea(RESULT, AnalizadorSintacticoTiny.alex.fila()); :};
 OpComp ::= MENOROIGUAL 
-	{: RESULT = AnalizadorSintacticoTiny.cons.creaOperadorMenorIgual(); :};	
+	{: RESULT = AnalizadorSintacticoTiny.cons.creaOperadorMenorIgual();  AnalizadorSintacticoTiny.cons.ponNumeroLinea(RESULT, AnalizadorSintacticoTiny.alex.fila()); :};	
 	
 
 OpAditivo ::= OR  
-	{: RESULT = AnalizadorSintacticoTiny.cons.creaOperadorOr(); :};
+	{: RESULT = AnalizadorSintacticoTiny.cons.creaOperadorOr();  AnalizadorSintacticoTiny.cons.ponNumeroLinea(RESULT, AnalizadorSintacticoTiny.alex.fila()); :};
 OpAditivo ::= MENOS 
-	{: RESULT = AnalizadorSintacticoTiny.cons.creaOperadorMenos(); :};
+	{: RESULT = AnalizadorSintacticoTiny.cons.creaOperadorMenos();  AnalizadorSintacticoTiny.cons.ponNumeroLinea(RESULT, AnalizadorSintacticoTiny.alex.fila()); :};
 OpAditivo ::= MAS 
-	{: RESULT = AnalizadorSintacticoTiny.cons.creaOperadorMas(); :};
+	{: RESULT = AnalizadorSintacticoTiny.cons.creaOperadorMas();  AnalizadorSintacticoTiny.cons.ponNumeroLinea(RESULT, AnalizadorSintacticoTiny.alex.fila()); :};
 
 OpMultiplicativo ::= AND  
-	{: RESULT = AnalizadorSintacticoTiny.cons.creaOperadorAnd(); :};
+	{: RESULT = AnalizadorSintacticoTiny.cons.creaOperadorAnd();  AnalizadorSintacticoTiny.cons.ponNumeroLinea(RESULT, AnalizadorSintacticoTiny.alex.fila()); :};
 OpMultiplicativo ::= MOD 
-	{: RESULT = AnalizadorSintacticoTiny.cons.creaOperadorModulo(); :};
+	{: RESULT = AnalizadorSintacticoTiny.cons.creaOperadorModulo();  AnalizadorSintacticoTiny.cons.ponNumeroLinea(RESULT, AnalizadorSintacticoTiny.alex.fila()); :};
 OpMultiplicativo ::= DIV 
-	{: RESULT = AnalizadorSintacticoTiny.cons.creaOperadorDivision(); :};
+	{: RESULT = AnalizadorSintacticoTiny.cons.creaOperadorDivision();  AnalizadorSintacticoTiny.cons.ponNumeroLinea(RESULT, AnalizadorSintacticoTiny.alex.fila()); :};
 OpMultiplicativo ::= POR 
-	{: RESULT = AnalizadorSintacticoTiny.cons.creaOperadorMultiplicacion(); :};
+	{: RESULT = AnalizadorSintacticoTiny.cons.creaOperadorMultiplicacion();  AnalizadorSintacticoTiny.cons.ponNumeroLinea(RESULT, AnalizadorSintacticoTiny.alex.fila()); :};
 
 OpUnario ::= TODOUBLE  
-	{: RESULT = AnalizadorSintacticoTiny.cons.creaOperadorToDouble(); :};
+	{: RESULT = AnalizadorSintacticoTiny.cons.creaOperadorToDouble();  AnalizadorSintacticoTiny.cons.ponNumeroLinea(RESULT, AnalizadorSintacticoTiny.alex.fila()); :};
 OpUnario ::= MENOS 
-	{: RESULT = AnalizadorSintacticoTiny.cons.creaOperadorMenosUnario(); :};
+	{: RESULT = AnalizadorSintacticoTiny.cons.creaOperadorMenosUnario();  AnalizadorSintacticoTiny.cons.ponNumeroLinea(RESULT, AnalizadorSintacticoTiny.alex.fila()); :};
 OpUnario ::= NOT 
-	{: RESULT = AnalizadorSintacticoTiny.cons.creaOperadorNot(); :};
+	{: RESULT = AnalizadorSintacticoTiny.cons.creaOperadorNot();  AnalizadorSintacticoTiny.cons.ponNumeroLinea(RESULT, AnalizadorSintacticoTiny.alex.fila()); :};
 OpUnario ::= TOINT 
-	{: RESULT = AnalizadorSintacticoTiny.cons.creaOperadorToInt(); :};
+	{: RESULT = AnalizadorSintacticoTiny.cons.creaOperadorToInt();  AnalizadorSintacticoTiny.cons.ponNumeroLinea(RESULT, AnalizadorSintacticoTiny.alex.fila()); :};
 
 
  

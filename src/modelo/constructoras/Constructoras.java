@@ -1,7 +1,10 @@
 package modelo.constructoras;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import modelo.expresiones.Expresion;
 import modelo.expresiones.ExpresionBinaria;
@@ -41,7 +44,17 @@ import modelo.tipos.TipoStruct;
 
 
 public class Constructoras implements IConstructoras {
+	
+	private Map<Object, Integer> numeroLinea;
+	
+	public Constructoras() {
+		numeroLinea = new HashMap<Object, Integer>();
+	}
 
+	public void ponNumeroLinea(Object obj, Integer numLinea){
+		numeroLinea.put(obj, numLinea);
+	}
+	
 	@Override
 	public Programa creaPrograma(List<DecTipo> dts, List<DecVariable> dvs,
 			List<DecSubprograma> dss, Bloque b) {
@@ -86,6 +99,7 @@ public class Constructoras implements IConstructoras {
 	@Override
 	public List<DecTipo> uneListaDecTipos(List<DecTipo> dts, DecTipo dt) {
 		dts.add(dt);
+//		System.out.println(Arrays.toString(dts.toArray()));
 		return dts;
 	}
 
@@ -365,12 +379,18 @@ public class Constructoras implements IConstructoras {
 
 	@Override
 	public Designador creaDesignadorStruct(Designador designador, String id) {
-		return new Designador(designador, id);
+		Designador d = new Designador(designador, id);
+		return d;
 	}
 
 	@Override
 	public Designador creaDesignadorPuntero(Designador designador) {
 		return new Designador(designador);
+	}
+
+	@Override
+	public Map<Object, Integer> getNumeroLinea() {
+		return numeroLinea;
 	}
 
 }

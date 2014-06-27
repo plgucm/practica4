@@ -11,7 +11,7 @@ public class Designador {
     private Tipo tipo;
     
     public enum Tipo {
-    	ID, ARRAY, STRUCT, PUNTERO
+    	ID, ARRAY, CAMPO_DE_STRUCT, PUNTERO
     }
 
 	public Designador(String id) {
@@ -22,7 +22,7 @@ public class Designador {
     public Designador(Designador designador2, String id) {
 		this.identificador = id;
 		this.designador = designador2;
-		this.tipo = Tipo.STRUCT;
+		this.tipo = Tipo.CAMPO_DE_STRUCT;
 	}
 
 	public Designador(Designador designador2, Expresion exp) {
@@ -68,7 +68,14 @@ public class Designador {
 		this.designador = designador;
 	}
 
-
+//	@Override
+//	public String toString() {
+//		if (tipo == Tipo.REGISTRO_DE_STRUCT){
+//			return designador.designador.identificador + "->." + identificador + "\n";
+//		} else {
+//			return "";
+//		}
+//	}
 
 
 	

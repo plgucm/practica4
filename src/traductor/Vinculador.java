@@ -217,7 +217,7 @@ public class Vinculador {
 				
 				break;
 			}
-			case STRUCT: {	
+			case CAMPO_DE_STRUCT: {	
 				vinculaDef(d);
 				break;				
 			}
@@ -545,7 +545,7 @@ public class Vinculador {
 				
 				break;
 			}
-			case STRUCT: {	
+			case CAMPO_DE_STRUCT: {	
 				vincula(d);
 				break;				
 			}
