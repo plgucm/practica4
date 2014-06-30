@@ -18,7 +18,7 @@ public class Main {
 	/**
 	 * Aquí deberá asignar el ejemplo de entrada.
 	 */
-	static final String nombreArchivoFuente = "errorChequeoParametros.txt";
+	static final String nombreArchivoFuente = "EjemploPractica3.txt";
 	
 	
 	static final String nombreArchivoSalida = "output.txt";
