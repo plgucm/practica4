@@ -142,37 +142,24 @@ public class GeneraCodigo {
 			}
 			return codigos;
 		}
+		
+		public int getLineasDeCodigo(){
+			int sum = 0;
+			if (codigo != null){
+				sum = codigo.split("\n").length;
+			}
+			if (bl != null){
+				for (BloqueDeCodigo b : bl){
+					sum += b.getLineasDeCodigo();
+				}
+			}
+			return sum;
+		}		
 
 		public boolean estaVacio(){
 			return codigo  == null && bl == null;
 		}
 		
-	}
-
-	public void generaCodigo(Programa p) {
-		asignaEspacioDesdeRaiz(p);
-		codigoProgramaDesdeRaiz(p);	
-	}
-
-	private void codigoProgramaDesdeRaiz(Programa p) {	
-
-		aumentaCI(3);	
-
-		BloqueDeCodigo bd = new BloqueDeCodigo();
-
-		codigoDecSubprogramas(p.getDecSubprogramas());		
-		bd.addBloque(bloqueActual);
-
-		String inicio = generaInicio(
-				(Integer)d.getDecoracion(p.getDecVariables()).get("tam")+
-				(Integer)d.getDecoracion(p).get("finDatos"), getCI());
-
-		codigoBloque(p.getBloque());
-		bd.addBloque(bloqueActual);		
-
-		bd.setCodigo(inicio);
-
-		bloqueRaiz = bd;	
 	}
 
 	private void aumentaCI(int cantidad){
@@ -182,7 +169,79 @@ public class GeneraCodigo {
 	private int getCI(){
 		return cinst;
 	}
+	
+	public void generaCodigo(Programa p) {
+		asignaEspacioDesdeRaiz(p);
+		codigoProgramaDesdeRaiz(p);	
+	}
+	
+	/***********************************************************************************
+	 * Código programa
+	 ***********************************************************************************/
 
+	private void codigoProgramaDesdeRaiz(Programa p) {	
+		aumentaCI(3);	
+		
+		BloqueDeCodigo bd = new BloqueDeCodigo();
+		String inicio = generaInicio(
+				(Integer)d.getDecoracion(p.getDecVariables()).get("tam")+
+				(Integer)d.getDecoracion(p).get("finDatos"), getCI());
+		bd.setCodigo(inicio);
+		
+		codigo(p);
+		bd.addBloque(bloqueActual);
+		
+		bloqueRaiz = bd;	
+	}
+	
+	private void codigo(Programa p){
+		BloqueDeCodigo bd = new BloqueDeCodigo();
+		
+		if (p.getDecSubprogramas() != null){
+			for (int i = 0; i < p.getDecSubprogramas().size(); i++) {
+				DecSubprograma decSubprograma = p.getDecSubprogramas().get(i);
+				codigoDecSubprograma(decSubprograma);
+				bd.addBloque(bloqueActual);				
+			}
+		}
+
+		codigoBloque(p.getBloque());
+		bd.addBloque(bloqueActual);
+
+		bloqueActual = bd;
+	}
+	
+	/***********************************************************************************
+	 * Declaraciones
+	 ***********************************************************************************/
+
+	private void codigoDecSubprograma(DecSubprograma decSubprograma) {
+		BloqueDeCodigo bd = new BloqueDeCodigo();		
+		d.insertaInfoEnNodo(decSubprograma, "dirComienzo", cinst);		
+		
+		int tamDatos = (int) d.getDecoracion(decSubprograma).get("tam");
+		
+		BloqueDeCodigo bPro = new BloqueDeCodigo(generaPrologo(nivel, tamDatos));
+		bd.addBloque(bPro);
+		aumentaCI(bPro.getLineasDeCodigo());
+				
+		Programa programa = decSubprograma.getPrograma();
+		if (programa != null){
+			codigo(programa);
+			bd.addBloque(bloqueActual);
+		}
+		
+		BloqueDeCodigo bEpi = new BloqueDeCodigo(generaEpilogo(nivel, tamDatos));
+		bd.addBloque(bEpi);
+		aumentaCI(bEpi.getLineasDeCodigo());		
+		
+		bloqueActual = bd;
+	}
+
+	/***********************************************************************************
+	 * Instrucciones
+	 ***********************************************************************************/
+	
 	@SuppressWarnings("unchecked")
 	private void codigoInstruccion(Instruccion i) {
 		TiposInstruccion tipo = i.getTipoInstruccion();
@@ -221,57 +280,56 @@ public class GeneraCodigo {
 	}
 
 	private void codigo(Write i) {
+		d.insertaInfoEnNodo(i, "comienzo", getCI());
 		BloqueDeCodigo bd = new BloqueDeCodigo();
 		codigo(i.getExpresion());
 		bd.addBloque(bloqueActual);
-		bd.addBloque(new BloqueDeCodigo(WRITE));
-		aumentaCI(1);
+		BloqueDeCodigo bdWrite = new BloqueDeCodigo(WRITE);
+		bd.addBloque(bdWrite);
+		aumentaCI(bdWrite.getLineasDeCodigo());
+		d.insertaInfoEnNodo(i, "fin", getCI());
 		bloqueActual = bd;		
 	}
 
 	private void codigo(Read i) {
+		d.insertaInfoEnNodo(i, "comienzo", getCI());
 		BloqueDeCodigo bd = new BloqueDeCodigo();
 		codigo(i.getDesignador());
 		bd.addBloque(bloqueActual);
-		bd.addBloque(new BloqueDeCodigo(READ));
-		aumentaCI(1);
-		//		bd.addBloque(new BloqueDeCodigo(DESAPILA_IND));
-		//		aumentaCI(1);
+		BloqueDeCodigo bdRead = new BloqueDeCodigo(READ);
+		bd.addBloque(bdRead);
+		aumentaCI(bdRead.getLineasDeCodigo());
+		d.insertaInfoEnNodo(i, "fin", getCI());
 		bloqueActual = bd;
 	}
 
 	private void codigo(New i) {
+		d.insertaInfoEnNodo(i, "comienzo", getCI());
 		BloqueDeCodigo bd = new BloqueDeCodigo();
 		Object o = vinculos.get(i.getDesignador());
-		Integer dec = 1;
-		
-//		if (o instanceof Parametro) {
-//			Parametro p = (Parametro) o;
-//			if (!p.isPorValor()) {
-//				dec = tamanioVar(p.getTipo());
-//			} 
-//			System.out.println(p.getIdentificador());
-//		} else {
-			dec = (Integer) d.getDecoracion(o).get("tam");
-//		}
-		
-//		System.out.println(dec);
+		Integer dec = (Integer) d.getDecoracion(o).get("tam");
+		if (dec == null){ dec = 0; }
 		String codigo = instrConAlgo(RESERVA, dec)+DESAPILA_IND;
-		aumentaCI(2);
-		bd.addBloque(new BloqueDeCodigo(codigo));
+		BloqueDeCodigo bdNew = new BloqueDeCodigo(codigo);
+		bd.addBloque(bdNew);
+		aumentaCI(bdNew.getLineasDeCodigo());
 		codigo(i.getDesignador());
 		bd.addBloque(bloqueActual);
+		d.insertaInfoEnNodo(i, "fin", getCI());
 		bloqueActual = bd;		
 	}
 
 	private void codigo(Llamada i) {
+		d.insertaInfoEnNodo(i, "comienzo", getCI());
 		BloqueDeCodigo bd = new BloqueDeCodigo();
 
-		bd.addBloque(new BloqueDeCodigo(PRELLAMADA_INICIO)); 
-		aumentaCI(3);
+		BloqueDeCodigo bdPre = new BloqueDeCodigo(PRELLAMADA_INICIO);
+		bd.addBloque(bdPre); 
+		aumentaCI(bdPre.getLineasDeCodigo());
 
 		DecSubprograma obj = (DecSubprograma) vinculos.get(i);		
 		Integer dirSalto = (Integer) d.getDecoracion(obj).get("inicio");
+		if (dirSalto == null){ dirSalto = 0; }
 
 		List<Expresion> exps = i.getParams();	
 		List<Parametro> pars = obj.getParametros();
@@ -304,12 +362,13 @@ public class GeneraCodigo {
 				DESAPILA_IND+
 				instrConAlgo(IR_A, dirSalto));	
 		bd.addBloque(bd1);
-		aumentaCI(6);
+		aumentaCI(bd1.getLineasDeCodigo());
 
 		bloqueActual = bd;
 	}
 
 	private void codigo(Condicional i) {	
+		d.insertaInfoEnNodo(i, "comienzo", getCI());
 		BloqueDeCodigo bd = new BloqueDeCodigo();	
 
 		List<Caso> casos = i.getCasos();
@@ -330,6 +389,7 @@ public class GeneraCodigo {
 	}
 
 	private void codigo(Bucle i) {
+		d.insertaInfoEnNodo(i, "comienzo", getCI());
 		BloqueDeCodigo bd = new BloqueDeCodigo();
 
 		List<Caso> casos = i.getCasos();
@@ -351,17 +411,23 @@ public class GeneraCodigo {
 	}
 
 	private void codigo(Delete i) {
+		d.insertaInfoEnNodo(i, "comienzo", getCI());
 		BloqueDeCodigo bd = new BloqueDeCodigo();
 		codigo(i.getDesignador());
 		bd.addBloque(bloqueActual);
 		Object o = vinculos.get(i.getDesignador());
-		String cod = instrConAlgo(LIBERA, ((Integer)d.getDecoracion(o).get("tam")));
-		aumentaCI(1);
-		bd.addBloque(new BloqueDeCodigo(cod));
+		
+		Integer tam = (Integer)d.getDecoracion(o).get("tam");
+		if (tam == null){ tam = 0; }
+		String cod = instrConAlgo(LIBERA, tam);
+		BloqueDeCodigo bdLibera = new BloqueDeCodigo(cod);
+		bd.addBloque(bdLibera);
+		aumentaCI(bdLibera.getLineasDeCodigo());
 		bloqueActual = bd;
 	}
 
 	private void codigoBloque(Bloque i) {
+		d.insertaInfoEnNodo(i, "comienzo", getCI());
 		BloqueDeCodigo bd = new BloqueDeCodigo();
 		List<Instruccion> insts = i.getInstrucciones();
 		for (Instruccion in : insts){
@@ -372,6 +438,7 @@ public class GeneraCodigo {
 	}
 
 	private void codigo(Asignacion i) {
+		d.insertaInfoEnNodo(i, "comienzo", getCI());
 		BloqueDeCodigo bd = new BloqueDeCodigo(DESAPILA_IND);	
 		aumentaCI(1);
 		codigo(i.getDesignador());
@@ -506,7 +573,8 @@ public class GeneraCodigo {
 		String id = designador.getIdentificador();		
 
 		modelo.instrucciones.Designador.Tipo tipo = designador.getTipo();
-		if (tipo == modelo.instrucciones.Designador.Tipo.ARRAY) {
+		switch (tipo) {
+		case ARRAY:
 			codigo(des);
 			bd.addBloque(bloqueActual);
 			codigo(e);
@@ -514,85 +582,79 @@ public class GeneraCodigo {
 			bd.addBloque(new BloqueDeCodigo(SUMA));
 			aumentaCI(1);
 			//				codArray = SUMA;	
-			
-		} else if (tipo == modelo.instrucciones.Designador.Tipo.ID) {
+			break;
+		case ID:
 			if (id.equalsIgnoreCase("null")){ 
 				bd.setCodigo(instrConAlgo(APILA, 0));
 				aumentaCI(1);
 
 			} else {			
 				
-				// TODO
-				
 				Object obj = vinculos.get(designador);
-				Map<String, Object> m = this.d.getDecoracion(obj);
-
-//				System.out.println(obj);
 							
 				if (obj instanceof Parametro){
 					// es un parámetro
 					Parametro p = (Parametro) obj;
-					if (p.isPorValor()){
-						
-						
-					} else {
-						Map<String, Object> m2 = this.d.getDecoracion(p);
-						int dir = (int) m2.get("dir");
-						int niv = (int) m2.get("nivel");
-						
-						if (niv == 0){
-							bd.setCodigo(instrConAlgo(APILA, "DIR_"+p.getIdentificador()));
-							aumentaCI(1);
-						} else {						
-							bd.setCodigo(instrConAlgo(APILA_DIR, "NIVEL_"+p.getIdentificador()) +
-										instrConAlgo(APILA, "DIR_"+p.getIdentificador()) +
-										SUMA);
-							aumentaCI(3);
-						}	
-						
-						
-					}
+					
+					Map<String, Object> dec = this.d.getDecoracion(p);
+					Integer dir = (int) dec.get("dir");
+					if (dir == null){ dir = 0; }
+					Integer niv = (int) dec.get("nivel");
+					if (niv == null){ niv = 0; }
+					
+					if (niv == 0){
+						bd.setCodigo(instrConAlgo(APILA, dir));
+						aumentaCI(1);
+					} else {						
+						bd.setCodigo(instrConAlgo(APILA_DIR, nivel) +
+									instrConAlgo(APILA, dir) +
+									SUMA);
+						aumentaCI(3);
+					}	
 					
 					
 				} else {
 					// es una variable
 					DecVariable dv = (DecVariable) obj;
 					
-					int dir = (int) m.get("dir");
-					int niv = (int) m.get("nivel");
+					Map<String, Object> dec = d.getDecoracion(dv);
+					Integer dir = (Integer) dec.get("dir");
+					if (dir == null){ dir = 0; }
+					Integer niv = (Integer) dec.get("nivel");
+					if (niv == null){ niv = 0; }
 					
 					if (niv == 0){
-						bd.setCodigo(instrConAlgo(APILA, "DIR_"+dv.getIdentificador()));
+						bd.setCodigo(instrConAlgo(APILA, dir));
 						aumentaCI(1);
 					} else {						
-						bd.setCodigo(instrConAlgo(APILA_DIR, "NIVEL_"+dv.getIdentificador()) +
-									instrConAlgo(APILA, "DIR_"+dv.getIdentificador()) +
+						bd.setCodigo(instrConAlgo(APILA_DIR, niv) +
+									instrConAlgo(APILA, dir) +
 									SUMA);
 						aumentaCI(3);
 					}	
 				}
 				
 			}
-
-		} else if (tipo == modelo.instrucciones.Designador.Tipo.CAMPO_DE_STRUCT) {
+			break;
+		case CAMPO_DE_STRUCT:
 			codigo(des);
 			bd.addBloque(bloqueActual);
-			bd.addBloque(new BloqueDeCodigo(
-					instrConAlgo(APILA, (Integer) d.getDecoracion(id).get("desp"))+
-					SUMA
-					));
-			aumentaCI(1);
-
-		} else if (tipo == modelo.instrucciones.Designador.Tipo.PUNTERO) {
+			Integer desp = (Integer) d.getDecoracion(id).get("desp");
+			if (desp == null){ desp = 0; }
+			BloqueDeCodigo bdStruct = new BloqueDeCodigo( instrConAlgo(APILA,desp)+ SUMA );
+			bd.addBloque(bdStruct);
+			aumentaCI(bdStruct.getLineasDeCodigo());
+			break;
+		case PUNTERO:
 			codigo(des);
 			bd.addBloque(bloqueActual);
-		
+			break;
 		}	
 
 		bloqueActual = bd;
 	}
 
-	private void codigoDecSubprogramas(List<DecSubprograma> list) {
+	/*private void codigoDecSubprogramas(List<DecSubprograma> list) {
 		BloqueDeCodigo bd = new BloqueDeCodigo();
 		if (list == null){ 
 			bloqueActual = bd;
@@ -632,7 +694,7 @@ public class GeneraCodigo {
 
 
 		bloqueActual = bd;		
-	}
+	}*/
 
 	/*******************************************************************************
 	 *  ASIGNA ESPACIOS
@@ -642,37 +704,45 @@ public class GeneraCodigo {
 		List<DecSubprograma> ds = p.getDecSubprogramas();
 		int anida = dir = anidamiento(ds);
 		d.insertaInfoEnNodo(p, "finDatos", anida);
-		nivel = 0;		
+		nivel = 0;	
+		Integer tam = 0;
 		for (int i = 0; i < p.getDecVariables().size(); i++) {
 			DecVariable decVariable = p.getDecVariables().get(i);
 			asignaEspacio(decVariable);
+			tam += (Integer) d.getDecoracion(decVariable).get("tam");
 		}
+		d.insertaInfoEnNodo(p.getDecVariables(), "tam", tam);
+		
+		tam = 0;
 		for (int j = 0; j < p.getDecSubprogramas().size(); j++) {
 			DecSubprograma decSubprograma = p.getDecSubprogramas().get(j);
-			asignaEspacio(decSubprograma);			
-		}		
+			asignaEspacio(decSubprograma);
+			tam += (Integer) d.getDecoracion(decSubprograma).get("tam");		
+		}	
+		d.insertaInfoEnNodo(p.getDecSubprogramas(), "tam", tam);	
 	}
 	
 	private void asignaEspacio(DecVariable decVariable) {
 		d.insertaInfoEnNodo(decVariable, "nivel", nivel);
 		d.insertaInfoEnNodo(decVariable, "dir", dir);
 		asignaEspacio(decVariable.getTipo());
-		System.out.println(decVariable.getTipo());
 		int tam = (int) d.getDecoracion(decVariable.getTipo()).get("tam");
-		
-		
 		d.insertaInfoEnNodo(decVariable, "tam", tam);
 		dir += tam;	
 	}
 
 	private void asignaEspacio(DecSubprograma ds) {
+		if (ds == null){ return; }	
+		
 		int copiaDir = dir;
 		int copiaNivel = nivel;
 		nivel++;
 		d.insertaInfoEnNodo(ds, "nivel", nivel);
 		dir = 0;
+		
 		if (ds.getParametros() != null){
 			for (int i = 0; i < ds.getParametros().size(); i++) {
+				
 				Parametro p = ds.getParametros().get(i);
 				d.insertaInfoEnNodo(p, "dir", dir);
 				d.insertaInfoEnNodo(p, "nivel", nivel);
@@ -684,18 +754,21 @@ public class GeneraCodigo {
 				} else {
 					dir+=tam;
 				}
+				
 				Programa programa = ds.getPrograma();
 				if (programa != null){
 					if (programa.getDecSubprogramas() != null){
 						for (int j = 0; j < programa.getDecSubprogramas().size(); j++) {
 							DecSubprograma decSubprograma = programa.getDecSubprogramas().get(j);
-							asignaEspacio(decSubprograma);					
+							asignaEspacio(decSubprograma);
 						}				
 					}
 				}
 				
 			}
 		}
+		
+		d.insertaInfoEnNodo(ds, "tam", dir);	
 		
 		nivel = copiaNivel;
 		dir = copiaDir;
