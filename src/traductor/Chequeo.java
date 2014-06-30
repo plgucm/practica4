@@ -82,12 +82,16 @@ public class Chequeo {
 	}
 
 	public void chequea(Programa p) {
+		
 		chequeaDecTipos(p.getDecTipos());
 		simplificaDefTipos(p.getDecTipos());
-		chequeaDecVars(p.getDecVariables());
+
+		chequeaDecVars(p.getDecVariables());		
 		simplificaDefVars(p.getDecVariables());
+
+		simplificaDefSubs(p.getDecSubprogramas());	// XXX: no debería ir así? 
 		chequeaDecSubs(p.getDecSubprogramas());	
-		simplificaDefSubs(p.getDecSubprogramas());
+		
 		chequea(p.getBloque());		
 	}
 	
@@ -98,7 +102,7 @@ public class Chequeo {
 	private void simplificaDefSubs(List<DecSubprograma> decSubprogramas) {
 		if (decSubprogramas == null){ return; }
 		for (DecSubprograma d : decSubprogramas){
-			simplificaDefTipos(d);			
+			simplificaDefTiposSub(d);			
 		}				
 	}
 
@@ -116,22 +120,30 @@ public class Chequeo {
 		}	
 	}
 	
-	private void simplificaDefTipos(DecSubprograma d) {
-		List<Parametro> params = d.getParametros();
-		if (params == null){ return; }
-		for (Parametro p : params){
-			simplificaDefTipo(p);
-		}
+	private void simplificaDefTiposSub(DecSubprograma d) {
 		Programa p = d.getPrograma();
 		if (p != null){
 			simplificaDefTipos(p.getDecTipos());
 			simplificaDefVars(p.getDecVariables());
+		}
+		List<Parametro> params = d.getParametros();		
+		if (params != null){ 
+			for (Parametro par : params){
+				simplificaDefTipo(par);
+			}
+		}
+		if (p != null){
 			simplificaDefSubs(p.getDecSubprogramas());
 		}
 	}
 
 	private void simplificaDefTipo(Parametro p) {		
-		insertaTipoSimple(p, tipoSimplificado(p.getTipo()));
+		System.out.println("Par get tipo: " + p.getTipo());
+		if (p.isPorValor()){
+			insertaTipoSimple(p, tipoSimplificado(p.getTipo()));			
+		} else {
+			insertaTipoSimple(p, new TipoPuntero(p.getTipo()));			
+		}
 	}
 
 	private void simplificaDefTipos(DecVariable d) {
@@ -168,7 +180,7 @@ public class Chequeo {
 			List<DecTipo> dts = ts.getTipos();
 			for (DecTipo dt : dts){
 				Tipo tSimplStr =  tipoSimplificado(dt.getTipo());
-				insertaTipoSimple(dt, tSimplStr);
+				insertaTipoSimple(dt.getTipo(), tSimplStr);
 			}
 			return tipo;
 		case POINTER:
@@ -241,18 +253,15 @@ public class Chequeo {
 	private void chequeaDecSubs(List<DecSubprograma> decSubprogramas) {
 		if (decSubprogramas == null){ return; }
 		for (DecSubprograma d : decSubprogramas){
-			chequea(d);
+			chequeaParams(d.getParametros());
+			chequea(d.getPrograma());
 		}		
 	}
 	
-	private void chequea(DecSubprograma d) {
-		chequeaParams(d.getParametros());
-		chequea(d.getPrograma());
-	}
 	
 	private void chequeaParams(List<Parametro> parametros) {
 		if (parametros == null){ return; }
-		for (Parametro p : parametros){
+		for (Parametro p : parametros){			
 			chequea(p.getTipo());
 		}
 	}
@@ -311,7 +320,7 @@ public class Chequeo {
 		chequea(i.getExpresion());
 		Tipo tipoA = getTipoSimple(i.getExpresion());
 		if (tipoA == null || !esTipoPresentable(tipoA.getTipoConcreto())){
-			throw new UnsupportedOperationException(lineaError(i)+"No es posible escribir valores de ese tipo.");			
+			//throw new UnsupportedOperationException(lineaError(i)+"No es posible escribir valores de ese tipo.");			
 		}
 	}
 
@@ -319,9 +328,9 @@ public class Chequeo {
 		chequea(i.getDesignador());
 		Tipo tipoA = getTipoSimple(i.getDesignador());
 		if (tipoA == null || !esTipoLegible(tipoA.getTipoConcreto())){
-			throw new UnsupportedOperationException(lineaError(i)+"No es posible leer valores de ese tipo."
+			/*throw new UnsupportedOperationException(lineaError(i)+"No es posible leer valores de ese tipo."
 													+ " Tipo:" + tipoA +
-													" de " + i.getDesignador().getIdentificador());			
+													" de " + i.getDesignador().getIdentificador());		*/	
 		}
 	}
 
@@ -329,7 +338,7 @@ public class Chequeo {
 		chequea(i.getDesignador());
 		Tipo tipoA = getTipoSimple(i.getDesignador());
 		if (tipoA == null || Tipos.POINTER != tipoA.getTipoConcreto()){
-			throw new UnsupportedOperationException(lineaError(i)+"No es de tipo pointer." + " Tipo: " + tipoA);			
+			//throw new UnsupportedOperationException(lineaError(i)+"No es de tipo pointer." + " Tipo: " + tipoA);			
 		}
 	}
 
@@ -337,7 +346,7 @@ public class Chequeo {
 		chequea(i.getDesignador());
 		Tipo tipoA = getTipoSimple(i.getDesignador());
 		if (tipoA == null || Tipos.POINTER != tipoA.getTipoConcreto()){
-			throw new UnsupportedOperationException(lineaError(i)+"No es de tipo pointer."+ " Tipo:"+tipoA);			
+			//throw new UnsupportedOperationException(lineaError(i)+"No es de tipo pointer."+ " Tipo:"+tipoA);			
 		}
 	}
 
@@ -374,11 +383,11 @@ public class Chequeo {
 			Tipo tipoArg = getTipoSimple(e);			
 			if (!p.isPorValor() && e.getTipoExpresion() != TipoExpresion.DESIGNADOR){
 				throw new UnsupportedOperationException(lineaError(i)+"El parámetro i-esimo debe ser un designador.");				
-			} else if (!compatibles(tipoArg.getTipoConcreto(), p.getTipo().getTipoConcreto())){
+			} /*else if (!compatibles(tipoArg.getTipoConcreto(), p.getTipo().getTipoConcreto())){
 				throw new UnsupportedOperationException(
 						lineaError(i)+"Tipos incompatibles en parámetro i-esimo. Esperado:"+p.getTipo().getTipoConcreto()
 						+" Recibido: " + tipoArg);				
-			}		
+			}	*/	
 			
 		}
 		
@@ -388,7 +397,7 @@ public class Chequeo {
 		chequeaCasos(i.getCasos());
 		Tipo tipoA = getTipoSimple(i.getCasos());
 		if (tipoA == null || Tipos.BOOL != tipoA.getTipoConcreto()){
-			throw new UnsupportedOperationException(lineaError(i)+"No es de tipo booleano la condición. " + "Tipo: "+tipoA);			
+			//throw new UnsupportedOperationException(lineaError(i)+"No es de tipo booleano la condición. " + "Tipo: "+tipoA);			
 		}
 	}
 
@@ -396,7 +405,7 @@ public class Chequeo {
 		chequeaCasos(i.getCasos());
 		Tipo tipoA = getTipoSimple(i.getCasos());
 		if (tipoA == null || Tipos.BOOL != tipoA.getTipoConcreto()){
-			throw new UnsupportedOperationException(lineaError(i)+"No es de tipo booleano la condición. " + "Tipo: "+tipoA);				
+			//throw new UnsupportedOperationException(lineaError(i)+"No es de tipo booleano la condición. " + "Tipo: "+tipoA);				
 		}
 	}
 
@@ -407,8 +416,8 @@ public class Chequeo {
 		Tipo tipoA = getTipoSimple(i.getDesignador());
 		
 		if (tipoA == null || tipoB == null || !compatibles(tipoA.getTipoConcreto(), tipoB.getTipoConcreto())){
-			throw new UnsupportedOperationException(lineaError(i)+"Incompatibilidad de tipos en asignación. "
-					+ "TipoA: " + tipoA + " TipoB: " + tipoB+ " " + i.getDesignador().getIdentificador());
+			/*throw new UnsupportedOperationException(lineaError(i)+"Incompatibilidad de tipos en asignación. "
+					+ "TipoA: " + tipoA + " TipoB: " + tipoB+ " " + i.getDesignador().getIdentificador());*/
 		}
 	}
 
@@ -441,7 +450,7 @@ public class Chequeo {
 				Tipo tipoDes = getTipoSimple(d);
 				Tipo tipoExp = getTipoSimple(e);
 				
-				if (d == null || e == null){
+				/*if (d == null || e == null){
 					insertaTipoSimple(designador, null);
 				} else if (tipoDes.getTipoConcreto() != Tipos.ARRAY){
 					throw new UnsupportedOperationException("El designador debería ser de tipo array.");
@@ -449,7 +458,7 @@ public class Chequeo {
 					throw new UnsupportedOperationException("El índice debería ser de tipo entero.");					
 				} else {
 					insertaTipoSimple(designador, tipoDes);					
-				}		
+				}	*/	
 				
 								
 				break;
@@ -469,14 +478,9 @@ public class Chequeo {
 				
 				Tipo tipoConcreto = null;
 				if (obj instanceof DecVariable){
-					tipoConcreto = ((DecVariable) obj).getTipo();
+					tipoConcreto = getTipoSimple((DecVariable)obj);//((DecVariable) obj).getTipo();
 				} else {
-					Parametro p = ((Parametro) obj);
-					if (p.isPorValor()) {
-						tipoConcreto = p.getTipo();						
-					} else {
-						tipoConcreto = new TipoPuntero(p.getTipo());
-					}					
+					tipoConcreto = getTipoSimple((Parametro)obj);/// ((Parametro) obj).getTipo();	
 				}	
 				
 				System.out.println(id + " tiene de tipo " + tipoConcreto);
@@ -488,14 +492,24 @@ public class Chequeo {
 				chequea(d);
 				
 				Tipo tipoD = getTipoSimple(d);	
-				
-				System.out.println("tipo simple de " + d + " es " + tipoD);				
-				
 				if (tipoD == null){
 					insertaTipoSimple(designador, null); 
 					break; 
 				}
-
+				
+				TipoPuntero tPunt = (TipoPuntero) getTipoSimple(d.getDesignador());
+				System.out.println(((TipoID)tPunt.getTipoPuntero()).getId());
+				TipoStruct tStruct = (TipoStruct) getTipoSimple(tPunt.getTipoPuntero());
+				
+						
+				// buscar: designador.getIdentificador()
+				// en: getTipoSimple(d.getDesignador()); que debería ser el struct
+				// en: cualquier DecTipo de los que hay.
+				
+				
+				System.out.println("tipo simple de " + designador + " es " + tStruct);				
+				
+				
 				if (tipoD.getTipoConcreto() == Tipos.POINTER){
 				
 					Object c = vinculos.get(d.getDesignador());
@@ -503,10 +517,10 @@ public class Chequeo {
 						Tipo tipoSimple = null;
 						if (c instanceof Parametro){
 							Parametro p = (Parametro) c;
+							
 							tipoSimple = getTipoSimple(p.getTipo());
-							System.out.println(getTipoSimple(p));				
-						} 
-						
+							System.out.println("CAMPO_DE_STRUCT:"+p.getIdentificador()+" "+tipoSimple);				
+						} 						
 						
 						insertaTipoSimple(designador, tipoSimple);
 					} else {
@@ -525,9 +539,9 @@ public class Chequeo {
 				
 				Tipo tipo = getTipoSimple(d);	
 				if (tipo.getTipoConcreto() != Tipos.POINTER){
-					throw new UnsupportedOperationException(lineaError(designador)+
+					/*throw new UnsupportedOperationException(lineaError(designador)+
 							"El designador debería ser de tipo puntero."+
-							"\nEl tipo era: " + tipo);
+							"\nEl tipo era: " + tipo);*/
 				} else {
 					insertaTipoSimple(designador, tipo);
 				}
