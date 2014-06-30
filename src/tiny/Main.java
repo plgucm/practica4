@@ -40,7 +40,7 @@ public class Main {
 		Programa p = AnalizadorSintacticoTiny.programaRaiz;	
 		Map<Object, Integer> numLineas = AnalizadorSintacticoTiny.cons.getNumeroLinea();
 
-		Vinculador vinculador = new Vinculador();
+		Vinculador vinculador = new Vinculador(numLineas);
 		Map<Object, Object> vinculos = vinculador.vincula(p);
 		System.out.println(" <-------- Vinculación completada --------->");
 		

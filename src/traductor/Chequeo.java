@@ -78,7 +78,7 @@ public class Chequeo {
 	}
 
 	private boolean esTipoLegible(Tipos tipoA) {
-		return tipoA == Tipos.POINTER || tipoA == Tipos.INT;
+		return tipoA == Tipos.DOUBLE || tipoA == Tipos.BOOL || tipoA == Tipos.INT;
 	}
 	
 	/*************************************************************************************
@@ -147,7 +147,7 @@ public class Chequeo {
 			
 			Object tID = tipo;	
 			
-			//System.out.println("ANTES: " + tID + " id: " + ((TipoID)tID).getId());
+			////System.out.println("ANTES: " + tID + " id: " + ((TipoID)tID).getId());
 			while (tID instanceof TipoID){
 				Object obj = vinculos.get(tID);
 				if (obj instanceof DecTipo){
@@ -157,7 +157,7 @@ public class Chequeo {
 					break;
 				}				
 			}	
-			//System.out.println("DESPUES: " + tID);	
+			////System.out.println("DESPUES: " + tID);	
 					
 			return (Tipo) tID;
 		case STRUCT:
@@ -440,7 +440,7 @@ public class Chequeo {
 		Designador d = designador.getDesignador();
 		String id = designador.getIdentificador();
 	
-		System.out.println(tiposSimples);
+		//System.out.println(tiposSimples);
 		
 		switch(designador.getTipo()){
 			case ARRAY: {
@@ -484,7 +484,7 @@ public class Chequeo {
 					tipoConcreto = getTipoSimple(((Parametro)obj));
 				}	
 				
-				System.out.println(id + " tiene de tipo " + tipoConcreto);
+				//System.out.println(id + " tiene de tipo " + tipoConcreto);
 				insertaTipoSimple(designador, tipoConcreto);			
 				
 				break;
@@ -498,9 +498,9 @@ public class Chequeo {
 					break; 
 				}
 
-				System.out.println("<<<<<>>>>>>>>>>");
-				System.out.println(tipoD);
-				System.out.println("<<<<<>>>>>>>>>>");
+				//System.out.println("<<<<<>>>>>>>>>>");
+				//System.out.println(tipoD);
+				//System.out.println("<<<<<>>>>>>>>>>");
 				
 			//	TipoStruct tStruct = (TipoStruct) tipoD;
 				
@@ -509,7 +509,7 @@ public class Chequeo {
 				/*List<DecTipo> dts = tStruct.getTipos();
 				for (DecTipo dt : dts){
 					if (dt.getId().equalsIgnoreCase(designador.getIdentificador())){
-						System.out.println("ENCONTRADO::::::::::::::::::");
+						//System.out.println("ENCONTRADO::::::::::::::::::");
 					}
 					
 					
@@ -520,7 +520,7 @@ public class Chequeo {
 				// en: cualquier DecTipo de los que hay.
 				
 				
-				//System.out.println("tipo simple de " + designador + " es " + tStruct);				
+				////System.out.println("tipo simple de " + designador + " es " + tStruct);				
 				
 				
 				if (tipoD.getTipoConcreto() == Tipos.POINTER){
@@ -532,7 +532,7 @@ public class Chequeo {
 							Parametro p = (Parametro) c;
 							
 							tipoSimple = getTipoSimple(p.getTipo());
-							System.out.println("CAMPO_DE_STRUCT:"+p.getIdentificador()+" "+tipoSimple);				
+							//System.out.println("CAMPO_DE_STRUCT:"+p.getIdentificador()+" "+tipoSimple);				
 						} 						
 						
 						insertaTipoSimple(designador, tipoSimple);
@@ -564,7 +564,7 @@ public class Chequeo {
 		default: break;
 		}	
 		
-		// System.out.println("CD de id:" + id + ", des: " + d + ", exp: " + e + " tipoSimple: " + getTipoSimple(designador));				
+		// //System.out.println("CD de id:" + id + ", des: " + d + ", exp: " + e + " tipoSimple: " + getTipoSimple(designador));				
 	}
 
 	private void chequea(Expresion expresion) {

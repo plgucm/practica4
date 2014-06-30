@@ -43,6 +43,15 @@ public class Vinculador {
 	
 	private Stack<Map<String, Object>> tablaDeSimbolos;
 	private Map<Object, Object> vinculos;
+	private Map<Object, Integer> numLineas;	
+	
+	public Vinculador(Map<Object, Integer> numLineas) {
+		this.numLineas = numLineas;
+	}
+	
+	private String lineaError(Object nodo) {
+		return "Error en línea " + numLineas.get(nodo) + ": ";
+	}
 
 	public Map<Object, Object> vincula(Programa p) {
 		iniciaTS();
@@ -211,7 +220,7 @@ public class Vinculador {
 				
 				Object vinculo = declaracionDe(id);
 				if (vinculo == null){
-					throw new UnsupportedOperationException("Identificador no declarado. " + id);			
+					throw new UnsupportedOperationException(lineaError(designador)+"Identificador no declarado. " + id);			
 				}		
 				insertaVinculo(designador, vinculo);
 				
@@ -362,7 +371,7 @@ public class Vinculador {
 		String id = dt.getId();
 		vinculaTipo(dt.getTipo());		
 		if (!insertaID(id, dt)){			
-			throw new UnsupportedOperationException("Identificador duplicado. " + id);			
+			throw new UnsupportedOperationException(lineaError(dt)+"Identificador duplicado. " + id);			
 		}
 	}
 	
@@ -378,7 +387,7 @@ public class Vinculador {
 		String id = dv.getIdentificador();
 		vinculaTipo(dv.getTipo());
 		if (!insertaID(id, dv)){			
-			throw new UnsupportedOperationException("Identificador duplicado. " + id);			
+			throw new UnsupportedOperationException(lineaError(dv)+"Identificador duplicado. " + id);			
 		}	
 	}
 
@@ -388,7 +397,7 @@ public class Vinculador {
 			String id = ds.getIdentificador();
 			
 			if (!insertaID(id, ds)){			
-				throw new UnsupportedOperationException("Identificador duplicado. " + id);			
+				throw new UnsupportedOperationException(lineaError(ds)+"Identificador duplicado. " + id);			
 			}	
 			abreBloque();
 			
@@ -433,7 +442,7 @@ public class Vinculador {
 			Object dec = declaracionDe(tipoId.getId());
 			
 			if (dec == null){
-				throw new UnsupportedOperationException("Identificador no declarado. "+tipoId.getId());				
+				throw new UnsupportedOperationException(lineaError(tipo)+"Identificador no declarado. "+tipoId.getId());				
 			} else {
 				insertaVinculo(tipo, dec);
 				insertaID(tipoId.getId(), tipoId);
@@ -455,7 +464,7 @@ public class Vinculador {
 			for (DecTipo dt : tipoStruct.getTipos()){
 				String id = dt.getId();
 				if (campos.get(id) != null){
-					throw new UnsupportedOperationException("Campo duplicado. "+id);						
+					throw new UnsupportedOperationException(lineaError(dt)+"Campo duplicado. "+id);						
 				}
 				campos.put(id, dt.getTipo());		
 				vinculaTipo(dt.getTipo());
@@ -543,7 +552,7 @@ public class Vinculador {
 				
 				Object vinculo = declaracionDe(id);
 				if (vinculo == null){
-					throw new UnsupportedOperationException("Identificador no declarado. " + id);			
+					throw new UnsupportedOperationException(lineaError(designador)+"Identificador no declarado. " + id);			
 				}		
 				insertaVinculo(designador, vinculo);
 				
@@ -628,7 +637,7 @@ public class Vinculador {
 		String id = i.getIdentificador();
 		Object vinculo = declaracionDe(id);
 		if (vinculo == null){
-			throw new UnsupportedOperationException("Identificador no declarado. " + id);			
+			throw new UnsupportedOperationException(lineaError(i)+"Identificador no declarado. " + id);			
 		}	
 		insertaVinculo(i, vinculo);
 		
