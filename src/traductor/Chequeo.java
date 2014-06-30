@@ -329,9 +329,9 @@ public class Chequeo {
 		chequea(i.getDesignador());
 		Tipo tipoA = getTipoSimple(i.getDesignador());
 		if (tipoA == null || !esTipoLegible(tipoA.getTipoConcreto())){
-			throw new UnsupportedOperationException(lineaError(i)+"No es posible leer valores de ese tipo."
+			/*throw new UnsupportedOperationException(lineaError(i)+"No es posible leer valores de ese tipo."
 													+ " Tipo:" + tipoA +
-													" de " + i.getDesignador().getIdentificador());			
+													" de " + i.getDesignador().getIdentificador());			*/
 		}
 	}
 

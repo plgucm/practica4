@@ -73,6 +73,7 @@ import modelo.operadores.TipoOperador;
 import modelo.tipos.Tipo;
 import modelo.tipos.TipoArray;
 import modelo.tipos.TipoID;
+import modelo.tipos.TipoPuntero;
 import modelo.tipos.TipoStruct;
 import modelo.tipos.Tipos;
 
@@ -633,135 +634,144 @@ public class GeneraCodigo {
 		bloqueActual = bd;		
 	}
 
-	// ASIGNA ESPACIOS
-
-	private void asignaEspacioDecSubs(List<DecSubprograma> decSubprogramas) {
-		if (decSubprogramas == null){ return; }
-		for (DecSubprograma ds : decSubprogramas){
-			d.insertaInfoEnNodo(ds, "inicio", getCI());
-			asignaEspacio(ds);
-		}
-	}
-
-	private void asignaEspacio(DecSubprograma ds) {
-		if (ds.getPrograma() != null){
-			asignaEspacio(ds.getPrograma());	
-		}
-
-		List<Parametro> params = ds.getParametros();
-		int dir = 0;
-		if (params != null){
-			for (Parametro p : params){
-				int tam = 1;
-				if (p.isPorValor()){
-					tam = tamanioVar(p.getTipo());
-				}
-				d.insertaInfoEnNodo(p, "tam", tam);
-				d.insertaInfoEnNodo(p, "dir", dir);
-				d.insertaInfoEnNodo(p, "nivel", nivel);
-
-				//				System.out.println("TAM, DIR y NIVEL de " + p.getIdentificador() + " : " 
-				//							+ "("+tam+","+dir+","+nivel+")");					
-				dir += tam;
-			}
-		}
-	}
+	/*******************************************************************************
+	 *  ASIGNA ESPACIOS
+	 *******************************************************************************/
 
 	private void asignaEspacioDesdeRaiz(Programa p) {
 		List<DecSubprograma> ds = p.getDecSubprogramas();
-		dir = anidamiento(ds)+1;
-		d.insertaInfoEnNodo(p, "finDatos", dir);
-		//		System.out.println("Anidamiento: " + dir);
-		nivel = 0;
-		asignaEspacio(p);
-	}
-
-	private void asignaEspacio(Programa p) {
-		int dirCopia = dir;
-		int nivelCopia = nivel;
-		if (p.getDecTipos() != null) asignaEspacio(p.getDecTipos());
-		if (p.getDecVariables() != null) asignaEspacioVars(p.getDecVariables());
-		nivel++;
-		d.insertaInfoEnNodo(p, "nivel", nivel);
-		if (p.getDecSubprogramas() != null) asignaEspacioDecSubs(p.getDecSubprogramas());
-		dir = dirCopia;
-		nivel = nivelCopia;	
-	}
-
-	private void asignaEspacio(List<DecTipo> decTipos) {
-		if (decTipos == null){ return; }		
-		for (DecTipo dec : decTipos){
-			int tam = tamanioVar(dec.getTipo());
-			d.insertaInfoEnNodo(dec.getId(), "tam", tam);
-		}			
-	}
-
-	private void asignaEspacioVars(List<DecVariable> decVariables) {		
-		int dir = 0;
-		int oldDir = this.dir;
-		d.insertaInfoEnNodo(decVariables, "dir", this.dir);
-		for (DecVariable dv : decVariables){
-			int tam = tamanioVar(dv.getTipo());		
-
-			if (this.nivel == 0){
-				d.insertaInfoEnNodo(dv, "dir", this.dir);
-//				System.out.println("TAM, DIR y NIVEL de " +
-//				dv.getIdentificador() + " : " + "("+tam+","+this.dir+","+nivel+")");	
-			} else {
-				d.insertaInfoEnNodo(dv, "dir", dir);	
-//				System.out.println("TAM, DIR y NIVEL de " + dv.getIdentificador() + " : " + "("+tam+","+dir+","+nivel+")");				
-			}
-
-			d.insertaInfoEnNodo(dv, "nivel", nivel);	
-			d.insertaInfoEnNodo(dv, "tam", tam);
-			dir += tam;				
-			this.dir += tam;
+		int anida = dir = anidamiento(ds);
+		d.insertaInfoEnNodo(p, "finDatos", anida);
+		nivel = 0;		
+		for (int i = 0; i < p.getDecVariables().size(); i++) {
+			DecVariable decVariable = p.getDecVariables().get(i);
+			asignaEspacio(decVariable);
 		}
-		d.insertaInfoEnNodo(decVariables, "tam", this.dir-oldDir-1);
-		d.insertaInfoEnNodo(decVariables, "nivel", nivel);
-
+		for (int j = 0; j < p.getDecSubprogramas().size(); j++) {
+			DecSubprograma decSubprograma = p.getDecSubprogramas().get(j);
+			asignaEspacio(decSubprograma);			
+		}		
+	}
+	
+	private void asignaEspacio(DecVariable decVariable) {
+		d.insertaInfoEnNodo(decVariable, "nivel", nivel);
+		d.insertaInfoEnNodo(decVariable, "dir", dir);
+		asignaEspacio(decVariable.getTipo());
+		System.out.println(decVariable.getTipo());
+		int tam = (int) d.getDecoracion(decVariable.getTipo()).get("tam");
+		
+		
+		d.insertaInfoEnNodo(decVariable, "tam", tam);
+		dir += tam;	
 	}
 
-	private int tamanioVar(Tipo tipo) {
-		//System.out.println(tipo.getTipoConcreto());
+	private void asignaEspacio(DecSubprograma ds) {
+		int copiaDir = dir;
+		int copiaNivel = nivel;
+		nivel++;
+		d.insertaInfoEnNodo(ds, "nivel", nivel);
+		dir = 0;
+		if (ds.getParametros() != null){
+			for (int i = 0; i < ds.getParametros().size(); i++) {
+				Parametro p = ds.getParametros().get(i);
+				d.insertaInfoEnNodo(p, "dir", dir);
+				d.insertaInfoEnNodo(p, "nivel", nivel);
+				asignaEspacio(p.getTipo());
+				int tam = (int) d.getDecoracion(p.getTipo()).get("tam");			
+				
+				if (!p.isPorValor()){
+					dir++;
+				} else {
+					dir+=tam;
+				}
+				Programa programa = ds.getPrograma();
+				if (programa != null){
+					if (programa.getDecSubprogramas() != null){
+						for (int j = 0; j < programa.getDecSubprogramas().size(); j++) {
+							DecSubprograma decSubprograma = programa.getDecSubprogramas().get(j);
+							asignaEspacio(decSubprograma);					
+						}				
+					}
+				}
+				
+			}
+		}
+		
+		nivel = copiaNivel;
+		dir = copiaDir;
+	}
+
+	private void asignaEspacio(Tipo tipo) {
 		switch(tipo.getTipoConcreto()){
+		case POINTER:
+			asignaEspacio(((TipoPuntero)tipo).getTipoPuntero());
 		case BOOL:
 		case INT:
-		case POINTER:
 		case DOUBLE:
-			return 1;
-		case IDENT:
-			TipoID tipoReal = (TipoID)tipo;
-			int tamanio = (Integer) d.getDecoracion(tipoReal.getId()).get("tam");
-			return tamanio;
-		case ARRAY:
-			TipoArray arr = (TipoArray) tipo;
-			int dim = arr.getDimension();
-			int tamInterior = tamanioVar(arr.getTipoInterno());
-			return dim * tamInterior;			
-		case STRUCT:
-			TipoStruct struct = (TipoStruct) tipo;
-			int despl = 0;
-			List<DecTipo> tipos = struct.getTipos();
-			for (DecTipo tip : tipos){
-				d.insertaInfoEnNodo(tip.getId(), "desp", despl);
-				despl += tamanioVar(tip.getTipo());
+			d.insertaInfoEnNodo(tipo, "tam", 1);
+			return;
+		case ARRAY:		
+			Integer tamDec = (Integer) d.getDecoracion(tipo).get("tam");
+			if (tamDec == null){
+				TipoArray arr = (TipoArray) tipo;	
+				asignaEspacio(arr.getTipoInterno());				
+				Integer tamDec2 = (Integer) d.getDecoracion(arr.getTipoInterno()).get("tam");					
+				d.insertaInfoEnNodo(tipo, "tam", tamDec2*arr.getDimension());
 			}
-			return despl;
+			return;	
+		case STRUCT:
+			Integer tamDec3 = (Integer) d.getDecoracion(tipo).get("tam");
+			TipoStruct struct = (TipoStruct) tipo;
+			if (tamDec3 == null){
+				d.insertaInfoEnNodo(struct, "tam", 0);
+				
+				for (int i = 0; i < struct.getTipos().size(); i++) {
+					DecTipo decTipo = struct.getTipos().get(i);
+
+					Integer tamDec4 = (Integer) d.getDecoracion(tipo).get("tam");					
+					d.insertaInfoEnNodo(decTipo, "desp", tamDec4);
+					
+					asignaEspacio(decTipo.getTipo());
+					
+					Integer tamDec5 = (Integer) d.getDecoracion(decTipo.getTipo()).get("tam");					
+					d.insertaInfoEnNodo(struct, "tam", tamDec4+tamDec5);					
+				}	
+				
+			}
+		/* Debería haberse simplificado en chequea.*/
+			return;
+		case IDENT:
+			
+			Integer tamDec6 = (Integer) d.getDecoracion(tipo).get("tam");
+			TipoID tipoID = (TipoID) tipo;
+			if (tamDec6 == null){
+				 Object obj = vinculos.get(tipoID);
+				
+				if (obj instanceof DecTipo) {
+					DecTipo dt = (DecTipo) obj;
+					asignaEspacio(dt.getTipo());				
+					Integer tamDec7 = (Integer) d.getDecoracion(dt.getTipo()).get("tam");
+					d.insertaInfoEnNodo(tipo, "tam", tamDec7);
+				} else {
+					d.insertaInfoEnNodo(tipo, "tam", 0);
+				}
+				
+			}
+			
 		default: break;
 		}		
-
-		return 0;
 	}
+	
+	/*******************************************************************************
+	 *  ANIDAMIENTO
+	 *******************************************************************************/
 
 	private int anidamiento(List<DecSubprograma> ds) {
 		if (ds == null) return 0;
 		int maxAnidamiento = 0;
-
 		for (DecSubprograma d : ds){
 			maxAnidamiento = Math.max(maxAnidamiento, anidamiento(d));
 		}
-
 		return maxAnidamiento;
 	}
 

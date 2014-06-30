@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.Map;
 
+import maquinap.MaquinaP;
 import modelo.instrucciones.Programa;
 import traductor.Chequeo;
 import traductor.Decoracion;
@@ -19,8 +20,6 @@ public class Main {
 	 * Aquí deberá asignar el ejemplo de entrada.
 	 */
 	static final String nombreArchivoFuente = "EjemploPractica3.txt";
-	
-	
 	static final String nombreArchivoSalida = "output.txt";
 	
 	public static void main(String[] args) throws Exception {
@@ -60,7 +59,7 @@ public class Main {
 
 		System.out.println(" <-------- Inicio ejecución del programa --------->");
 		
-//		MaquinaP.main(new String[]{carpetaSalidaCasosDePrueba+nombreArchivoSalida});
+		// MaquinaP.main(new String[]{carpetaSalidaCasosDePrueba+nombreArchivoSalida});
 
 		System.out.println(" <-------- Fin de la ejecución del programa--------->");
 		
