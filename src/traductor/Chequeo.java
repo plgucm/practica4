@@ -32,6 +32,9 @@ import modelo.instrucciones.TiposInstruccion;
 import modelo.instrucciones.Write;
 import modelo.tipos.Tipo;
 import modelo.tipos.TipoArray;
+import modelo.tipos.TipoBool;
+import modelo.tipos.TipoDouble;
+import modelo.tipos.TipoEntero;
 import modelo.tipos.TipoID;
 import modelo.tipos.TipoPuntero;
 import modelo.tipos.TipoStruct;
@@ -40,13 +43,13 @@ import modelo.tipos.Tipos;
 public class Chequeo {
 
 	private Map<Object, Object> vinculos;
-	private Map<Object, Tipos> tiposSimples;
+	private Map<Object, Tipo> tiposSimples;
 	private Map<Object, Integer> numLineas;
 
 	public Chequeo(Map<Object, Integer> numLineas, Map<Object, Object> vinculos) {
 		this.vinculos = vinculos;		
 		this.numLineas = numLineas;
-		this.tiposSimples = new HashMap<Object, Tipos>();
+		this.tiposSimples = new HashMap<Object, Tipo>();
 	}
 	
 	/*************************************************************************************
@@ -58,11 +61,11 @@ public class Chequeo {
 		return "Error en línea " + numLineas.get(nodo) + ": ";
 	}
 		
-	public Tipos getTipoSimple(Object object){
+	public Tipo getTipoSimple(Object object){
 		return tiposSimples.get(object);
 	}
 	
-	public void insertaTipoSimple(Object obj, Tipos tipo){
+	public void insertaTipoSimple(Object obj, Tipo tipo){
 		this.tiposSimples.put(obj, tipo);
 	}
 	
@@ -139,42 +142,47 @@ public class Chequeo {
 		insertaTipoSimple(d, tipoSimplificado(d.getTipo()));
 	}
 	
-	private Tipos tipoSimplificado(Tipo tipo) {
+	private Tipo tipoSimplificado(Tipo tipo) {
 		switch (tipo.getTipoConcreto()) {
 		case ARRAY:
 			TipoArray ta = (TipoArray) tipo;
-			Tipos tSimplArr = tipoSimplificado(ta.getTipoInterno());
-			insertaTipoSimple(tipo, tSimplArr);			
-			return Tipos.ARRAY;
+			Tipo tSimplArr = tipoSimplificado(ta.getTipoInterno());
+			insertaTipoSimple(ta, tSimplArr);			
+			return tipo;
 		case IDENT:
-			Object obj = vinculos.get(tipo);
-			Tipos tSimplID = null;
-			if (obj instanceof Tipo){
-				tSimplID = tipoSimplificado((Tipo)obj);	
-				insertaTipoSimple(tipo, tSimplID);
-			}
-			return Tipos.IDENT;
+			
+			Object tID = tipo;			
+			while (tID instanceof TipoID){
+				Object obj = vinculos.get(tID);
+				if (obj instanceof DecTipo){
+					tID = vinculos.get(obj);
+					insertaTipoSimple(tipo, (Tipo)tID);	
+				} else {
+					break;
+				}				
+			}		
+					
+			return (Tipo) tID;
 		case STRUCT:
 			TipoStruct ts = (TipoStruct) tipo;
 			List<DecTipo> dts = ts.getTipos();
 			for (DecTipo dt : dts){
-				Tipos tSimplStr = tipoSimplificado(dt.getTipo());
-				insertaTipoSimple(dt.getTipo(), tSimplStr);
+				Tipo tSimplStr =  tipoSimplificado(dt.getTipo());
+				insertaTipoSimple(dt, tSimplStr);
 			}
-			return Tipos.STRUCT;
+			return tipo;
 		case POINTER:
 			TipoPuntero tp = (TipoPuntero) tipo;
-			Tipos tSimplPointer = tipoSimplificado(tp.getTipoPuntero());
+			Tipo tSimplPointer = tipoSimplificado(tp.getTipoPuntero());
 			insertaTipoSimple(tipo, tSimplPointer);			
-			return Tipos.POINTER;
+			return tipo;
 		case BOOL:
-			return Tipos.BOOL;
+			return tipo;
 		case INT: 
-			return Tipos.INT;
+			return tipo;
 		case DOUBLE:
-			return Tipos.DOUBLE;
+			return tipo;
 		case NULL:
-			return Tipos.NULL;
 		default:
 			return null;
 		}
@@ -201,7 +209,6 @@ public class Chequeo {
 			chequea(ta.getTipoInterno());
 			break;
 		case IDENT:
-//			TipoID tid = (TipoID) tipo;
 			Object obj = vinculos.get(tipo);
 			if (obj == null){ break; }
 			if (!(obj instanceof DecTipo)){
@@ -302,17 +309,17 @@ public class Chequeo {
 
 	private void chequea(Write i) {
 		chequea(i.getExpresion());
-		Tipos tipoA = getTipoSimple(i.getExpresion());
-		if (tipoA == null || !esTipoPresentable(tipoA)){
-			throw new UnsupportedOperationException("No es posible escribir valores de ese tipo.");			
+		Tipo tipoA = getTipoSimple(i.getExpresion());
+		if (tipoA == null || !esTipoPresentable(tipoA.getTipoConcreto())){
+			throw new UnsupportedOperationException(lineaError(i)+"No es posible escribir valores de ese tipo.");			
 		}
 	}
 
 	private void chequea(Read i) {
 		chequea(i.getDesignador());
-		Tipos tipoA = getTipoSimple(i.getDesignador());
-		if (tipoA == null || !esTipoLegible(tipoA)){
-			throw new UnsupportedOperationException("No es posible leer valores de ese tipo."
+		Tipo tipoA = getTipoSimple(i.getDesignador());
+		if (tipoA == null || !esTipoLegible(tipoA.getTipoConcreto())){
+			throw new UnsupportedOperationException(lineaError(i)+"No es posible leer valores de ese tipo."
 													+ " Tipo:" + tipoA +
 													" de " + i.getDesignador().getIdentificador());			
 		}
@@ -320,17 +327,17 @@ public class Chequeo {
 
 	private void chequea(New i) {
 		chequea(i.getDesignador());
-		Tipos tipoA = getTipoSimple(i.getDesignador());
-		if (tipoA == null || Tipos.POINTER != tipoA){
-			throw new UnsupportedOperationException("No es de tipo pointer." + " Tipo: " + tipoA);			
+		Tipo tipoA = getTipoSimple(i.getDesignador());
+		if (tipoA == null || Tipos.POINTER != tipoA.getTipoConcreto()){
+			throw new UnsupportedOperationException(lineaError(i)+"No es de tipo pointer." + " Tipo: " + tipoA);			
 		}
 	}
 
 	private void chequea(Delete i) {
 		chequea(i.getDesignador());
-		Tipos tipoA = getTipoSimple(i.getDesignador());
-		if (tipoA == null || Tipos.POINTER != tipoA){
-			throw new UnsupportedOperationException("No es de tipo pointer."+ " Tipo:"+tipoA);			
+		Tipo tipoA = getTipoSimple(i.getDesignador());
+		if (tipoA == null || Tipos.POINTER != tipoA.getTipoConcreto()){
+			throw new UnsupportedOperationException(lineaError(i)+"No es de tipo pointer."+ " Tipo:"+tipoA);			
 		}
 	}
 
@@ -341,7 +348,7 @@ public class Chequeo {
 		if (obj instanceof DecSubprograma) {
 			ds = (DecSubprograma) obj;			
 		} else {
-			throw new UnsupportedOperationException("Se está invocando a un objeto que no es un procedimiento.");			
+			throw new UnsupportedOperationException(lineaError(i)+"Se está invocando a un objeto que no es un procedimiento.");			
 		}		
 		
 		List<Expresion> argumentos = i.getParams();
@@ -357,48 +364,49 @@ public class Chequeo {
 			paramsDS = parametros.size();
 		}
 		if (args != paramsDS){
-			throw new UnsupportedOperationException("Discordancia en número de parámetros.");				
+			throw new UnsupportedOperationException(lineaError(i)+"Discordancia en número de parámetros.");				
 		}
 		
 		for (int j = 0; j < args; j++){
 			Expresion e = argumentos.get(j);
 			chequea(e);
 			Parametro p = parametros.get(j);
-			Tipos tipoArg = getTipoSimple(e);			
+			Tipo tipoArg = getTipoSimple(e);			
 			if (!p.isPorValor() && e.getTipoExpresion() != TipoExpresion.DESIGNADOR){
-				throw new UnsupportedOperationException("El parámetro i-esimo debe ser un designador.");				
-			} else if (!compatibles(tipoArg, p.getTipo().getTipoConcreto())){
+				throw new UnsupportedOperationException(lineaError(i)+"El parámetro i-esimo debe ser un designador.");				
+			} else if (!compatibles(tipoArg.getTipoConcreto(), p.getTipo().getTipoConcreto())){
 				throw new UnsupportedOperationException(
-						"Tipos incompatibles en parámetro i-esimo. Esperado:"+p.getTipo().getTipoConcreto()
+						lineaError(i)+"Tipos incompatibles en parámetro i-esimo. Esperado:"+p.getTipo().getTipoConcreto()
 						+" Recibido: " + tipoArg);				
-			}				
+			}		
+			
 		}
 		
 	}
 
 	private void chequea(Condicional i) {
 		chequeaCasos(i.getCasos());
-		Tipos tipoA = getTipoSimple(i.getCasos());
-		if (tipoA == null || Tipos.BOOL != tipoA){
-			throw new UnsupportedOperationException("No es de tipo booleano la condición. " + "Tipo: "+tipoA);			
+		Tipo tipoA = getTipoSimple(i.getCasos());
+		if (tipoA == null || Tipos.BOOL != tipoA.getTipoConcreto()){
+			throw new UnsupportedOperationException(lineaError(i)+"No es de tipo booleano la condición. " + "Tipo: "+tipoA);			
 		}
 	}
 
 	private void chequea(Bucle i) {
 		chequeaCasos(i.getCasos());
-		Tipos tipoA = getTipoSimple(i.getCasos());
-		if (tipoA == null || Tipos.BOOL != tipoA){
-			throw new UnsupportedOperationException("No es de tipo booleano la condición. " + "Tipo: "+tipoA);				
+		Tipo tipoA = getTipoSimple(i.getCasos());
+		if (tipoA == null || Tipos.BOOL != tipoA.getTipoConcreto()){
+			throw new UnsupportedOperationException(lineaError(i)+"No es de tipo booleano la condición. " + "Tipo: "+tipoA);				
 		}
 	}
 
 	private void chequea(Asignacion i) {
 		chequea(i.getExpresion());
-		Tipos tipoB = getTipoSimple(i.getExpresion());
+		Tipo tipoB = getTipoSimple(i.getExpresion());
 		chequea(i.getDesignador());
-		Tipos tipoA = getTipoSimple(i.getDesignador());
+		Tipo tipoA = getTipoSimple(i.getDesignador());
 		
-		if (tipoA == null || tipoB == null || !compatibles(tipoA, tipoB)){
+		if (tipoA == null || tipoB == null || !compatibles(tipoA.getTipoConcreto(), tipoB.getTipoConcreto())){
 			throw new UnsupportedOperationException(lineaError(i)+"Incompatibilidad de tipos en asignación. "
 					+ "TipoA: " + tipoA + " TipoB: " + tipoB+ " " + i.getDesignador().getIdentificador());
 		}
@@ -421,8 +429,8 @@ public class Chequeo {
 		Expresion e = designador.getExpresion();
 		Designador d = designador.getDesignador();
 		String id = designador.getIdentificador();
-		
-//		System.out.println("CD de id:" + id + ", des: " + d + ", exp: " + e + " tipoSimple: " + getTipoSimple(d));	
+	
+		System.out.println(tiposSimples);
 		
 		switch(designador.getTipo()){
 			case ARRAY: {
@@ -430,14 +438,14 @@ public class Chequeo {
 				chequea(d);
 				chequea(e);
 				
-				Tipos tipoDes = getTipoSimple(d);
-				Tipos tipoExp = getTipoSimple(e);
+				Tipo tipoDes = getTipoSimple(d);
+				Tipo tipoExp = getTipoSimple(e);
 				
 				if (d == null || e == null){
 					insertaTipoSimple(designador, null);
-				} else if (tipoDes != Tipos.ARRAY){
+				} else if (tipoDes.getTipoConcreto() != Tipos.ARRAY){
 					throw new UnsupportedOperationException("El designador debería ser de tipo array.");
-				} else if (tipoExp != Tipos.INT){
+				} else if (tipoExp.getTipoConcreto() != Tipos.INT){
 					throw new UnsupportedOperationException("El índice debería ser de tipo entero.");					
 				} else {
 					insertaTipoSimple(designador, tipoDes);					
@@ -449,7 +457,7 @@ public class Chequeo {
 			case ID: {
 				
 				if (id.equalsIgnoreCase("null")){ 
-					insertaTipoSimple(designador, Tipos.NULL); 
+					insertaTipoSimple(designador, null); 
 					break; 
 				}
 				
@@ -459,19 +467,19 @@ public class Chequeo {
 					throw new UnsupportedOperationException("ID debe ser una variable o un parámetro.");					
 				}
 				
-				Tipos tipoConcreto = null;
+				Tipo tipoConcreto = null;
 				if (obj instanceof DecVariable){
-					tipoConcreto = ((DecVariable) obj).getTipo().getTipoConcreto();
+					tipoConcreto = ((DecVariable) obj).getTipo();
 				} else {
 					Parametro p = ((Parametro) obj);
 					if (p.isPorValor()) {
-						tipoConcreto = p.getTipo().getTipoConcreto();						
+						tipoConcreto = p.getTipo();						
 					} else {
-						tipoConcreto = Tipos.POINTER;
+						tipoConcreto = new TipoPuntero(p.getTipo());
 					}					
 				}	
 				
-				
+				System.out.println(id + " tiene de tipo " + tipoConcreto);
 				insertaTipoSimple(designador, tipoConcreto);			
 				
 				break;
@@ -479,22 +487,20 @@ public class Chequeo {
 			case CAMPO_DE_STRUCT: {	
 				chequea(d);
 				
-				Tipos tipoD = getTipoSimple(d);				
+				Tipo tipoD = getTipoSimple(d);	
 				
-				System.out.println("el campo " + id + " del struct " + d.getDesignador().getIdentificador() +
-									" es de tipo " + tipoD);
-				
+				System.out.println("tipo simple de " + d + " es " + tipoD);				
 				
 				if (tipoD == null){
-					insertaTipoSimple(designador, Tipos.NULL); 
+					insertaTipoSimple(designador, null); 
 					break; 
 				}
 
-				if (tipoD == Tipos.STRUCT){
+				if (tipoD.getTipoConcreto() == Tipos.POINTER){
 				
 					Object c = vinculos.get(d.getDesignador());
 					if (c != null){			
-						Tipos tipoSimple = null;
+						Tipo tipoSimple = null;
 						if (c instanceof Parametro){
 							Parametro p = (Parametro) c;
 							tipoSimple = getTipoSimple(p.getTipo());
@@ -517,8 +523,8 @@ public class Chequeo {
 			case PUNTERO: {
 				chequea(d);
 				
-				Tipos tipo = getTipoSimple(d);	
-				if (tipo != Tipos.POINTER){
+				Tipo tipo = getTipoSimple(d);	
+				if (tipo.getTipoConcreto() != Tipos.POINTER){
 					throw new UnsupportedOperationException(lineaError(designador)+
 							"El designador debería ser de tipo puntero."+
 							"\nEl tipo era: " + tipo);
@@ -529,7 +535,9 @@ public class Chequeo {
 				break;
 			}
 		default: break;
-		}				
+		}	
+		
+		// System.out.println("CD de id:" + id + ", des: " + d + ", exp: " + e + " tipoSimple: " + getTipoSimple(designador));				
 	}
 
 	private void chequea(Expresion expresion) {
@@ -560,27 +568,26 @@ public class Chequeo {
 	
 	
 	private void chequea(ExpresionInteger expresion) {
-		insertaTipoSimple(expresion, Tipos.INT);
+		insertaTipoSimple(expresion, new TipoEntero());
 	}
 
 	private void chequea(ExpresionDouble expresion) {
-		insertaTipoSimple(expresion, Tipos.DOUBLE);
+		insertaTipoSimple(expresion, new TipoDouble());
 	}
 
 	private void chequea(ExpresionBoolean expresion) { 
-		insertaTipoSimple(expresion, Tipos.BOOL);
+		insertaTipoSimple(expresion, new TipoBool());
 	}
 	
 	private void chequea(ExpresionDesignador expresion) {
 		chequea(expresion.getValor());
-//		System.out.println("chequea ExpresionDesignador: "+expresion.getValor());
-		Tipos tipo = getTipoSimple(expresion.getValor());
+		Tipo tipo = getTipoSimple(expresion.getValor());
 		insertaTipoSimple(expresion, tipo);
 	}
 
 	private void chequea(ExpresionUnaria expresion) {
 		chequea(expresion.getExp());
-		Tipos tipo = getTipoSimple(expresion.getExp());
+		Tipo tipo = getTipoSimple(expresion.getExp());
 		insertaTipoSimple(expresion, tipo);		
 	}
 
@@ -590,19 +597,19 @@ public class Chequeo {
 		
 		chequea(exp0);
 		chequea(exp1);	
-		Tipos tipoA = getTipoSimple(exp0);
-		Tipos tipoB = getTipoSimple(exp1);
+		Tipo tipoA = getTipoSimple(exp0);
+		Tipo tipoB = getTipoSimple(exp1);
 		if (tipoA == null && tipoB == null){
 			insertaTipoSimple(expresion, null);
 		} else {
 			if (expresion.getOpBinario().esAritmetico()){
 				insertaTipoSimple(expresion, getTipoSimple(exp0));				
 			} else if (expresion.getOpBinario().esLogico()){
-				insertaTipoSimple(expresion, Tipos.BOOL);	
+				insertaTipoSimple(expresion, new TipoBool());	
 			} else if (expresion.getOpBinario().esComparacion()){
-				insertaTipoSimple(expresion, Tipos.BOOL);					
+				insertaTipoSimple(expresion, new TipoBool());					
 			} else {
-				insertaTipoSimple(expresion, Tipos.NULL);
+				insertaTipoSimple(expresion, null);
 			}
 		}
 	}
