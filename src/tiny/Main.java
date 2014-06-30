@@ -61,7 +61,7 @@ public class Main {
 		
 		// MaquinaP.main(new String[]{carpetaSalidaCasosDePrueba+nombreArchivoSalida});
 
-		System.out.println(" <-------- Fin de la ejecución del programa--------->");
+		System.out.println(" <-------- Fin de la ejecución del programa -------->");
 		
 	}
 }

@@ -183,13 +183,14 @@ public class GeneraCodigo {
 		aumentaCI(3);	
 		
 		BloqueDeCodigo bd = new BloqueDeCodigo();
+		
+		codigo(p);
+		bd.addBloque(bloqueActual);
+		
 		String inicio = generaInicio(
 				(Integer)d.getDecoracion(p.getDecVariables()).get("tam")+
 				(Integer)d.getDecoracion(p).get("finDatos"), getCI());
 		bd.setCodigo(inicio);
-		
-		codigo(p);
-		bd.addBloque(bloqueActual);
 		
 		bloqueRaiz = bd;	
 	}
@@ -344,10 +345,7 @@ public class GeneraCodigo {
 			if (p.isPorValor() && !p.getTipo().getTipoConcreto().equals(Tipos.POINTER)){
 				// Por valor y no es puntero. Se clona.
 				Integer tam =  (Integer) d.getDecoracion(p).get("tam");
-				if (tam == null){
-					tam = 0;
-					//					throw new UnsupportedOperationException("tam es null");
-				}
+				if (tam == null){ tam = 0; }
 				bd.addBloque(new BloqueDeCodigo(instrConAlgo(CLONA, tam)));
 			} else {
 				// Se pasa un valor entero.
@@ -363,6 +361,8 @@ public class GeneraCodigo {
 				instrConAlgo(IR_A, dirSalto));	
 		bd.addBloque(bd1);
 		aumentaCI(bd1.getLineasDeCodigo());
+		
+		d.insertaInfoEnNodo(i, "fin", getCI());
 
 		bloqueActual = bd;
 	}
@@ -376,10 +376,9 @@ public class GeneraCodigo {
 			for (Caso c : casos){
 				codigo(c.getExpresion());
 				bd.addBloque(bloqueActual);
-				aumentaCI(1);
 				codigoBloque(c.getBloque());
-				BloqueDeCodigo bd2 = new BloqueDeCodigo(
-						instrConAlgo(IR_F, getCI()+1));
+				BloqueDeCodigo bd2 = new BloqueDeCodigo(instrConAlgo(IR_F, getCI()+1));
+				aumentaCI(1);
 				bd.addBloque(bd2);
 				bd.addBloque(bloqueActual);
 			}
@@ -400,13 +399,13 @@ public class GeneraCodigo {
 				bd.addBloque(bloqueActual);
 				codigoBloque(c.getBloque());
 				bd.addBloque(bloqueActual);
-				BloqueDeCodigo bd2 = new BloqueDeCodigo(
-						instrConAlgo(IR_V, dirInicioBucle));
+				BloqueDeCodigo bd2 = new BloqueDeCodigo( instrConAlgo(IR_V, dirInicioBucle));
 				aumentaCI(1);
 				bd.addBloque(bd2);
 			}
 		}
 
+		d.insertaInfoEnNodo(i, "fin", getCI());
 		bloqueActual = bd;
 	}
 
@@ -423,6 +422,8 @@ public class GeneraCodigo {
 		BloqueDeCodigo bdLibera = new BloqueDeCodigo(cod);
 		bd.addBloque(bdLibera);
 		aumentaCI(bdLibera.getLineasDeCodigo());
+		
+		d.insertaInfoEnNodo(i, "fin", getCI());
 		bloqueActual = bd;
 	}
 
@@ -434,6 +435,7 @@ public class GeneraCodigo {
 			codigoInstruccion(in);
 			bd.addBloque(bloqueActual);
 		}
+		d.insertaInfoEnNodo(i, "fin", getCI());
 		bloqueActual = bd;
 	}
 
@@ -445,6 +447,7 @@ public class GeneraCodigo {
 		bd.addBloque(bloqueActual);
 		codigo(i.getExpresion());
 		bd.addBloque(bloqueActual);
+		d.insertaInfoEnNodo(i, "fin", getCI());
 		bloqueActual = bd;
 	}
 
@@ -580,8 +583,7 @@ public class GeneraCodigo {
 			codigo(e);
 			bd.addBloque(bloqueActual);
 			bd.addBloque(new BloqueDeCodigo(SUMA));
-			aumentaCI(1);
-			//				codArray = SUMA;	
+			aumentaCI(1);	
 			break;
 		case ID:
 			if (id.equalsIgnoreCase("null")){ 
@@ -653,48 +655,6 @@ public class GeneraCodigo {
 
 		bloqueActual = bd;
 	}
-
-	/*private void codigoDecSubprogramas(List<DecSubprograma> list) {
-		BloqueDeCodigo bd = new BloqueDeCodigo();
-		if (list == null){ 
-			bloqueActual = bd;
-			return; 
-		}		
-
-		for (DecSubprograma ds : list){
-			d.insertaInfoEnNodo(ds, "inicio", getCI());
-			Programa programa = ds.getPrograma();
-
-			Integer tamDatos = (Integer) d.getDecoracion(programa.getDecVariables()).get("tam");
-			if (tamDatos == null){ 
-				//				throw new UnsupportedOperationException("tamDatos null"); 
-				tamDatos = 0;
-			}
-			Integer nivel = (Integer) d.getDecoracion(programa.getDecVariables()).get("nivel");
-			if (nivel == null){ 
-				//				throw new UnsupportedOperationException("nivel null"); 
-				nivel = 0;
-			}
-
-			String prologo = generaPrologo(nivel, tamDatos);
-			bd.addBloque(new BloqueDeCodigo(prologo));
-			aumentaCI(10); // cantidad del prologo			
-
-			if (programa != null){ 
-				codigoDecSubprogramas(programa.getDecSubprogramas());
-				bd.addBloque(bloqueActual);
-				codigoBloque(programa.getBloque());
-				bd.addBloque(bloqueActual);
-			}
-
-			String epilogo = generaEpilogo(nivel, tamDatos);
-			bd.addBloque(new BloqueDeCodigo(epilogo));
-			aumentaCI(14); // cantidad del epílogo
-		}
-
-
-		bloqueActual = bd;		
-	}*/
 
 	/*******************************************************************************
 	 *  ASIGNA ESPACIOS
